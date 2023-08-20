@@ -3,16 +3,16 @@
 - these will be imported to View module
 - View module contains some Ui classes and these classes add UI component from imported prebuilt UI module
 '''
-from view.ui import Main_ui
-from view.ui import About_ui
-from view.ui import PlotFigure_ui
+from view.ui.Main_ui import Ui_Main
+from view.ui.About_ui import Ui_About
+from view.ui.PlotFigure_ui import Ui_PlotFigure
 from view.plotting import FigureCanVas
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QWidget
 
 
 # class for object Main window of application
-class UI_Main(QMainWindow):
+class WidgetMain(QMainWindow):
 
     message = ""
 
@@ -28,37 +28,32 @@ class UI_Main(QMainWindow):
 
 
     def __init__(self):
-        super(UI_Main, self).__init__()
+        super(WidgetMain, self).__init__()
         # GUI Main form
-        self.ui = Main_ui.Ui_frame()
+        self.ui = Ui_Main()
         self.ui.setupUi(self)
 
 
 # GUI Plot list form
-class UI_PlotList(QWidget):
+class WidgetPlotList(QWidget):
         
     pass
 
 
 # GUI About form
-class UI_About(QWidget):
+class WidgetAbout(QWidget):
 
     def __init__(self):
-        super(UI_About, self).__init__()
-        self.ui = About_ui.Ui_frame()
+        super(WidgetAbout, self).__init__()
+        self.ui = Ui_About()
         self.ui.setupUi(self)
 
 
-class Frm_PlotSetting(QWidget):
-
-    pass
-        
-
-class UI_PlotFigure(QWidget):
+class WidgetPlotFigure(QWidget):
 
     def __init__(self):
-        super(UI_PlotFigure, self).__init__()
-        self.ui = PlotFigure_ui.Ui_frame()
+        super(WidgetPlotFigure, self).__init__()
+        self.ui = Ui_PlotFigure()
         self.ui.setupUi(self)
 
 
@@ -67,9 +62,9 @@ class UI():
 
     def __init__(self) -> None:
         
-        self.Main = UI_Main()
+        self.Main = WidgetMain()
         self.Main.show()
-        self.About = UI_About()
+        self.About = WidgetAbout()
         
         # Binding Menu action to slots
         self.Main.ui.actionShowAbout.triggered.connect(self.About.show)

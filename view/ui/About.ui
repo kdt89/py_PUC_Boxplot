@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frame</class>
- <widget class="QDialog" name="frame">
+ <class>About</class>
+ <widget class="QDialog" name="About">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -84,7 +84,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <connection>
    <sender>btnClose</sender>
    <signal>clicked()</signal>
-   <receiver>frame</receiver>
+   <receiver>About</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

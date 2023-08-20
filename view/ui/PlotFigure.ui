@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frame</class>
- <widget class="QWidget" name="frame">
+ <class>PlotFigure</class>
+ <widget class="QWidget" name="PlotFigure">
   <property name="geometry">
    <rect>
     <x>0</x>
