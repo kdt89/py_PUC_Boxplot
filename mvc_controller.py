@@ -78,9 +78,9 @@ class Controller(Observer): # Controller in MVC pattern
     Function ask View to render Plot
     '''
     def build_boxplot(self)->None:
-
-        # Request View class to render and show up a new Frame window
         pass
+        # Request View class to render and show up a new Frame window
+        
 
 
 

@@ -16,9 +16,6 @@ class FigureCanVas(FigureCanvasQTAgg):
         super(FigureCanVas, self).__init__(fig)
 
 
-
-
-
 class Plotting():
 
     # deliberately set for easy view when embedded plot to MS PPT file
