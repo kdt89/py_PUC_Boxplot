@@ -6,9 +6,10 @@
 from view.ui.Main_ui import Ui_Main
 from view.ui.About_ui import Ui_About
 from view.ui.PlotFigure_ui import Ui_PlotFigure
-from view.plotting import FigureCanVas
+from view.PlotFigure import FigureCanVas
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QWidget
+from PyQt6 import QtWidgets
 
 
 # class for object Main window of application
@@ -56,6 +57,22 @@ class WidgetPlotFigure(QWidget):
         self.ui = Ui_PlotFigure()
         self.ui.setupUi(self)
 
+        sc = FigureCanVas(self, width=5, height=4, dpi=100)
+        sc.axes.plot([0,1,2,3,4], [10,1,20,3,40])
+
+        # Create toolbar, passing canvas as first parament, parent (self, the MainWindow) as second.
+        # toolbar = NavigationToolbar(sc, self)
+
+        layout = QtWidgets.QVBoxLayout()
+        # layout.addWidget(toolbar)
+        layout.addWidget(sc)
+
+        # Create a placeholder widget to hold our toolbar and canvas.
+        # widget = QtWidgets.QWidget()
+        # widget.setLayout(layout)
+        self.setLayout(layout)
+        # self.setCentralWidget(widget)
+
 
 # Application UI object contains all other frame objects
 class UI():
@@ -66,6 +83,6 @@ class UI():
         self.Main.show()
         self.About = WidgetAbout()
         self.PlotFigure = WidgetPlotFigure()
-        # self.PlotFigure.show()
+        self.PlotFigure.show()
         # Binding Menu action to slots
         self.Main.ui.actionShowAbout.triggered.connect(self.About.show)

@@ -11,7 +11,8 @@ from matplotlib.figure import Figure
 class FigureCanVas(FigureCanvasQTAgg):
 
     def __init__(self, parent=None, width=5, height=4, dpi=500):
-        fig = Figure(figsize=(width, height), dpi=dpi)
+        # fig = Figure(figsize=(width, height), dpi=dpi)
+        fig = Figure(dpi=dpi)
         self.axes = fig.add_subplot(111)
         super(FigureCanVas, self).__init__(fig)
 
