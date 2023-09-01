@@ -80,7 +80,6 @@ class Controller(Observer): # Controller in MVC pattern
     def build_boxplot(self)->None:
         pass
         # Request View class to render and show up a new Frame window
-        
 
 
 
