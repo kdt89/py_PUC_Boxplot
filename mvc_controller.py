@@ -7,7 +7,7 @@ from util.observer import Observer, Subject
 
 
 class Controller(Observer): # Controller in MVC pattern
-    
+
     def __init__(self, model: mvc_model.Model, view: mvc_view.UI):
 
         self.model = model
@@ -15,7 +15,7 @@ class Controller(Observer): # Controller in MVC pattern
         self.setting = Setting()
         self.workstatus = controller.workstatus.WorkStatus()
 
-        self._bindSignalAndSlot()
+        self.bindSignalAndSlot()
         # let Controller (class Process object) subscribe to Model object Event (Observer pattern)
         self.model.attach(self)
         # Show initial message to UI
@@ -35,7 +35,7 @@ class Controller(Observer): # Controller in MVC pattern
     """
     Binding PyQt signal & slot
     """
-    def _bindSignalAndSlot(self):
+    def bindSignalAndSlot(self):
         self.view.Main.ui.btnMakePlot.clicked.connect(self.btnMakePlot_actions)
 
     """
@@ -63,17 +63,17 @@ class Controller(Observer): # Controller in MVC pattern
             return None
         
         # pass import file to Model object to import data
-        self.model.csvdata.import_csv_files(
+        self.model.database.import_csv_files(
             self.workstatus.list_import_files,
             self.setting.reading_cols,
             self.setting.data_row_to_skipread,
             self.view.Main.updateSttBar)
 
-        rows, columns = self.model.get_csvdata().shape
+        rows, columns = self.model.database.get_data().shape
         self.view.Main.updateMessage(f"- Input data imported successfully: {rows} rows - {columns} columns")
-        
+
         # Test
-    
+
     '''
     Function ask View to render Plot
     '''
@@ -86,9 +86,10 @@ class Controller(Observer): # Controller in MVC pattern
     '''
     Function to export data in Model to output folder
     '''
-    def export_input_data(self)->None:
+    def export_data(self)->None:
 
-        self.model.csvdata.export(self.setting.output_dir)
+        self.model.database.export_data(self.setting.output_dir)
+
 
     """
     Define methods execute when occuring Event from View
@@ -103,7 +104,7 @@ class Controller(Observer): # Controller in MVC pattern
             self.view.Main.updateMessage("There are no data files in Input directory") # status bar
             return None
         
-        self.export_input_data()
+        self.export_data()
         self.build_boxplot()
         # Notice to UI
         

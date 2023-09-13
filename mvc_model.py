@@ -11,12 +11,7 @@ class Model:
 
     def __init__(self):
 
-        self.csvdata = CSV_Data()
-
-
-    def get_csvdata(self)->DataFrame:
-
-        return self.csvdata.get_csv_data()
+        self.database = CSV_Data()
 
     '''
     Define normal class method

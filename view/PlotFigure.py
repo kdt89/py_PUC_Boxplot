@@ -3,7 +3,6 @@ import matplotlib
 matplotlib.use('QtAgg')
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
@@ -18,10 +17,15 @@ class FigureCanVas(FigureCanvasQTAgg):
 
 
 
+class PlotFigure():
 
 
-
-class Plotting():
+    class Plot():
+        def __init__(self) -> None:
+            plot = FigureCanVas()
+            plotname = ""
+            lowerspec = -1
+            upperspec = -1
 
     # deliberately set for easy view when embedded plot to MS PPT file
     _maxrow = 2; # maximum row of subplots
@@ -29,7 +33,8 @@ class Plotting():
     _rowsize = 0
     _colsize = 0
 
-
+    figures = []
+    
     ''' function to get number of row and column from subplotsize
     @param: subplotsize: type int. Quantity of subplots contained inside a subplot
     @return: rowsize: type int. Number of row of subplot grid. Max is 2

@@ -11,10 +11,24 @@ class CSV_Data():
 
         self._csv_data = pd.DataFrame()
 
-    def get_csv_data(self)-> pd.DataFrame:
+    def get_data(self)-> pd.DataFrame:
 
         return self._csv_data
     
+    def export_data(self, output_dir):
+
+        if self._csv_data.empty:
+            return
+        else:
+            try:
+                self._csv_data.to_csv(output_dir + "\\" + "merged data.csv", 
+                                    header=True, index=False, 
+                                    sep=",", compression=None)
+            except Exception as e:
+                print(str(e))
+                # self._status = f"An error occurred: <font color='red'>{str(e)}</font>"
+                # self.notify()
+
 
     def init_csv_data(self):
 
@@ -114,16 +128,3 @@ class CSV_Data():
         return imported_count
 
 
-    def export(self, output_dir):
-
-        if self._csv_data.empty:
-            return
-        else:
-            try:
-                self._csv_data.to_csv(output_dir + "\\" + "merged data.csv", 
-                                    header=True, index=False, 
-                                    sep=",", compression=None)
-            except Exception as e:
-                print(str(e))
-                # self._status = f"An error occurred: <font color='red'>{str(e)}</font>"
-                # self.notify()
