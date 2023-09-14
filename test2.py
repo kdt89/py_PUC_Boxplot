@@ -1,51 +1,81 @@
+# importing various libraries
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel
+from PyQt6.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
+import random
 
-class VerticalTabWidget(QMainWindow):
-    def __init__(self):
-        super().__init__()
+# main window
+# which inherits QDialog
+class Window(QDialog):
+	
+	# constructor
+	def __init__(self, parent=None):
+		super(Window, self).__init__(parent)
 
-        self.setWindowTitle("Vertical Tab Widget Example")
-        self.setGeometry(100, 100, 400, 300)
+		# a figure instance to plot on
+		self.figure = plt.figure()
 
-        main_widget = QWidget()
-        self.setCentralWidget(main_widget)
+		# this is the Canvas Widget that
+		# displays the 'figure'it takes the
+		# 'figure' instance as a parameter to __init__
+		self.canvas = FigureCanvas(self.figure)
 
-        layout = QVBoxLayout()
-        main_widget.setLayout(layout)
+		# this is the Navigation widget
+		# it takes the Canvas widget and a parent
+		self.toolbar = NavigationToolbar(self.canvas, self)
 
-        tab_widget = QTabWidget()
+		# Just some button connected to 'plot' method
+		self.button = QPushButton('Plot')
+		
+		# adding action to the button
+		self.button.clicked.connect(self.plot)
 
-        # Set the tab bar to be oriented vertically
-        tab_bar = tab_widget.tabBar()
-        tab_bar.setOrientation(Qt.Vertical)
+		# creating a Vertical Box layout
+		layout = QVBoxLayout()
+		
+		# adding tool bar to the layout
+		layout.addWidget(self.toolbar)
+		
+		# adding canvas to the layout
+		layout.addWidget(self.canvas)
+		
+		# adding push button to the layout
+		layout.addWidget(self.button)
+		
+		# setting layout to the main window
+		self.setLayout(layout)
 
-        # Create tabs and add them to the tab widget
-        tab1 = QWidget()
-        tab2 = QWidget()
-        tab3 = QWidget()
+	# action called by the push button
+	def plot(self):
+		
+		# random data
+		data = [random.random() for i in range(10)]
 
-        tab_widget.addTab(tab1, "Tab 1")
-        tab_widget.addTab(tab2, "Tab 2")
-        tab_widget.addTab(tab3, "Tab 3")
+		# clearing old figure
+		self.figure.clear()
 
-        # Add content to the tabs
-        tab1_layout = QVBoxLayout()
-        tab1_layout.addWidget(QLabel("Content of Tab 1"))
-        tab1.setLayout(tab1_layout)
+		# create an axis
+		ax = self.figure.add_subplot(111)
 
-        tab2_layout = QVBoxLayout()
-        tab2_layout.addWidget(QLabel("Content of Tab 2"))
-        tab2.setLayout(tab2_layout)
+		# plot data
+		ax.plot(data, '*-')
 
-        tab3_layout = QVBoxLayout()
-        tab3_layout.addWidget(QLabel("Content of Tab 3"))
-        tab3.setLayout(tab3_layout)
+		# refresh canvas
+		self.canvas.draw()
 
-        layout.addWidget(tab_widget)
+# driver code
+if __name__ == '__main__':
+	
+	# creating apyqt5 application
+	app = QApplication(sys.argv)
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = VerticalTabWidget()
-    window.show()
-    sys.exit(app.exec())
+	# creating a window object
+	main = Window()
+	
+	# showing the window
+	main.show()
+
+	# loop
+	sys.exit(app.exec())

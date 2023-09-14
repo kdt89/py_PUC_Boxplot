@@ -22,15 +22,20 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
-        sc = MplCanvas(self, width=5, height=4, dpi=100)
-        # sc.axes.plot([0,1,2,3,4], [10,1,20,3,40])
+        sc1 = MplCanvas(self, width=5, height=4, dpi=100)
+        sc1.axes.plot([0,1,2,3,4], [10,1,20,3,40])
+
+        sc2 = MplCanvas(self, width=5, height=4, dpi=100)
+        sc2.axes.plot([0,1,2,3,4], [5,5,6,5,5])
+
 
         # Create toolbar, passing canvas as first parament, parent (self, the MainWindow) as second.
-        toolbar = NavigationToolbar(sc, self)
+        toolbar = NavigationToolbar(sc1, self)
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(toolbar)
-        layout.addWidget(sc)
+        layout.addWidget(sc1)
+        layout.addWidget(sc2)
 
         # Create a placeholder widget to hold our toolbar and canvas.
         widget = QtWidgets.QWidget()

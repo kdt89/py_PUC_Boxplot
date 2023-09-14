@@ -6,8 +6,9 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 app = QApplication([])
 
 # Create two Matplotlib Figure objects
-fig1, ax1 = plt.subplots()
-fig2, ax2 = plt.subplots()
+# fig1, ax1 = plt.subplots()
+# fig2, ax2 = plt.subplots()
+fig = plt.subplots()
 
 # Generate some data
 x = np.linspace(0, 10, 100)
@@ -27,6 +28,8 @@ canvas2 = FigureCanvasQTAgg(fig2)
 layout = QVBoxLayout()
 layout.addWidget(canvas1)
 layout.addWidget(canvas2)
+
+
 
 # Create a PyQt6 widget
 widget = QWidget()
