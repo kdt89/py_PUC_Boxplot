@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget
-from view.ui.UI_About import Ui_About
+from view.ui.About_ui import Ui_About
 
 # GUI About form
 class WidgetAbout(QWidget):

@@ -1,4 +1,4 @@
-from view.ui.UI_Main import Ui_Main
+from view.ui.Main_ui import Ui_Main
 from PyQt6.QtWidgets import QMainWindow
 
 

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QLineEdit, QDateEdit
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
-from view.ui.UI_PlotFigure import Ui_PlotFigure
+from view.ui.PlotFigure_ui import Ui_PlotFigure
 from view.pyqt6_verticalTabWidget import VerticalTabWidget
 
 class WidgetPlotFigure(QWidget):
