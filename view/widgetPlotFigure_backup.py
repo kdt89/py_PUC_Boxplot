@@ -1,8 +1,8 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QLineEdit, QDateEdit
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from view.ui.UI_PlotFigure import Ui_PlotFigure
-from view.pyqt6_verticalTabWidget import VerticalTabWidget
+
 
 class WidgetPlotFigure(QWidget):
 
@@ -11,44 +11,16 @@ class WidgetPlotFigure(QWidget):
         self.ui = Ui_PlotFigure()
         self.ui.setupUi(self)
     
-        """
-        Test only
-        """
-        # contact pane
-        contact_page = QWidget(self)
-        layout = QFormLayout()
-        layout.addRow('Phone Number:', QLineEdit(self))
-        layout.addRow('Email Address:', QLineEdit(self))
-        contact_page.setLayout(layout)
-
-        # personal page
-        personal_page = QWidget(self)
-        layout = QFormLayout()
-        layout.addRow('First Name:', QLineEdit(self))
-        layout.addRow('Last Name:', QLineEdit(self))
-        layout.addRow('DOB:', QDateEdit(self))
-        personal_page.setLayout(layout)
-
         # Add Matplotlib figure object to the Widget
         # Figure object is the container for the PyQt graph object
-        test_page = QWidget()
-        figure = plt.figure()
-        canvas = FigureCanvas(figure)
+        self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
+
         # adding canvas to the layout
         layout = QVBoxLayout()
-        # layout.addWidget(self.canvas)
-        layout.addWidget(canvas)
-        test_page.setLayout(layout)
-
-        # Add vertical tab view widget
-        viewtabs = VerticalTabWidget()
-        viewtabs.addTab(personal_page, "First Tab")
-        viewtabs.addTab(contact_page, "Second Tab")
-        viewtabs.addTab(test_page, "Third Tab")
-
-        mainLayout = QFormLayout()
-        # mainLayout.addWidget(viewtabs)
-        self.ui.layoutMain.addWidget(viewtabs)
+        layout.addWidget(self.canvas)
+        # setting layout to the main window
+        self.setLayout(layout)
 
 
     def add_boxplot(self):

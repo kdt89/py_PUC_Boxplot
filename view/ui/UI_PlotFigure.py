@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'c:\PJT\PY\py_PUC_Boxplot\view\ui\PlotFigure.ui'
+# Form implementation generated from reading ui file 'PlotFigure.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.0
 #
@@ -12,23 +12,33 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_PlotFigure(object):
     def setupUi(self, PlotFigure):
         PlotFigure.setObjectName("PlotFigure")
-        PlotFigure.resize(1501, 939)
-        self.tabPage = QtWidgets.QTabWidget(PlotFigure)
-        self.tabPage.setGeometry(QtCore.QRect(10, 50, 1491, 881))
-        self.tabPage.setObjectName("tabPage")
-        self.tab = QtWidgets.QWidget()
-        self.tab.setObjectName("tab")
-        self.tabPage.addTab(self.tab, "")
-        self.tab_2 = QtWidgets.QWidget()
-        self.tab_2.setObjectName("tab_2")
-        self.tabPage.addTab(self.tab_2, "")
+        PlotFigure.resize(1570, 939)
+        self.verticalLayoutWidget = QtWidgets.QWidget(PlotFigure)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 60, 1551, 871))
+        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayoutWidget = QtWidgets.QWidget(PlotFigure)
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(1320, 0, 241, 51))
+        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
+        self.layoutMain = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.layoutMain.setContentsMargins(0, 0, 0, 0)
+        self.layoutMain.setObjectName("layoutMain")
+        self.btnExport_MS_PPT = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.btnExport_MS_PPT.setObjectName("btnExport_MS_PPT")
+        self.layoutMain.addWidget(self.btnExport_MS_PPT)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.layoutMain.addItem(spacerItem)
+        self.btnExportImage = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.btnExportImage.setObjectName("btnExportImage")
+        self.layoutMain.addWidget(self.btnExportImage)
 
         self.retranslateUi(PlotFigure)
-        self.tabPage.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(PlotFigure)
 
     def retranslateUi(self, PlotFigure):
         _translate = QtCore.QCoreApplication.translate
         PlotFigure.setWindowTitle(_translate("PlotFigure", "Box Plot Graph"))
-        self.tabPage.setTabText(self.tabPage.indexOf(self.tab), _translate("PlotFigure", "Tab 1"))
-        self.tabPage.setTabText(self.tabPage.indexOf(self.tab_2), _translate("PlotFigure", "Tab 2"))
+        self.btnExport_MS_PPT.setText(_translate("PlotFigure", "Export MS PowerPoint"))
+        self.btnExportImage.setText(_translate("PlotFigure", "Export Image"))

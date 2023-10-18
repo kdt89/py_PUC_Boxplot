@@ -6,35 +6,62 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1501</width>
+    <width>1570</width>
     <height>939</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Box Plot Graph</string>
   </property>
-  <widget class="QTabWidget" name="tabPage">
+  <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>50</y>
-     <width>1491</width>
-     <height>881</height>
+     <y>60</y>
+     <width>1551</width>
+     <height>871</height>
     </rect>
    </property>
-   <property name="currentIndex">
-    <number>0</number>
+   <layout class="QVBoxLayout" name="verticalLayout"/>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>1320</x>
+     <y>0</y>
+     <width>241</width>
+     <height>51</height>
+    </rect>
    </property>
-   <widget class="QWidget" name="tab">
-    <attribute name="title">
-     <string>Tab 1</string>
-    </attribute>
-   </widget>
-   <widget class="QWidget" name="tab_2">
-    <attribute name="title">
-     <string>Tab 2</string>
-    </attribute>
-   </widget>
+   <layout class="QHBoxLayout" name="layoutMain">
+    <item>
+     <widget class="QPushButton" name="btnExport_MS_PPT">
+      <property name="text">
+       <string>Export MS PowerPoint</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btnExportImage">
+      <property name="text">
+       <string>Export Image</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
