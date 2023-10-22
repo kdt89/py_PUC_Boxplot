@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QMainWindow
 # class for object Main window of application
 class WidgetMain(QMainWindow):
 
-    message = ""
+    # message = ""
 
     # update status bar message
     def updateSttBar(self, message: str):

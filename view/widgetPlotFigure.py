@@ -43,8 +43,8 @@ class WidgetPlotFigure(QWidget):
         # Add vertical tab view widget
         viewtabs = VerticalTabWidget()
         viewtabs.addTab(personal_page, "First Tab")
-        viewtabs.addTab(contact_page, "Second Tab")
-        viewtabs.addTab(test_page, "Third Tab")
+        viewtabs.addTab(contact_page, "First Tab")
+        viewtabs.addTab(test_page, "First Tab")
 
         mainLayout = QFormLayout()
         # mainLayout.addWidget(viewtabs)
