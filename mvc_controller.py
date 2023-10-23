@@ -2,7 +2,7 @@ import mvc_model
 import mvc_view
 import glob
 from controller.setting import Setting
-import controller.workstatus
+from controller.workstatus import Status
 from util.observer import Observer, Subject
 
 
@@ -13,7 +13,6 @@ class Controller(Observer): # Controller in MVC pattern
         self.model = model
         self.view = view
         self.setting = Setting()
-        self.workstatus = controller.workstatus.WorkStatus()
 
         self.bindSignalAndSlot()
         # let Controller (class Process object) subscribe to Model object Event (Observer pattern)
@@ -47,11 +46,6 @@ class Controller(Observer): # Controller in MVC pattern
 
         # update Setting from user
         self.view.Main.updateMessage("- User setting loaded")
-        self.setting.update()
-        # update status of input data
-        self.workstatus.list_import_files = [file for file in glob.glob(self.setting.input_dir + 
-                                                       '/**/*.{}'.format(self.setting.file_ext), 
-                                                       recursive=True)]
 
         input_files_count = len(self.workstatus.list_import_files)
         if input_files_count > 0:
@@ -98,6 +92,14 @@ class Controller(Observer): # Controller in MVC pattern
         
         # Notice to UI
         self.view.Main.updateMessage(f"\n <b>Making Plot from data files in Input directory</b>...")
+        
+        self.setting.update()
+        
+        if not Status.setting_update_ok:
+            self.view.Main.updateMessage(Status.error_message)
+            Status.clear_error_message()
+            return
+        
         self.import_input_data()
 
         if not self.workstatus.input_ready:
