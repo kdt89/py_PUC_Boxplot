@@ -31,6 +31,7 @@ class Setting:
     local_plot_list_database = 'setting_plot.csv'
     input_dirname = "Input"
     output_dirname = "Output"
+    reading_cols = None
     
     data_row_to_skipread = [1, 2]
 
@@ -39,7 +40,6 @@ class Setting:
 
     def __init__(self):
         self.plot_list_database = pd.DataFrame()
-        self.reading_cols = None
         self.input_dir = os.path.abspath(self.input_dirname)
         self.output_dir = os.path.abspath(self.output_dirname)
 
@@ -65,7 +65,7 @@ class Setting:
             Status.setting_update_ok = True
         
         # load Plot list in local file database to object
-                # update status of input data
+        # update status of input data
         Status.list_import_files = [file for file in glob.glob(self.input_dir + './*.{}'.format(self.file_ext))]
 
 

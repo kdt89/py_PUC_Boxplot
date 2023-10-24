@@ -12,17 +12,18 @@ class Status:
         self.set_input_status(False)
 
 
+    @staticmethod
     def scan_input_files(self):
-
         self.input_ready = False
 
 
+    @staticmethod
     def input_ready(self) -> bool:
         return self.input_ready
 
-
-    def set_input_status(self, status: bool) -> None:
-        self.input_ready = status
+    @staticmethod
+    def set_input_status(status: bool) -> None:
+        Status.input_ready = status
 
 
     

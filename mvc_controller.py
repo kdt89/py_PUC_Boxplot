@@ -1,6 +1,5 @@
 import mvc_model
 import mvc_view
-import glob
 from controller.setting import Setting
 from controller.workstatus import Status
 from util.observer import Observer, Subject
@@ -47,20 +46,20 @@ class Controller(Observer): # Controller in MVC pattern
         # update Setting from user
         self.view.Main.updateMessage("- User setting loaded")
 
-        input_files_count = len(self.workstatus.list_import_files)
+        input_files_count = len(Status.list_import_files)
         if input_files_count > 0:
             self.view.Main.updateMessage(f"- Found {input_files_count} data files to be input")
-            self.workstatus.set_input_status(True)
+            Status.set_input_status(True)
         else:
-            self.workstatus.set_input_status(False)
+            Status.set_input_status(False)
             self.view.Main.updateMessage("There are no data files in Input directory")
             return None
         
         # pass import file to Model object to import data
         self.model.database.import_csv_files(
-            self.workstatus.list_import_files,
-            self.setting.reading_cols,
-            self.setting.data_row_to_skipread,
+            Status.list_import_files,
+            Setting.reading_cols,
+            Setting.data_row_to_skipread,
             self.view.Main.updateSttBar)
 
         rows, columns = self.model.database.get_data().shape
@@ -102,7 +101,7 @@ class Controller(Observer): # Controller in MVC pattern
         
         self.import_input_data()
 
-        if not self.workstatus.input_ready:
+        if not Status.input_ready:
             self.view.Main.updateMessage("There are no data files in Input directory") # status bar
             return None
         

@@ -75,6 +75,9 @@ class CSV_Data():
 
         self.init_csv_data()
 
+        if reading_cols is None:
+            return
+
         # Notice reading file:
         total_df = []
         imported_count = 0
