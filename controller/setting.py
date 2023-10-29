@@ -55,12 +55,11 @@ class Setting:
     # def load_local_plot_setting_database
 
 
-    def __init__(self):
-        self.plot_list_database = pd.DataFrame()
-        self.plotPages = List[MultiPlotFigure]
+    # def __init__(self):
+    #     self.plot_list_database = pd.DataFrame()
+    #     self.plotPages = List[Figure]
         
-
-    def _dataframe_to_plotpages(self, dataframe: pd.DataFrame) ->[]:
+    def _dataframe_to_plotpages(dataframe: pd.DataFrame) ->[]:
 
         try:
             if list(dataframe.columns) != ['Plot Item', 'LSL', 'USL', 'To Plot', 'Figure']:
@@ -70,6 +69,9 @@ class Setting:
         except:
             return
 
+        # plotpages = List[Figure]
+        plotpages = []
+        
         # Divide dataframe to groups by column ['Figure']
         datagroups = dataframe.groupby(['Figure'], sort=False)
         
@@ -79,48 +81,33 @@ class Setting:
             figure = Figure()
             figure.name = groupname
             
-            for index, row in group_data:
+            for row in group_data.itertuples():
                 subplot = Subplot(
-                    subplotname = row['Plot Item'],
-                    lsl = row['LSL'],
-                    usl = row['USL'],
-                    to_plot = row['To Plot'],
-                    figurename = row['Figure'])
+                    subplotname= row[1], # ['Plot Item']
+                    lowerspec= row[2], # 'LSL'
+                    upperspec= row[3], # 'USL'
+                    to_plot= row[4], # 'To Plot'
+                    figurename= row[5]) # 'Figure'
+                
+                figure.subplot_list.append(subplot)
 
-                figure.plot_list.append(plot)
+            plotpages.append(figure)
 
-            self.plotpages.append(figure)
-
-        return self.plotpages
-
-            
-            
-            
-            
-            
+        return plotpages
 
 
-        
+    @staticmethod
+    def update():
 
-
-
-    
-
-
-
-
-    
-    def update(self):
-
-        self.plot_list_database = pd.read_csv(self.local_plot_list_database, index_col=None, sep=',', header=0)
+        df_plot_list = pd.read_csv(Setting.local_plot_list_database, index_col=None, sep=',', header=0)
         
         
         # load Plot list in local file database to object
         # update status of input data
-        Status.list_import_files = [file for file in glob.glob(self.input_dir + './*.{}'.format(self.file_ext))]
+        Status.list_import_files = [file for file in glob.glob(Setting.input_dir + './*.{}'.format(Setting.file_ext))]
 
         # Update the plot item in local database of setting to class object
-        Setting.plotpages = self._dataframe_to_plotpages(self.plot_list_database)
+        Setting.plotpages = Setting._dataframe_to_plotpages(df_plot_list)
 
         print("debug here")
 

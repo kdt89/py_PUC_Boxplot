@@ -92,7 +92,8 @@ class Controller(Observer): # Controller in MVC pattern
         # Notice to UI
         self.view.Main.updateMessage(f"\n <b>Making Plot from data files in Input directory</b>...")
         
-        self.setting.update()
+        # self.setting.update()
+        Setting.update()
         
         if not Status.setting_update_ok:
             self.view.Main.updateMessage(Status.error_message)
