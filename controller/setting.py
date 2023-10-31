@@ -1,15 +1,13 @@
-import os, glob
+from __future__ import annotations
+import os
 import pandas as pd
 from typing import List
-from typing import TypeAlias
 from controller.workstatus import Status
 
 """
 A Figure contains multiple subplot object.
 Each subplot object is a single box plot which are object returned by matplotlib.pyplot.boxplot()
 """
-
-
 
 
 class Subplot:
@@ -48,52 +46,11 @@ class Setting:
     input_dir = os.path.abspath("Input")
     output_dir = os.path.abspath("Output")
     
-    reading_cols = None
+    import_data_column_list = []
+    
     data_row_to_skipread = [1, 2]
-
+    
     plotpages = List[Figure]
-    # def load_local_plot_setting_database
-
-
-    # def __init__(self):
-    #     self.plot_list_database = pd.DataFrame()
-    #     self.plotPages = List[Figure]
-        
-    def _dataframe_to_plotpages(dataframe: pd.DataFrame) ->[]:
-
-        try:
-            if list(dataframe.columns) != ['Plot Item', 'LSL', 'USL', 'To Plot', 'Figure']:
-                Status.error_message("Plot item in database have incorrect header.")
-                Status.setting_update_ok = False
-                return
-        except:
-            return
-
-        # plotpages = List[Figure]
-        plotpages = []
-        
-        # Divide dataframe to groups by column ['Figure']
-        datagroups = dataframe.groupby(['Figure'], sort=False)
-        
-        # Iterate through each Figure group in dataframe and convert to PlotPage class object
-        for groupname, group_data in datagroups:
-            
-            figure = Figure()
-            figure.name = groupname
-            
-            for row in group_data.itertuples():
-                subplot = Subplot(
-                    subplotname= row[1], # ['Plot Item']
-                    lowerspec= row[2], # 'LSL'
-                    upperspec= row[3], # 'USL'
-                    to_plot= row[4], # 'To Plot'
-                    figurename= row[5]) # 'Figure'
-                
-                figure.subplot_list.append(subplot)
-
-            plotpages.append(figure)
-
-        return plotpages
 
 
     @staticmethod
@@ -101,20 +58,48 @@ class Setting:
 
         df_plot_list = pd.read_csv(Setting.local_plot_list_database, index_col=None, sep=',', header=0)
         
-        
-        # load Plot list in local file database to object
-        # update status of input data
-        Status.list_import_files = [file for file in glob.glob(Setting.input_dir + './*.{}'.format(Setting.file_ext))]
-
         # Update the plot item in local database of setting to class object
         Setting.plotpages = Setting._dataframe_to_plotpages(df_plot_list)
-
-        print("debug here")
-
-
-
-
-    
-
-
         
+        if len(Setting.plotpages) == 0:
+            Status.setting_update_ok = False
+
+
+    def _dataframe_to_plotpages(dataframe: pd.DataFrame) ->[]:
+
+            try:
+                if list(dataframe.columns) != ['Plot Item', 'LSL', 'USL', 'To Plot', 'Figure']:
+                    Status.error_message("Plot item in database have incorrect header.")
+                    Status.setting_update_ok = False
+                    return
+            except:
+                return
+
+            # plotpages = List[Figure]
+            plotpages = []
+            
+            # Divide dataframe to groups by column ['Figure']
+            datagroups = dataframe.groupby(['Figure'], sort=False)
+            
+            # Iterate through each Figure group in dataframe and convert to PlotPage class object
+            for groupname, group_data in datagroups:
+                
+                figure = Figure()
+                figure.name = groupname
+                
+                for row in group_data.itertuples():
+                    subplot = Subplot(
+                        subplotname= str(row[1]), # ['Plot Item']
+                        lowerspec= float(row[2]), # 'LSL'
+                        upperspec= float(row[3]), # 'USL'
+                        to_plot= bool(row[4]), # 'To Plot'
+                        figurename= str(row[5])) # 'Figure'
+                    
+                    # Adding ['Plot Item'] value to import_data_column_list, then Model object use this for import CSV data file
+                    Setting.import_data_column_list.append(str(row[1]))
+
+                    figure.subplot_list.append(subplot)
+
+                plotpages.append(figure)
+
+            return plotpages

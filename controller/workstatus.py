@@ -1,4 +1,4 @@
-
+import glob
 
     # Attributes
 class Status:
@@ -6,32 +6,18 @@ class Status:
     input_ready = False
     setting_update_ok = False
     error_message = ""
-    list_import_files = []
-
-    def __init__(self):
-        self.set_input_status(False)
-
-
-    @staticmethod
-    def scan_input_files(self):
-        self.input_ready = False
-
-
-    @staticmethod
-    def input_ready(self) -> bool:
-        return self.input_ready
-
-    @staticmethod
-    def set_input_status(status: bool) -> None:
-        Status.input_ready = status
-
-
-    
+    list_input_files = []
 
 
     @staticmethod
     def clear_error_message():
+
         Status.error_message = ""
     
+
+    @staticmethod
+    def update_list_input_files(input_path: str, file_ext: str):
+
+        Status.list_input_files = [file for file in glob.glob(input_path + './*.{}'.format(file_ext))]
     # def get_list_import_files(self) ->list:
     #     return self.list_import_files

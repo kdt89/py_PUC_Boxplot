@@ -6,15 +6,19 @@ from os import path
 # Module to store database
 class CSV_Data():
 
+    dataset_columnname = "DATA_FILENAME"
+
     # Attributes
     def __init__(self):
 
         self._csv_data = pd.DataFrame()
 
+
     def get_data(self)-> pd.DataFrame:
 
         return self._csv_data
-    
+
+
     def export_data(self, output_dir):
 
         if self._csv_data.empty:
@@ -30,9 +34,6 @@ class CSV_Data():
                 # self.notify()
 
 
-    def init_csv_data(self):
-
-        self._csv_data = pd.DataFrame();
     """
     Define normal class method
     """
@@ -73,8 +74,6 @@ class CSV_Data():
             callbackMessage: Callable[[str], None]
     )-> pd.DataFrame:
 
-        self.init_csv_data()
-
         if reading_cols is None:
             return
 
@@ -84,7 +83,7 @@ class CSV_Data():
 
         for filepath in filepaths:
             callbackMessage(f"Reading file:  {path.basename(filepath)}")
-            
+
             extracted_file_df = pd.DataFrame()
             current_data_chunk = pd.DataFrame()
             found_cols = []
@@ -127,6 +126,8 @@ class CSV_Data():
         # Merging data frames into one frame
         if len(total_df) > 0:
             self._csv_data = pd.concat(total_df, axis=0, ignore_index=True)
+
+        # 
 
         return imported_count
 

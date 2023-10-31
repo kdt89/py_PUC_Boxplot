@@ -1,6 +1,5 @@
 import sys
 from PyQt6.QtWidgets import QApplication
-
 from mvc_view import UI
 from mvc_controller import Controller
 from mvc_model import Model

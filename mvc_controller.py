@@ -13,9 +13,11 @@ class Controller(Observer): # Controller in MVC pattern
         self.view = view
         self.setting = Setting()
 
-        self.bindSignalAndSlot()
         # let Controller (class Process object) subscribe to Model object Event (Observer pattern)
         self.model.attach(self)
+        self.model.notify
+        
+        self.bindSignalAndSlot()
         # Show initial message to UI
         self.view.Main.updateMessage(f"<b>Program initialized at: </b> \
                                   <font color='blue'>{self.setting.rootdir}\
@@ -46,26 +48,25 @@ class Controller(Observer): # Controller in MVC pattern
         # update Setting from user
         self.view.Main.updateMessage("- User setting loaded")
 
-        input_files_count = len(Status.list_import_files)
+        input_files_count = len(Status.list_input_files)
         if input_files_count > 0:
             self.view.Main.updateMessage(f"- Found {input_files_count} data files to be input")
-            Status.set_input_status(True)
+            Status.input_ready = True
         else:
-            Status.set_input_status(False)
+            Status.input_ready = False
             self.view.Main.updateMessage("There are no data files in Input directory")
             return None
         
         # pass import file to Model object to import data
         self.model.database.import_csv_files(
-            Status.list_import_files,
-            Setting.reading_cols,
+            Status.list_input_files,
+            Setting.import_data_column_list,
             Setting.data_row_to_skipread,
             self.view.Main.updateSttBar)
 
         rows, columns = self.model.database.get_data().shape
         self.view.Main.updateMessage(f"- Input data imported successfully: {rows} rows - {columns} columns")
 
-        # Test
 
     '''
     Function ask View to render Plot
@@ -73,7 +74,6 @@ class Controller(Observer): # Controller in MVC pattern
     def build_boxplot(self)->None:
         pass
         # Request View class to render and show up a new Frame window
-
 
 
     '''
@@ -92,20 +92,15 @@ class Controller(Observer): # Controller in MVC pattern
         # Notice to UI
         self.view.Main.updateMessage(f"\n <b>Making Plot from data files in Input directory</b>...")
         
-        # self.setting.update()
         Setting.update()
-        
-        if not Status.setting_update_ok:
-            self.view.Main.updateMessage(Status.error_message)
-            Status.clear_error_message()
-            return
-        
+        Status.update_list_input_files(Setting.input_dir, Setting.file_ext)
+
         self.import_input_data()
 
         if not Status.input_ready:
             self.view.Main.updateMessage("There are no data files in Input directory") # status bar
             return None
-        
+
         self.export_data()
         self.build_boxplot()
         # Notice to UI
