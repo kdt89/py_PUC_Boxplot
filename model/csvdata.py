@@ -82,7 +82,7 @@ class CSV_Data():
 
         for filepath in filepaths:
 
-            filename = path.basename(filepath)
+            filename = path.splitext(path.basename(filepath))[0] # splitext() return (filename, extension)
             # Notice reading file:
             callbackMessage(f"Reading file:  {filename}")
 
@@ -123,8 +123,7 @@ class CSV_Data():
                     axis=0, # drop rows which contain missing values
                     how='all', # if all values of checking columns are NA, drop that row or column
                     subset=None # check all columns
-                    # inplace=True, # modify the calling dataframe rather than return new dataframe
-                )
+                    )
 
                 found_cols.clear()
                 df_current_chunk = None
