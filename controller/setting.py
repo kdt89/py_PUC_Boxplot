@@ -47,7 +47,6 @@ class Setting:
     output_dir = os.path.abspath("Output")
     
     import_data_column_list = []
-    
     data_row_to_skipread = [1, 2]
     
     plotpages = List[Figure]
@@ -86,7 +85,7 @@ class Setting:
                 
                 figure = Figure()
                 figure.name = groupname
-                
+
                 for row in group_data.itertuples():
                     subplot = Subplot(
                         subplotname= str(row[1]), # ['Plot Item']

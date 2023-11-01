@@ -6,7 +6,7 @@ from os import path
 # Module to store database
 class CSV_Data():
 
-    dataset_columnname = "DATA_FILENAME"
+    DATASET_NAME_HEADER = "DATA_FILENAME"
 
     # Attributes
     def __init__(self):
@@ -77,57 +77,78 @@ class CSV_Data():
         if reading_cols is None:
             return
 
-        # Notice reading file:
         total_df = []
         imported_count = 0
 
         for filepath in filepaths:
-            callbackMessage(f"Reading file:  {path.basename(filepath)}")
 
-            extracted_file_df = pd.DataFrame()
-            current_data_chunk = pd.DataFrame()
+            filename = path.basename(filepath)
+            # Notice reading file:
+            callbackMessage(f"Reading file:  {filename}")
+
+            df_extracted_from_file = pd.DataFrame()
+            df_current_chunk = pd.DataFrame()
             found_cols = []
 
             try:
-                imported_df = pd.read_csv(filepath, index_col=None, sep=',', header=0, skiprows=skip_rows)
-                imported_df_cols = list(imported_df.columns)
+                df_raw_imported = pd.read_csv(filepath, index_col=None, sep=',', header=0, skiprows=skip_rows)
+                columns_df_raw_imported = list(df_raw_imported.columns)
             except Exception as e:
                 print(str(e))
                 continue
 
             for col in reading_cols:
-                if col in imported_df_cols:
+                if col in columns_df_raw_imported:
                     found_cols.append(col)
                 else:
                     if len(found_cols) > 0:
                         # get piece of data which have header as column in 'found_colnames'
-                        current_data_chunk = imported_df[found_cols]
+                        df_current_chunk = df_raw_imported[found_cols]
                         # build a single empty column data with header as 'col'
-                        empty_data_chunk = pd.Series(data=None, name=col, dtype='object')
+                        df_empty_chunk = pd.Series(data=None, name=col, dtype='object')
                         # push it to 'extracted_df'
-                        extracted_file_df = pd.concat([extracted_file_df, current_data_chunk, empty_data_chunk], axis=1)
+                        df_extracted_from_file = pd.concat([df_extracted_from_file, df_current_chunk, df_empty_chunk], axis=1)
 
                         found_cols.clear()
-                        current_data_chunk = None
+                        df_current_chunk = None
 
-            # After iterate over all column name in needed_columns
-            # If found_colnames is not empty then extract data and push to 'extracted_df'
+            # After iterate over all column name in needed_columns, ...
+            # if found_colnames is not empty then extract data and push to 'extracted_df'
             if len(found_cols) > 0:
-                current_data_chunk = imported_df[found_cols]
-                extracted_file_df = pd.concat([extracted_file_df, current_data_chunk], axis=1)
-                found_cols.clear()
-                current_data_chunk = None
+                df_current_chunk = df_raw_imported[found_cols]
+                df_extracted_from_file = pd.concat([df_extracted_from_file, df_current_chunk], axis=1)
+                
+                df_extracted_from_file = df_extracted_from_file.drop_duplicates()
+                df_extracted_from_file = df_extracted_from_file.dropna(
+                    axis=0, # drop rows which contain missing values
+                    how='all', # if all values of checking columns are NA, drop that row or column
+                    subset=None # check all columns
+                    # inplace=True, # modify the calling dataframe rather than return new dataframe
+                )
 
-            # append the data extracted from file to total dataframe
-            if not extracted_file_df.empty:
-                total_df.append(extracted_file_df)
+                found_cols.clear()
+                df_current_chunk = None
+
+            # For later use when making plot, we need to categorize the dataset by its name,...
+            # by adding extra column [DATA_FILENAME] with row value is the name of file we extract data from
+            data_filename = pd.Series(
+                data=filename,
+                index=range(0, df_extracted_from_file.shape[0])) # range from 0 to number of rows of 'df_extracted_from_file'
+
+            df_extracted_from_file.insert(
+                loc=0, # insert new column as first (left-most) column
+                column = CSV_Data.DATASET_NAME_HEADER,
+                value=data_filename
+            )
+
+            # append the dataframe extracted from file to total list dataframe
+            if not df_extracted_from_file.empty:
+                total_df.append(df_extracted_from_file)
                 imported_count += 1
 
         # Merging data frames into one frame
         if len(total_df) > 0:
             self._csv_data = pd.concat(total_df, axis=0, ignore_index=True)
-
-        # 
 
         return imported_count
 
