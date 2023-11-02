@@ -81,7 +81,7 @@ class Controller(Observer): # Controller in MVC pattern
     '''
     def export_data(self)->None:
 
-        self.model.database.export_data(self.setting.output_dir)
+        self.model.database.export_data(Setting.output_dir)
 
 
     """
