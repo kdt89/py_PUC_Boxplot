@@ -4,7 +4,7 @@ from os import path
 
 
 # Module to store database
-class CSV_Data():
+class CSV_Database():
 
     DATASET_NAME_HEADER = "DATA_FILENAME"
 
@@ -14,11 +14,12 @@ class CSV_Data():
         self._csv_data = pd.DataFrame()
 
 
-    def get_data(self)-> pd.DataFrame:
+    @property
+    def size(self):
 
-        return self._csv_data
-
-
+        return self._csv_data.shape  
+    
+    
     def export_data(self, output_dir):
 
         if self._csv_data.empty:
@@ -33,37 +34,36 @@ class CSV_Data():
                 # self._status = f"An error occurred: <font color='red'>{str(e)}</font>"
                 # self.notify()
 
+    # """
+    # Define normal class method
+    # """
+    # def import_csv_file(
+    #         self,
+    #         csv_filepath: str,
+    #         reading_col,
+    #         reading_skip_rows: list
+    #         )->None:
 
-    """
-    Define normal class method
-    """
-    def import_csv_file(
-            self,
-            csv_filepath: str,
-            reading_col,
-            reading_skip_rows: list
-            )->None:
+    #     # Checking csv_filepath direct to a file or not
+    #     if len(reading_col) == 0:
+    #         reading_col = None
 
-        # Checking csv_filepath direct to a file or not
-        if len(reading_col) == 0:
-            reading_col = None
-
-        if len(reading_skip_rows) == 0:
-            reading_skip_rows = None
+    #     if len(reading_skip_rows) == 0:
+    #         reading_skip_rows = None
             
-        df = pd.read_csv(csv_filepath, index_col=None, 
-                         sep=',', header=0, 
-                         usecols=reading_col, skiprows=reading_skip_rows)
+    #     df = pd.read_csv(csv_filepath, index_col=None, 
+    #                      sep=',', header=0, 
+    #                      usecols=reading_col, skiprows=reading_skip_rows)
 
-        # Remove duplicated rows
-        df = df.drop_duplicates()
-        # Merging data frames into one frame
-        try:
-            if not df.empty:
-                self._csv_data = pd.concat([self._csv_data, df], axis=0, ignore_index=True)
+    #     # Remove duplicated rows
+    #     df = df.drop_duplicates()
+    #     # Merging data frames into one frame
+    #     try:
+    #         if not df.empty:
+    #             self._csv_data = pd.concat([self._csv_data, df], axis=0, ignore_index=True)
 
-        except:
-            return None
+    #     except:
+    #         return None
 
 
     def import_csv_files(
@@ -136,7 +136,7 @@ class CSV_Data():
 
             df_extracted_from_file.insert(
                 loc=0, # insert new column as first (left-most) column
-                column = CSV_Data.DATASET_NAME_HEADER,
+                column = CSV_Database.DATASET_NAME_HEADER,
                 value=data_filename
             )
 

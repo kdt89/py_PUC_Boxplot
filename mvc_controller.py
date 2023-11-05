@@ -64,7 +64,7 @@ class Controller(Observer): # Controller in MVC pattern
             Setting.data_row_to_skipread,
             self.view.Main.updateSttBar)
 
-        rows, columns = self.model.database.get_data().shape
+        rows, columns = self.model.database.size
         self.view.Main.updateMessage(f"- Input data imported successfully: {rows} rows - {columns} columns")
 
 

@@ -1,7 +1,6 @@
 from typing import List
-import pandas as pd
 from util.observer import Observer # OBSERVER DESIGN PATTERN
-from model.csvdata import CSV_Data
+from model.csv_database import CSV_Database
 from pandas import DataFrame
 
 class Model:
@@ -11,7 +10,7 @@ class Model:
 
     def __init__(self):
 
-        self.database = CSV_Data()
+        self.database = CSV_Database()
 
     '''
     Define normal class method
