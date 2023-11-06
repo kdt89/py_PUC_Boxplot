@@ -14,12 +14,25 @@ class CSV_Database():
         self._csv_data = pd.DataFrame()
 
 
+
     @property
     def size(self):
 
         return self._csv_data.shape  
     
-    
+    @property
+    def groupby_dataset(self):
+
+        if not self._csv_data.empty:
+            try:
+                return self._csv_data.groupby(CSV_Database.DATASET_NAME_HEADER)
+            except:
+                ValueError(f"the database does not contain {CSV_Database.DATASET_NAME_HEADER} column")
+                return None
+        else:
+            return None
+
+
     def export_data(self, output_dir):
 
         if self._csv_data.empty:
