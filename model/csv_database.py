@@ -1,5 +1,7 @@
 from typing import List, Callable
 import pandas as pd
+from pandas import DataFrame
+from pandas.core.groupby.generic import DataFrameGroupBy
 from os import path
 
 
@@ -9,20 +11,17 @@ class CSV_Database():
     DATASET_NAME_HEADER = "DATA_FILENAME"
 
     # Attributes
-    def __init__(self):
-
-        self._csv_data = pd.DataFrame()
-
+    def __init__(self) -> None:
+        self._csv_data: DataFrame
 
 
     @property
-    def size(self):
-
-        return self._csv_data.shape  
+    def size(self) -> tuple[int, int]:
+        return len(self._csv_data.index), len(self._csv_data.columns)
     
-    @property
-    def groupby_dataset(self):
 
+    @property
+    def groupby_dataset(self) -> DataFrameGroupBy:
         if not self._csv_data.empty:
             try:
                 return self._csv_data.groupby(CSV_Database.DATASET_NAME_HEADER)
@@ -33,8 +32,7 @@ class CSV_Database():
             return None
 
 
-    def export_data(self, output_dir):
-
+    def export_data(self, output_dir) -> None:
         if self._csv_data.empty:
             return
         else:
@@ -85,7 +83,7 @@ class CSV_Database():
             reading_cols: List[str],
             skip_rows: List[int],
             callbackMessage: Callable[[str], None]
-    )-> pd.DataFrame:
+    ) -> DataFrame:
 
         if reading_cols is None:
             return
@@ -145,7 +143,8 @@ class CSV_Database():
             # by adding extra column [DATA_FILENAME] with row value is the name of file we extract data from
             data_filename = pd.Series(
                 data=filename,
-                index=range(0, df_extracted_from_file.shape[0])) # range from 0 to number of rows of 'df_extracted_from_file'
+                index=range(0, df_extracted_from_file.shape[0]) # range from 0 to number of rows of 'df_extracted_from_file'
+                ) 
 
             df_extracted_from_file.insert(
                 loc=0, # insert new column as first (left-most) column
@@ -165,3 +164,10 @@ class CSV_Database():
         return imported_count
 
 
+    def get_groupdata_at_column(
+            self,
+            columnname: str
+    ) -> DataFrame:
+    """
+    Function to extract dataframe from Pandas Groupby object with a specific column
+    """
