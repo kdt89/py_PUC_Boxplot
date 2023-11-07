@@ -1,5 +1,6 @@
-from typing import List, Callable
+from typing import List, Callable, Any
 import pandas as pd
+from numpy import ndarray
 from pandas import DataFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from os import path
@@ -8,7 +9,7 @@ from os import path
 # Module to store database
 class CSV_Database():
 
-    DATASET_NAME_HEADER = "DATA_FILENAME"
+    # DATASET_NAME_HEADER = "DATA_FILENAME"
 
     # Attributes
     def __init__(self) -> None:
@@ -20,16 +21,16 @@ class CSV_Database():
         return len(self._csv_data.index), len(self._csv_data.columns)
     
 
-    @property
-    def groupby_dataset(self) -> DataFrameGroupBy:
-        if not self._csv_data.empty:
-            try:
-                return self._csv_data.groupby(CSV_Database.DATASET_NAME_HEADER)
-            except:
-                ValueError(f"the database does not contain {CSV_Database.DATASET_NAME_HEADER} column")
-                return None
-        else:
-            return None
+    # @property
+    # def groupby_dataset(self) -> DataFrameGroupBy:
+    #     if not self._csv_data.empty:
+    #         try:
+    #             return self._csv_data.groupby(CSV_Database.DATASET_NAME_HEADER)
+    #         except:
+    #             ValueError(f"the database does not contain {CSV_Database.DATASET_NAME_HEADER} column")
+    #             return None
+    #     else:
+    #         return None
 
 
     def export_data(self, output_dir) -> None:
@@ -166,8 +167,30 @@ class CSV_Database():
 
     def get_groupdata_at_column(
             self,
-            columnname: str
-    ) -> DataFrame:
-    """
-    Function to extract dataframe from Pandas Groupby object with a specific column
-    """
+            groupby_columnname: str,
+            need_data_columnname: str
+    ) -> ndarray[Any]:
+        """
+        Function to extract dataframe from Pandas Groupby object with a specific column
+        """
+        # Validation the column name to extract data exist in target database or not
+        data_column_list = self._csv_data.columns
+        if not need_data_columnname in data_column_list:
+            return None
+        
+        if not groupby_columnname in data_column_list:
+            return None
+        
+        # Extract data from CSV database
+        df_needed_data = self._csv_data[[groupby_columnname, need_data_columnname]]
+        df_plot_groups = df_needed_data.groupby(by=groupby_columnname, sort=None)
+
+        # Prepare data
+        groupdata_labels = []
+        groupdata_arrays = []
+
+        for groupname, groupdata in df_plot_groups:
+            groupdata_labels.append(groupname)
+            groupdata_arrays.append((groupdata[need_data_columnname]).to_numpy(dtype='float')) # get data with type 'float' intentionally
+        
+        return (groupdata_arrays, groupdata_labels)

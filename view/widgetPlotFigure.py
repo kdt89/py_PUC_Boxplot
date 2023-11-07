@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 from view.ui.PlotFigure_ui import Ui_PlotFigure
 from view.pyqt6_verticalTabWidget import VerticalTabWidget
 
+from typing import List
+from controller.setting import FigureConfig
+from model.csv_database import CSV_Database
+
 class WidgetPlotFigure(QWidget):
 
     def __init__(self):
@@ -54,45 +58,17 @@ class WidgetPlotFigure(QWidget):
     def add_boxplot(self):
         pass
 
-
-class Plot():
-    def __init__(self) -> None:
-        plot = FigureCanVas()
-        plotname = ""
-        lowerspec = -1
-        upperspec = -1
-
-# deliberately set for easy view when embedded plot to MS PPT file
-_maxrow = 2; # maximum row of subplots
-_maxcol = 4; # maximum col of subplots
-_rowsize = 0
-_colsize = 0
-
-figures = []
+    def build_boxplot(
+            plot_page_config: List[FigureConfig],
+            plot_database: CSV_Database
+    ) -> None:
+        pass
 
 ''' function to get number of row and column from subplotsize
 @param: subplotsize: type int. Quantity of subplots contained inside a subplot
 @return: rowsize: type int. Number of row of subplot grid. Max is 2
             colsize: type int. Number of column of subplot grid. Max is 4
 '''
-def get_subplot_size(self, totalplot) -> tuple[int, int]:
-
-    if totalplot < 4: # subplotsize in [1, 2, 3]
-        rowsize = 1
-        colsize = totalplot
-    elif totalplot == 4:
-        rowsize = 2
-        colsize = 2
-    elif totalplot < 7: # subplotsize in [5, 6]
-        rowsize = 2
-        colsize = 3
-    else: # subplotsize > 7
-        rowsize = self._maxrow
-        colsize = self._maxcol
-
-    return [rowsize, colsize]
-
-
 
 """
 Draw plot via Matplotlib module

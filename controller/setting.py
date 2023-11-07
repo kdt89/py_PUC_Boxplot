@@ -9,7 +9,6 @@ A Figure contains multiple subplot object.
 Each subplot object is a single box plot which are object returned by matplotlib.pyplot.boxplot()
 """
 
-
 class SubplotConfig:
 
     def __init__(
@@ -41,7 +40,6 @@ class FigureConfig:
 
 
     def update_figure_size(self):
-
         subplot_count = len(self.subplot_list)
 
         if subplot_count < 4: # subplotsize in [1, 2, 3]

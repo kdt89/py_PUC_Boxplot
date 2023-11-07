@@ -75,12 +75,10 @@ class Controller(Observer): # Controller in MVC pattern
         pass
         # Request View class to render and show up a new Frame window
 
-
     '''
     Function to export data in Model to output folder
     '''
     def export_data(self)->None:
-
         self.model.database.export_data(Setting.output_dir)
 
 
@@ -105,23 +103,8 @@ class Controller(Observer): # Controller in MVC pattern
         self.build_boxplot()
         # Notice to UI
         
-        # Export combined data to Output folder
-        # Rendering box plot via View object
-        # Call View module to draw Plot
 
 
 
 
 
-        # ==== 4. DRAW BOXPLOT USING PLOTLY MODULE ====
-
-        # 1 visualization page contains 1 figure
-        # 1 figure contains 1 subplots grid
-        # 1 subplots contains multiple traces 
-        # 1 subplots equal to 1 group categorized by 'Group' column in [user]setting_boxplot.csv file
-        # 1 trace is 1 boxplot made from df_base dataframe
-
-
-        # get pandas groupby object of df_base
-        # this is for the later use of get_group() to check for how many plot
-        # should be contains in one figure
