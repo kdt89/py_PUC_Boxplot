@@ -94,9 +94,17 @@ class WidgetPlotFigure(QWidget):
                 return
             
             # make Figure to hold subplots
-            figure, axs = plt.subplot(row_size, col_size)
-            row_idx, col_idx = 0, 0
-            for i in range(0, row_size)
+            figure = plt.figure()
+            
+            for plot in page_config.subplot_list:
+                if not plot.to_plot:
+                    continue
+
+                # get data from database to make box plot
+                data_plot = plot_database.get_groupdata_at_column(plot.figure_name)
+
+            
+
 
 
 

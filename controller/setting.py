@@ -10,7 +10,7 @@ A Figure contains multiple subplot object.
 Each subplot object is a single box plot which are object returned by matplotlib.pyplot.boxplot()
 """
 
-class SubplotConfig:
+class PlotConfig:
 
     def __init__(
         self, 
@@ -24,7 +24,7 @@ class SubplotConfig:
         self.lowerspec = lowerspec
         self.upperspec = upperspec
         self.to_plot = to_plot
-        self.figurename  = figurename
+        self.figure_name  = figurename
 
 
 class FigureConfig:
@@ -34,7 +34,7 @@ class FigureConfig:
 
     def __init__(self):
 
-        self.subplot_list: List[SubplotConfig] = []
+        self.subplot_list: List[PlotConfig] = []
         self.name = ""
         self.rowsize = 0
         self.columnsize = 0
@@ -107,7 +107,7 @@ class Setting:
                 figure_config.name = groupname
 
                 for row in group_data.itertuples():
-                    subplot = SubplotConfig(
+                    subplot = PlotConfig(
                         subplotname= str(row[1]), # ['Plot Item']
                         lowerspec= float(row[2]), # 'LSL'
                         upperspec= float(row[3]), # 'USL'

@@ -60,6 +60,8 @@ class Window(QDialog):
 
 		# create an axis
 		ax = self.figure.add_subplot(5, 5, self.plot_pos)
+		# self.button2 = QPushButton('Next Plot')
+		# self
 
 		# plot data
 		ax.boxplot(data, '*-')
