@@ -49,7 +49,6 @@ class VerticalTabWidget(QTabWidget):
 """
 How to use
 """
-
 """
 if __name__ == "__main__":
     import sys
@@ -62,8 +61,7 @@ if __name__ == "__main__":
         label.setText(f'Widget {i}')
         # label.setFont(QFont("Arial", weight=30, QFont.bold))
         tabs.addTab(label, f'Tab {i}')
-    
-    
+
     tabs.show()
     sys.exit(app.exec())
 """

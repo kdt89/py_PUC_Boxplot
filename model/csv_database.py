@@ -9,18 +9,16 @@ from os import path
 # Module to store database
 class CSV_Database():
 
-    # DATASET_NAME_HEADER = "DATA_FILENAME"
+    DATASET_NAME_HEADER = "DATA_FILENAME"
 
     # Attributes
     def __init__(self) -> None:
         self._csv_data: DataFrame
 
-
     @property
     def size(self) -> tuple[int, int]:
         return len(self._csv_data.index), len(self._csv_data.columns)
     
-
     # @property
     # def groupby_dataset(self) -> DataFrameGroupBy:
     #     if not self._csv_data.empty:

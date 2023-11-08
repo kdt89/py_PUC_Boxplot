@@ -1,6 +1,7 @@
 from __future__ import annotations
 import os
 import pandas as pd
+from pandas import DataFrame
 from typing import List
 from controller.workstatus import Status
 
@@ -39,7 +40,8 @@ class FigureConfig:
         self.columnsize = 0
 
 
-    def update_figure_size(self):
+    @property
+    def size(self) -> tuple[int, int]:
         subplot_count = len(self.subplot_list)
 
         if subplot_count < 4: # subplotsize in [1, 2, 3]
@@ -52,8 +54,8 @@ class FigureConfig:
             self.rowsize = 2
             self.columnsize = 3
         else: # subplotsize > 7
-            self.rowsize = self._maxrow
-            self.columnsize = self._maxcol
+            self.rowsize = self._MAX_ROW_SIZE
+            self.columnsize = self._MAX_COL_SIZE
 
 
 class Setting:
@@ -83,8 +85,7 @@ class Setting:
             Status.setting_update_ok = False
 
 
-    def _dataframe_to_plotpages(dataframe: pd.DataFrame) ->[]:
-
+    def _dataframe_to_plotpages(dataframe: DataFrame) ->[]:
             try:
                 if list(dataframe.columns) != ['Plot Item', 'LSL', 'USL', 'To Plot', 'Figure']:
                     Status.error_message("Plot item in database have incorrect header.")
