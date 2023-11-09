@@ -35,7 +35,7 @@ class FigureConfig:
     def __init__(self):
 
         self.subplot_list: List[PlotConfig] = []
-        self.name = ""
+        self.title = ""
         self.rowsize = 0
         self.columnsize = 0
 
@@ -104,7 +104,7 @@ class Setting:
             for groupname, group_data in datagroups:
                 
                 figure_config = FigureConfig()
-                figure_config.name = groupname
+                figure_config.title = groupname
 
                 for row in group_data.itertuples():
                     subplot = PlotConfig(

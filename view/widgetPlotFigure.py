@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QLineEdit, QDateEdit
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from view.ui.PlotFigure_ui import Ui_PlotFigure
 from view.pyqt6_verticalTabWidget import VerticalTabWidget
@@ -27,11 +28,11 @@ class WidgetPlotFigure(QWidget):
         super(WidgetPlotFigure, self).__init__()
         self.ui = Ui_PlotFigure()
         self.ui.setupUi(self)
-
+        
         # Add vertical Tab docker widget
+        self.pages = List[QWidget]
         self.viewtabs = VerticalTabWidget()
         self.ui.layoutMain.addWidget(self.viewtabs)
-        
 
         """
         Test only
@@ -72,14 +73,54 @@ class WidgetPlotFigure(QWidget):
         # # mainLayout.addWidget(viewtabs)
         # self.ui.layoutMain.addWidget(viewtabs)
 
-    def add_tab(self, title: str) -> QWidget:
-        tab_page = QWidget()
+    def add_page(self, 
+                 title: str) -> QWidget:
+        new_page = QWidget()        
         layout = QFormLayout()
-        tab_page.setLayout(layout)
-        self.viewtabs.addTab(tab_page, title)
+        new_page.setLayout(layout)
 
-        return self.viewtabs.tab
+        self.viewtabs.addTab(new_page, title)
+        self.pages.append(new_page)
+        
+        return new_page
 
+
+    # def build_subplot_figure(
+    #         row_size: int,
+    #         col_size: int,
+
+    # )
+    def build_subplot_figure(
+            self, 
+            figure_config: FigureConfig,
+            plot_database: CSV_Database
+            ) -> Figure:
+        
+        # Validation the subplot size
+        row_size, col_size = figure_config.size
+        if col_size <= 0:
+                return None
+        
+        # Make plot and add to subplot figure
+        plot_idx = 1
+        figure = plt.figure()
+        
+        for plot in figure_config.subplot_list:
+            if not plot.to_plot:
+                continue
+        
+            new_axis = figure.add_subplot(row_size, col_size, plot_idx)
+            new_axis.boxplot()
+        # ax = self.figure.add_subplot(5, 5, self.plot_pos)
+		# # self.button2 = QPushButton('Next Plot')
+		# # self
+
+		# # plot data
+		# ax.boxplot(data, '*-')
+        # Make Subplot figure
+
+
+        # figure = plt.figure()
 
 
     def build_plot_pages(
