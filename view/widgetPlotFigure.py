@@ -22,8 +22,6 @@ from model.csv_database import CSV_Database
 
 class WidgetPlotFigure(QWidget):
 
-    
-
     def __init__(self):
         super(WidgetPlotFigure, self).__init__()
         self.ui = Ui_PlotFigure()
@@ -73,10 +71,16 @@ class WidgetPlotFigure(QWidget):
         # # mainLayout.addWidget(viewtabs)
         # self.ui.layoutMain.addWidget(viewtabs)
 
-    def add_page(self, 
-                 title: str) -> QWidget:
-        new_page = QWidget()        
+    def add_page(
+            self,
+            figure: Figure | FigureCanvas,
+            title: str
+            ) -> None:
+        
         layout = QFormLayout()
+        layout.addWidget(figure)
+
+        new_page = QWidget()
         new_page.setLayout(layout)
 
         self.viewtabs.addTab(new_page, title)
@@ -85,66 +89,63 @@ class WidgetPlotFigure(QWidget):
         return new_page
 
 
-    # def build_subplot_figure(
-    #         row_size: int,
-    #         col_size: int,
-
-    # )
     def build_subplot_figure(
             self, 
             figure_config: FigureConfig,
-            plot_database: CSV_Database
+            plot_dataset: CSV_Database
             ) -> Figure:
         
-        # Validation the subplot size
+        # Validate the subplot size
         row_size, col_size = figure_config.size
         if col_size <= 0:
-                return None
+            return None
         
-        # Make plot and add to subplot figure
-        plot_idx = 1
-        figure = plt.figure()
+        # Create the subplot figure
+        fig, axs = plt.subplots(row_size, col_size)
+            
+        plot_idx: int = 0
         
         for plot in figure_config.subplot_list:
             if not plot.to_plot:
                 continue
         
-            new_axis = figure.add_subplot(row_size, col_size, plot_idx)
-            new_axis.boxplot()
-        # ax = self.figure.add_subplot(5, 5, self.plot_pos)
-		# # self.button2 = QPushButton('Next Plot')
-		# # self
-
-		# # plot data
-		# ax.boxplot(data, '*-')
-        # Make Subplot figure
-
-
-        # figure = plt.figure()
-
+            dataset_labels, dataset_list = plot_dataset.get_groupdata_at_column(
+                groupby_columnname=CSV_Database.DATASET_NAME_HEADER,
+                need_data_columnname=plot.subplotname)
+            
+            if dataset_list is None or dataset_labels is None:
+                continue
+            axs[plot_idx].boxplot(
+                x=dataset_list,
+                labels=dataset_labels
+            )
+            
+            plot_idx += 1
+        
+        return fig
+    
 
     def build_plot_pages(
             self,
-            plot_pages_config: List[FigureConfig],
-            plot_database: CSV_Database
-    ) -> None:
-        for page_config in plot_pages_config:
-            # validation figure size
-            row_size, col_size = page_config.size
-            if col_size <= 0:
-                return
+            pages_config: List[FigureConfig],
+            plot_dataset: CSV_Database
+    ) -> None:       
             
-            # make Figure to hold subplots
-            figure = plt.figure()
-            
-            for plot in page_config.subplot_list:
-                if not plot.to_plot:
-                    continue
+        for page_config in pages_config:
+            new_page = FigureCanvas(self.build_subplot_figure(
+                figure_config=page_config,
+                plot_dataset=plot_dataset
+            ))
 
-                # get data from database to make box plot
-                data_plot = plot_database.get_groupdata_at_column(plot.figure_name)
-
+            self.add_page(
+                figure=new_page,
+                title=page_config.title
+            )
             
+            # get data from database to make box plot
+
+
+
 
 
 
