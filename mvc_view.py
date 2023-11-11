@@ -17,7 +17,7 @@ class UI():
         self.PlotFigure = WidgetPlotFigure()
         
         self.Main.show()
-        self.PlotFigure.show()
+        # self.PlotFigure.show()
         
         # Binding Menu action to slots
         self.Main.ui.actionShowAbout.triggered.connect(self.About.show)

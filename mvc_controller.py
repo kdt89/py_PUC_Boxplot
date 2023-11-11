@@ -71,13 +71,14 @@ class Controller(Observer): # Controller in MVC pattern
     '''
     Function ask View to render Plot
     '''
-    def build_boxplot(self)->None:
+    def build_boxplot(self)-> None:
         
         self.view.PlotFigure.build_plot_pages(
             pages_config= Setting.plotpages,
             plot_dataset= self.model.database
         )
-        # Request View class to render and show up a new Frame window
+        
+        self.view.PlotFigure.show()
 
     '''
     Function to export data in Model to output folder
@@ -104,7 +105,7 @@ class Controller(Observer): # Controller in MVC pattern
             return None
 
         self.export_data()
-        self.build_boxplot
+        self.build_boxplot()
         # Notice to UI
         
 

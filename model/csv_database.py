@@ -167,7 +167,7 @@ class CSV_Database():
             self,
             groupby_columnname: str,
             need_data_columnname: str
-    ) -> tuple(List[str], List[ndarray[Any]]):
+    ) -> tuple[List[str], List[ndarray[Any]]]:
         """
         Function to extract dataframe from Pandas Groupby object with a specific column
         """
@@ -184,11 +184,11 @@ class CSV_Database():
         df_plot_groups = df_needed_data.groupby(by=groupby_columnname, sort=None)
 
         # Prepare data
-        list_labels = List[str]
-        list_dataset = List[ndarray]
+        list_labels: List[str] = []
+        list_dataset: List[ndarray] = []
 
         for groupname, groupdata in df_plot_groups:
             list_labels.append(groupname)
             list_dataset.append((groupdata[need_data_columnname]).to_numpy(dtype='float')) # get data with type 'float' intentionally
-        
+            
         return (list_labels, list_dataset)

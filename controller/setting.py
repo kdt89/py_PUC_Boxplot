@@ -45,17 +45,19 @@ class FigureConfig:
         subplot_count = len(self.subplot_list)
 
         if subplot_count < 4: # subplotsize in [1, 2, 3]
-            self.rowsize = 1
-            self.columnsize = subplot_count
+            row_size = 1
+            column_size = subplot_count
         elif subplot_count == 4:
-            self.rowsize = 2
-            self.columnsize = 2
+            row_size = 2
+            column_size = 2
         elif subplot_count < 7: # subplotsize in [5, 6]
-            self.rowsize = 2
-            self.columnsize = 3
+            row_size = 2
+            column_size = 3
         else: # subplotsize > 7
-            self.rowsize = self._MAX_ROW_SIZE
-            self.columnsize = self._MAX_COL_SIZE
+            row_size = FigureConfig._MAX_ROW_SIZE
+            column_size = FigureConfig._MAX_COL_SIZE
+
+        return row_size, column_size
 
 
 class Setting:
@@ -119,7 +121,7 @@ class Setting:
 
                     figure_config.subplot_list.append(subplot)
 
-                figure_config.update_figure_size()
+                # figure_config.update_figure_size()
                 plotpages.append(figure_config)
 
             return plotpages

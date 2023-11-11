@@ -115,6 +115,7 @@ class WidgetPlotFigure(QWidget):
             
             if dataset_list is None or dataset_labels is None:
                 continue
+            
             axs[plot_idx].boxplot(
                 x=dataset_list,
                 labels=dataset_labels
