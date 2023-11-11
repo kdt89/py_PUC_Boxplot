@@ -29,15 +29,21 @@ class PlotConfig:
 
 class FigureConfig:
 
-    _MAX_ROW_SIZE = 2; # maximum row of subplots
-    _MAX_COL_SIZE = 4; # maximum col of subplots
+    _MAX_ROW_SIZE = int(2); # maximum row of subplots
+    _MAX_COL_SIZE = int(4); # maximum col of subplots
 
     def __init__(self):
-
         self.subplot_list: List[PlotConfig] = []
-        self.title = ""
-        self.rowsize = 0
-        self.columnsize = 0
+        # self.title: str = ""
+
+
+    @property
+    def title(self) -> str:
+        return self._title
+    
+    @title.setter
+    def title(self, title: str):
+        self._title = title
 
 
     @property
@@ -62,23 +68,28 @@ class FigureConfig:
 
 class Setting:
 
-    rootdir = os.path.abspath('')
-    file_ext = 'csv'
-    local_plot_list_database = 'setting_plot.csv'
+    ROOTDIR = os.path.abspath('')
+    FILE_EXT: str = 'csv'
+    LOCAL_PLOT_LIST_CONFIG_FILE: str = 'setting_plot.csv'
     
-    input_dir = os.path.abspath("Input")
-    output_dir = os.path.abspath("Output")
+    INPUT_DIR = os.path.abspath("Input")
+    OUTPUT_DIR = os.path.abspath("Output")
+    PLOT_PAGES_GROUPBY_COLUMN_NAME: str = 'Figure'
     
-    import_data_column_list = []
-    data_row_to_skipread = [1, 2]
+    IMPORT_DATA_COLUMN_LIST: List[str] = []
+    DATA_ROW_TO_SKIPREAD: List[int] = [1, 2]
     
-    plotpages = List[FigureConfig]
+    plotpages: List[FigureConfig] = []
 
 
     @staticmethod
     def update():
 
-        df_plot_list = pd.read_csv(Setting.local_plot_list_database, index_col=None, sep=',', header=0)
+        df_plot_list = pd.read_csv(
+            Setting.LOCAL_PLOT_LIST_CONFIG_FILE,
+            index_col=None,
+            sep=',',
+            header=0)
         
         # Update the plot item in local database of setting to class object
         Setting.plotpages = Setting._dataframe_to_plotpages(df_plot_list)
@@ -87,7 +98,7 @@ class Setting:
             Status.setting_update_ok = False
 
 
-    def _dataframe_to_plotpages(dataframe: DataFrame) ->[]:
+    def _dataframe_to_plotpages(dataframe: DataFrame) -> List[FigureConfig]:
             try:
                 if list(dataframe.columns) != ['Plot Item', 'LSL', 'USL', 'To Plot', 'Figure']:
                     Status.error_message("Plot item in database have incorrect header.")
@@ -96,17 +107,17 @@ class Setting:
             except:
                 return
 
-            # plotpages = List[Figure]
-            plotpages = []
-
+            plotpages: List[FigureConfig] = []
             # Divide dataframe to groups by column ['Figure']
-            datagroups = dataframe.groupby(['Figure'], sort=False)
+            datagroups = dataframe.groupby(
+                Setting.PLOT_PAGES_GROUPBY_COLUMN_NAME, 
+                sort=False)
 
             # Iterate through each Figure group in dataframe and convert to PlotPage class object
             for groupname, group_data in datagroups:
                 
                 figure_config = FigureConfig()
-                figure_config.title = groupname
+                figure_config.title = str(groupname)
 
                 for row in group_data.itertuples():
                     subplot = PlotConfig(
@@ -117,7 +128,7 @@ class Setting:
                         figurename= str(row[5])) # 'Figure'
                     
                     # Adding ['Plot Item'] value to import_data_column_list, then Model object use this for import CSV data file
-                    Setting.import_data_column_list.append(str(row[1]))
+                    Setting.IMPORT_DATA_COLUMN_LIST.append(str(row[1]))
 
                     figure_config.subplot_list.append(subplot)
 

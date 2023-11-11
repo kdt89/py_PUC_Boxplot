@@ -20,7 +20,7 @@ class Controller(Observer): # Controller in MVC pattern
         self.bindSignalAndSlot()
         # Show initial message to UI
         self.view.Main.updateMessage(f"<b>Program initialized at: </b> \
-                                  <font color='blue'>{self.setting.rootdir}\
+                                  <font color='blue'>{self.setting.ROOTDIR}\
                                   </font>")
 
     """
@@ -60,8 +60,8 @@ class Controller(Observer): # Controller in MVC pattern
         # pass import file to Model object to import data
         self.model.database.import_csv_files(
             Status.list_input_files,
-            Setting.import_data_column_list,
-            Setting.data_row_to_skipread,
+            Setting.IMPORT_DATA_COLUMN_LIST,
+            Setting.DATA_ROW_TO_SKIPREAD,
             self.view.Main.updateSttBar)
 
         rows, columns = self.model.database.size
@@ -84,7 +84,7 @@ class Controller(Observer): # Controller in MVC pattern
     Function to export data in Model to output folder
     '''
     def export_data(self)->None:
-        self.model.database.export_data(Setting.output_dir)
+        self.model.database.export_data(Setting.OUTPUT_DIR)
 
 
     """
@@ -96,7 +96,7 @@ class Controller(Observer): # Controller in MVC pattern
         self.view.Main.updateMessage(f"\n <b>Making Plot from data files in Input directory</b>...")
         
         Setting.update()
-        Status.update_list_input_files(Setting.input_dir, Setting.file_ext)
+        Status.update_list_input_files(Setting.INPUT_DIR, Setting.FILE_EXT)
 
         self.import_input_data()
 

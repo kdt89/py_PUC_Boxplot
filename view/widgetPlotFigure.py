@@ -18,6 +18,13 @@ from model.csv_database import CSV_Database
             - Layout object (dtype: QFormLayout | QVBoxlayout)
                 - Figure object (dtype: figure returned by matplotlib.pyplot.subplot)
                     - Box plot object (dtype: figure returned by matplotlib.pyplot.boxplot)
+
+* Embedding matplotlib figure object to PyQt Widget form
+- Make 'figure' = Figure object, returned by matplotlib.pyplot.boxplot() and matplotlib.pyplot.subplots()
+- Make canvas = FigureCanvasQTAgg object, returned by FigureCanvasQTAgg(figure)
+- Make 'layout' = QFormLayout object, returned by layout.addWidget()
+- Make main_widget UI = QWidget, returned by 'main_widget'.setLayout(layout)
+            
 """
 
 class WidgetPlotFigure(QWidget):
@@ -28,7 +35,7 @@ class WidgetPlotFigure(QWidget):
         self.ui.setupUi(self)
         
         # Add vertical Tab docker widget
-        self.pages = List[QWidget]
+        self.pages: List[QWidget] = []
         self.viewtabs = VerticalTabWidget()
         self.ui.layoutMain.addWidget(self.viewtabs)
 
@@ -73,18 +80,17 @@ class WidgetPlotFigure(QWidget):
 
     def add_page(
             self,
-            figure: Figure | FigureCanvas,
+            add_figure: Figure | FigureCanvas,
             title: str
             ) -> None:
         
         layout = QFormLayout()
-        layout.addWidget(figure)
-
+        layout.addWidget(add_figure)
         new_page = QWidget()
         new_page.setLayout(layout)
 
-        self.viewtabs.addTab(new_page, title)
         self.pages.append(new_page)
+        self.viewtabs.addTab(new_page, title)
         
         return new_page
 
@@ -101,10 +107,11 @@ class WidgetPlotFigure(QWidget):
             return None
         
         # Create the subplot figure
-        fig, axs = plt.subplots(row_size, col_size)
-            
+        # fig, axs = plt.subplots(row_size, col_size)
+        fig = Figure()
+        axs = fig.subplots(row_size, col_size)
         plot_idx: int = 0
-        
+
         for plot in figure_config.subplot_list:
             if not plot.to_plot:
                 continue
@@ -118,8 +125,7 @@ class WidgetPlotFigure(QWidget):
             
             axs[plot_idx].boxplot(
                 x=dataset_list,
-                labels=dataset_labels
-            )
+                labels=dataset_labels)
             
             plot_idx += 1
         
@@ -133,17 +139,16 @@ class WidgetPlotFigure(QWidget):
     ) -> None:       
             
         for page_config in pages_config:
-            new_page = FigureCanvas(self.build_subplot_figure(
+            new_fig = self.build_subplot_figure(
                 figure_config=page_config,
-                plot_dataset=plot_dataset
-            ))
+                plot_dataset=plot_dataset)
+
+            new_fig_canvas = FigureCanvas(new_fig)
+            new_fig_canvas.draw()
 
             self.add_page(
-                figure=new_page,
-                title=page_config.title
-            )
-            
-            # get data from database to make box plot
+                add_figure=new_fig_canvas,
+                title=page_config.title)
 
 
 
