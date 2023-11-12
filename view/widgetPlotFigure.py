@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QLineEdit, QDateEdit
+from PyQt6 import QtGui
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -38,45 +39,8 @@ class WidgetPlotFigure(QWidget):
         self.pages: List[QWidget] = []
         self.viewtabs = VerticalTabWidget()
         self.ui.layoutMain.addWidget(self.viewtabs)
+        self.viewtabs.clear
 
-        """
-        Test only
-        """
-        # contact pane
-        # contact_page = QWidget(self)
-        # layout = QFormLayout()
-        # layout.addRow('Phone Number:', QLineEdit(self))
-        # layout.addRow('Email Address:', QLineEdit(self))
-        # contact_page.setLayout(layout)
-
-        # # personal page
-        # personal_page = QWidget(self)
-        # layout = QFormLayout()
-        # layout.addRow('First Name:', QLineEdit(self))
-        # layout.addRow('Last Name:', QLineEdit(self))
-        # layout.addRow('DOB:', QDateEdit(self))
-        # personal_page.setLayout(layout)
-
-        # Add Matplotlib figure object to the Widget
-        # Figure object is the container for the PyQt graph object
-        # test_page = QWidget()
-        # figure = plt.figure()
-        # canvas = FigureCanvas(figure)
-        # # adding canvas to the layout
-        # layout = QVBoxLayout()
-        # # layout.addWidget(self.canvas)
-        # layout.addWidget(canvas)
-        # test_page.setLayout(layout)
-
-        # # Add vertical tab view widget
-        # viewtabs = VerticalTabWidget()
-        # viewtabs.addTab(personal_page, "First Tab")
-        # viewtabs.addTab(contact_page, "First Tab")
-        # viewtabs.addTab(test_page, "First Tab")
-
-        # mainLayout = QFormLayout()
-        # # mainLayout.addWidget(viewtabs)
-        # self.ui.layoutMain.addWidget(viewtabs)
 
     def add_page(
             self,
@@ -108,10 +72,14 @@ class WidgetPlotFigure(QWidget):
         
         # Create the subplot figure
         # fig, axs = plt.subplots(row_size, col_size)
-        fig = Figure()
-        axs = fig.subplots(row_size, col_size)
-        plot_idx: int = 0
+        # fig = Figure()
+        # axs = fig.subplots(row_size, col_size)
 
+        fig, axs = plt.subplots(
+            nrows=row_size, 
+            ncols=col_size)
+        
+        plot_idx: int = 0
         for plot in figure_config.subplot_list:
             if not plot.to_plot:
                 continue
@@ -123,10 +91,7 @@ class WidgetPlotFigure(QWidget):
             if dataset_list is None or dataset_labels is None:
                 continue
             
-            axs[plot_idx].boxplot(
-                x=dataset_list,
-                labels=dataset_labels)
-            
+            axs.flat[plot_idx].boxplot(x=dataset_list, labels=dataset_labels)
             plot_idx += 1
         
         return fig
@@ -151,7 +116,14 @@ class WidgetPlotFigure(QWidget):
                 title=page_config.title)
 
 
+    def hideEvent(self, a0: QtGui.QHideEvent | None) -> None:
+        print("Hide event emitted")
+        # close matplotlib figures created previously
+        self.viewtabs.clear()
+        self.pages: List[QWidget] = []
+        plt.close('all')
 
+        return super().hideEvent(a0)
 
 
 

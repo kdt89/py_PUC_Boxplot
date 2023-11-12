@@ -8,6 +8,7 @@ class TabBar(QTabBar):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+
     def tabSizeHint(self, index):
         s = QTabBar.tabSizeHint(self, index)
         if s.width() < s.height():

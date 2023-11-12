@@ -1,3 +1,4 @@
+from __future__ import annotations
 import mvc_model
 import mvc_view
 from controller.setting import Setting
@@ -8,7 +9,6 @@ from util.observer import Observer, Subject
 class Controller(Observer): # Controller in MVC pattern
 
     def __init__(self, model: mvc_model.Model, view: mvc_view.UI):
-
         self.model = model
         self.view = view
         self.setting = Setting()
@@ -28,7 +28,6 @@ class Controller(Observer): # Controller in MVC pattern
     """
     # Receive update from subject.
     def update(self, subject: Subject) -> None:
-
         self.view.Main.updateMessage(subject._status)
 
 
@@ -42,43 +41,27 @@ class Controller(Observer): # Controller in MVC pattern
     DEFIND METHODS FOR INTERAL USE WITHIN CONTROLLER MODULE
     """
     
-    """ Grab matched files in Input folder and pass to Model object to import to database """
-    def import_input_data(self) -> None:
 
-        # update Setting from user
-        self.view.Main.updateMessage("- User setting loaded")
 
-        input_files_count = len(Status.list_input_files)
-        if input_files_count > 0:
-            self.view.Main.updateMessage(f"- Found {input_files_count} data files to be input")
-            Status.input_ready = True
-        else:
-            Status.input_ready = False
-            self.view.Main.updateMessage("There are no data files in Input directory")
+
+    """
+    Define methods execute when occuring Event from View
+    """
+    def btnMakePlot_actions(self):
+        # Notice to UI
+        self.view.Main.updateMessage(f"\n <b>Making Plot from data files in Input directory</b>...")
+        Setting.update()
+        Status.update_list_input_files(Setting.INPUT_DIR, Setting.FILE_EXT)
+        self.import_input_data()
+
+        if not Status.input_status_ready:
+            self.view.Main.updateMessage("There are no data files in Input directory") # status bar
             return None
-        
-        # pass import file to Model object to import data
-        self.model.database.import_csv_files(
-            Status.list_input_files,
-            Setting.IMPORT_DATA_COLUMN_LIST,
-            Setting.DATA_ROW_TO_SKIPREAD,
-            self.view.Main.updateSttBar)
 
-        rows, columns = self.model.database.size
-        self.view.Main.updateMessage(f"- Input data imported successfully: {rows} rows - {columns} columns")
-
-
-    '''
-    Function ask View to render Plot
-    '''
-    def build_boxplot(self)-> None:
+        self.export_data()        
+        # Build figure plot pages on PlotFigure Widget
+        self.build_boxplot()
         
-        self.view.PlotFigure.build_plot_pages(
-            pages_config= Setting.plotpages,
-            plot_dataset= self.model.database
-        )
-        
-        self.view.PlotFigure.show()
 
     '''
     Function to export data in Model to output folder
@@ -87,29 +70,36 @@ class Controller(Observer): # Controller in MVC pattern
         self.model.database.export_data(Setting.OUTPUT_DIR)
 
 
-    """
-    Define methods execute when occuring Event from View
-    """
-    def btnMakePlot_actions(self):
+    def build_boxplot(self)-> None:
+        self.view.wxPlotFigure_newWidget()
+        if self.view.PlotFigure != None:
+            self.view.PlotFigure.build_plot_pages(
+                Setting.plotpages,
+                self.model.database)
         
-        # Notice to UI
-        self.view.Main.updateMessage(f"\n <b>Making Plot from data files in Input directory</b>...")
+        self.view.PlotFigure.show()
         
-        Setting.update()
-        Status.update_list_input_files(Setting.INPUT_DIR, Setting.FILE_EXT)
 
-        self.import_input_data()
+    """ Grab matched files in Input folder and pass to Model object to import to database """
+    def import_input_data(self) -> None:
+        # update Setting from user
+        self.view.Main.updateMessage("- User setting loaded")
 
-        if not Status.input_ready:
-            self.view.Main.updateMessage("There are no data files in Input directory") # status bar
+        input_status_files_count = len(Status.input_status_list_files)
+        if input_status_files_count > 0:
+            self.view.Main.updateMessage(f"- Found {input_status_files_count} data files to be input")
+            Status.input_status_ready = True
+        else:
+            Status.input_status_ready = False
+            self.view.Main.updateMessage("There are no data files in Input directory")
             return None
-
-        self.export_data()
-        self.build_boxplot()
-        # Notice to UI
         
+        # pass import file to Model object to import data
+        self.model.database.import_csv_files(
+            Status.input_status_list_files,
+            Setting.IMPORT_DATA_COLUMN_LIST,
+            Setting.DATA_ROW_TO_SKIPREAD,
+            self.view.Main.updateSttBar)
 
-
-
-
-
+        rows, columns = self.model.database.size
+        self.view.Main.updateMessage(f"- Input data imported successfully: {rows} rows - {columns} columns")

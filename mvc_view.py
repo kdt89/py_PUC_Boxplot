@@ -14,10 +14,19 @@ class UI():
     def __init__(self) -> None:
         self.Main = WidgetMain()
         self.About = WidgetAbout()
-        self.PlotFigure = WidgetPlotFigure()
-        
-        self.Main.show()
-        # self.PlotFigure.show()
+        self.PlotFigure: WidgetPlotFigure = None
         
         # Binding Menu action to slots
         self.Main.ui.actionShowAbout.triggered.connect(self.About.show)
+        # Display main window
+        self.Main.show()
+
+
+    def wxPlotFigure_newWidget(self):
+        # close previous Plot Figure window if existing
+        if not self.PlotFigure is None:
+            if self.PlotFigure.isVisible():
+                self.PlotFigure.close()
+                self.PlotFigure = None
+        
+        self.PlotFigure = WidgetPlotFigure()        

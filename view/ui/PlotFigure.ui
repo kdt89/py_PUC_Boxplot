@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1570</width>
+    <width>1329</width>
     <height>939</height>
    </rect>
   </property>
@@ -18,33 +18,83 @@
     <rect>
      <x>10</x>
      <y>60</y>
-     <width>1551</width>
+     <width>1061</width>
      <height>871</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="layoutMain"/>
+   <layout class="QVBoxLayout" name="layoutMain">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+   </layout>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>0</y>
-     <width>311</width>
-     <height>51</height>
+     <width>202</width>
+     <height>52</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="layoutCommandButton">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
+    <item row="0" column="0">
      <widget class="QPushButton" name="btnExport_MS_PPT">
-      <property name="text">
-       <string>Export MS PowerPoint</string>
+      <property name="enabled">
+       <bool>true</bool>
       </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="btnExportImage">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>12</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="tabletTracking">
+       <bool>false</bool>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #cccccc;
+}
+
+QPushButton:hover {
+  background-color: rgb(0, 110, 200);
+  color: rgb(255, 255, 255);
+  border: 1px solid #cccccc;
+}</string>
+      </property>
       <property name="text">
-       <string>Export Image</string>
+       <string>Export To MS PowerPoint</string>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
