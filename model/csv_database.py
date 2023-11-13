@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import List, Callable, Any
 import pandas as pd
 from numpy import ndarray
@@ -13,12 +14,17 @@ class CSV_Database():
 
     # Attributes
     def __init__(self) -> None:
-        self._csv_data: DataFrame
+        self._csv_data: DataFrame = DataFrame(data=None)
+
 
     @property
     def size(self) -> tuple[int, int]:
         return len(self._csv_data.index), len(self._csv_data.columns)
     
+    
+    def clearDatabase(self) -> None:
+        self._csv_data = DataFrame(data=None)
+        print("cleared old database")
     # @property
     # def groupby_dataset(self) -> DataFrameGroupBy:
     #     if not self._csv_data.empty:
@@ -44,37 +50,6 @@ class CSV_Database():
                 # self._status = f"An error occurred: <font color='red'>{str(e)}</font>"
                 # self.notify()
 
-    # """
-    # Define normal class method
-    # """
-    # def import_csv_file(
-    #         self,
-    #         csv_filepath: str,
-    #         reading_col,
-    #         reading_skip_rows: list
-    #         )->None:
-
-    #     # Checking csv_filepath direct to a file or not
-    #     if len(reading_col) == 0:
-    #         reading_col = None
-
-    #     if len(reading_skip_rows) == 0:
-    #         reading_skip_rows = None
-            
-    #     df = pd.read_csv(csv_filepath, index_col=None, 
-    #                      sep=',', header=0, 
-    #                      usecols=reading_col, skiprows=reading_skip_rows)
-
-    #     # Remove duplicated rows
-    #     df = df.drop_duplicates()
-    #     # Merging data frames into one frame
-    #     try:
-    #         if not df.empty:
-    #             self._csv_data = pd.concat([self._csv_data, df], axis=0, ignore_index=True)
-
-    #     except:
-    #         return None
-
 
     def import_csv_files(
             self,
@@ -87,18 +62,17 @@ class CSV_Database():
         if reading_cols is None:
             return
 
-        total_df = []
-        imported_count = 0
+        total_df: List[DataFrame] = []
+        imported_count: int = 0
 
         for filepath in filepaths:
-
             filename = path.splitext(path.basename(filepath))[0] # splitext() return (filename, extension)
             # Notice reading file:
             callbackMessage(f"Reading file:  {filename}")
 
             df_extracted_from_file = pd.DataFrame()
             df_current_chunk = pd.DataFrame()
-            found_cols = []
+            found_cols: List[str] = []
 
             try:
                 df_raw_imported = pd.read_csv(filepath, index_col=None, sep=',', header=0, skiprows=skip_rows)
@@ -132,8 +106,7 @@ class CSV_Database():
                 df_extracted_from_file = df_extracted_from_file.dropna(
                     axis=0, # drop rows which contain missing values
                     how='all', # if all values of checking columns are NA, drop that row or column
-                    subset=None # check all columns
-                    )
+                    subset=None) # check all columns
 
                 found_cols.clear()
                 df_current_chunk = None
@@ -142,14 +115,12 @@ class CSV_Database():
             # by adding extra column [DATA_FILENAME] with row value is the name of file we extract data from
             data_filename = pd.Series(
                 data=filename,
-                index=range(0, df_extracted_from_file.shape[0]) # range from 0 to number of rows of 'df_extracted_from_file'
-                ) 
-
+                index=range(0, df_extracted_from_file.shape[0])) # range from 0 to number of rows of 'df_extracted_from_file'
+        
             df_extracted_from_file.insert(
                 loc=0, # insert new column as first (left-most) column
                 column = CSV_Database.DATASET_NAME_HEADER,
-                value=data_filename
-            )
+                value=data_filename)
 
             # append the dataframe extracted from file to total list dataframe
             if not df_extracted_from_file.empty:

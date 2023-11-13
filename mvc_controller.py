@@ -94,6 +94,8 @@ class Controller(Observer): # Controller in MVC pattern
             self.view.Main.updateMessage("There are no data files in Input directory")
             return None
         
+        # clear preexisting database
+        self.model.database.clearDatabase()
         # pass import file to Model object to import data
         self.model.database.import_csv_files(
             Status.input_status_list_files,
