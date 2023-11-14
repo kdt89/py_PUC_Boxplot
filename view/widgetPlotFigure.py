@@ -1,3 +1,4 @@
+from cProfile import label
 from PyQt6 import QtGui
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -35,7 +36,7 @@ class WidgetPlotFigure(QWidget):
         self.ui.setupUi(self)
         
         # Add vertical Tab docker widget
-        self.pages: List[QWidget] = []
+        self.figures: List[Figure] = []
         self.viewtabs = VerticalTabWidget()
         self.ui.layoutMain.addWidget(self.viewtabs)
         # need to check if layoutMain stretches to full Widget successufully yet?
@@ -45,15 +46,15 @@ class WidgetPlotFigure(QWidget):
 
     def add_page(
             self,
-            add_figure: Figure | FigureCanvas,
+            add_figure: Figure,
             title: str
             ) -> None:
         layout = QFormLayout()
-        layout.addWidget(add_figure)
+        layout.addWidget(FigureCanvas(add_figure))
         new_page = QWidget()
         new_page.setLayout(layout)
 
-        self.pages.append(new_page)
+        self.figures.append(new_page)
         self.viewtabs.addTab(new_page, title)
         
         return new_page
@@ -78,7 +79,7 @@ class WidgetPlotFigure(QWidget):
         
             list_dataset, list_data_label = plot_dataset.get_groupdata_at_column(
                 groupby_columnname=CSV_Database.DATASET_ID_COLUMN_NAME,
-                need_data_columnname=plot.subplot_title)
+                need_data_columnname=plot.item_name)
             
             if list_data_label is None or list_dataset is None:
                 continue
@@ -88,7 +89,10 @@ class WidgetPlotFigure(QWidget):
                 labels=list_data_label,
                 showcaps=False,
                 sym='x')
-            axs.flat[plot_idx].set_title(plot.title)
+            axs.flat[plot_idx].set_title(
+                label=plot.title,
+                fontsize=9,
+                fontweight='bold')
 
             plot_idx += 1
         
@@ -101,15 +105,9 @@ class WidgetPlotFigure(QWidget):
             plot_dataset: CSV_Database
     ) -> None:
         for page_config in pages_config:
-            new_fig = self.build_subplot_figure(
-                plot_dataset=plot_dataset,
-                figure_config=page_config)
-
-            new_fig_canvas = FigureCanvas(new_fig)
-            new_fig_canvas.draw()
-            self.add_page(
-                add_figure=new_fig_canvas,
-                title=page_config.title)
+            new_fig = self.build_subplot_figure(plot_dataset=plot_dataset, figure_config=page_config)
+            self.add_page(add_figure=new_fig, title=page_config.title)
+            self.figures.append(new_fig)
 
 
     def closeEvent(self, a0: QtGui.QCloseEvent | None) -> None:

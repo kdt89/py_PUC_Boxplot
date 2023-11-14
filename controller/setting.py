@@ -21,7 +21,7 @@ class PlotConfig:
         to_plot: bool = False,
         figuretitle: str = "" 
         ):
-        self.name = name
+        self.item_name = name
         self.title = title
         self.lowerspec = lowerspec
         self.upperspec = upperspec
