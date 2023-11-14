@@ -23,10 +23,11 @@ class UI():
 
 
     def wxPlotFigure_newWidget(self):
-        # close previous Plot Figure window if existing
+        # close previous Plot Figure widget if existing
         if not self.PlotFigure is None:
             if self.PlotFigure.isVisible():
                 self.PlotFigure.close()
-                self.PlotFigure = None
-        
-        self.PlotFigure = WidgetPlotFigure()        
+
+        # intentionally abandon self.PlotFigure. Gabage collection will take care of it
+        self.PlotFigure = WidgetPlotFigure()
+  

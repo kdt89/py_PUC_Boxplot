@@ -11,7 +11,6 @@ class Status:
 
     @staticmethod
     def clear_error_message():
-
         Status.error_message = ""
     
 

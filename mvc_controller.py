@@ -72,13 +72,13 @@ class Controller(Observer): # Controller in MVC pattern
 
     def build_boxplot(self)-> None:
         self.view.wxPlotFigure_newWidget()
+        
         if self.view.PlotFigure != None:
             self.view.PlotFigure.build_plot_pages(
                 Setting.plotpages,
                 self.model.database)
-        
-        self.view.PlotFigure.show()
-        
+            self.view.PlotFigure.showMaximized()
+
 
     """ Grab matched files in Input folder and pass to Model object to import to database """
     def import_input_data(self) -> None:
@@ -94,12 +94,10 @@ class Controller(Observer): # Controller in MVC pattern
             self.view.Main.updateMessage("There are no data files in Input directory")
             return None
         
-        # clear preexisting database
-        self.model.database.clearDatabase()
-        # pass import file to Model object to import data
+        # Import data from input folder to Database of Model
         self.model.database.import_csv_files(
             Status.input_status_list_files,
-            Setting.IMPORT_DATA_COLUMN_LIST,
+            Setting.LIST_IMPORT_DATA_COLUMN_NAMES,
             Setting.DATA_ROW_TO_SKIPREAD,
             self.view.Main.updateSttBar)
 

@@ -10,7 +10,7 @@ from os import path
 # Module to store database
 class CSV_Database():
 
-    DATASET_NAME_HEADER = "DATA_FILENAME"
+    DATASET_ID_COLUMN_NAME = "DATA_FILENAME"
 
     # Attributes
     def __init__(self) -> None:
@@ -22,20 +22,8 @@ class CSV_Database():
         return len(self._csv_data.index), len(self._csv_data.columns)
     
     
-    def clearDatabase(self) -> None:
-        self._csv_data = DataFrame(data=None)
-        print("cleared old database")
-    # @property
-    # def groupby_dataset(self) -> DataFrameGroupBy:
-    #     if not self._csv_data.empty:
-    #         try:
-    #             return self._csv_data.groupby(CSV_Database.DATASET_NAME_HEADER)
-    #         except:
-    #             ValueError(f"the database does not contain {CSV_Database.DATASET_NAME_HEADER} column")
-    #             return None
-    #     else:
-    #         return None
-
+    # def clearDatabase(self) -> None:
+    #     self._csv_data = DataFrame(data=None)
 
     def export_data(self, output_dir) -> None:
         if self._csv_data.empty:
@@ -119,7 +107,7 @@ class CSV_Database():
         
             df_extracted_from_file.insert(
                 loc=0, # insert new column as first (left-most) column
-                column = CSV_Database.DATASET_NAME_HEADER,
+                column = CSV_Database.DATASET_ID_COLUMN_NAME,
                 value=data_filename)
 
             # append the dataframe extracted from file to total list dataframe
@@ -128,6 +116,7 @@ class CSV_Database():
                 imported_count += 1
 
         # Merging data frames into one frame
+        # Abandon previous data in self._csv_data and hooked up to newly imported data
         if len(total_df) > 0:
             self._csv_data = pd.concat(total_df, axis=0, ignore_index=True)
 
@@ -138,28 +127,33 @@ class CSV_Database():
             self,
             groupby_columnname: str,
             need_data_columnname: str
-    ) -> tuple[List[str], List[ndarray[Any]]]:
+    ) -> tuple[List[ndarray[Any]], List[str]]:
         """
         Function to extract dataframe from Pandas Groupby object with a specific column
+        @param groupby_columnname: str
+        @param need_data_columnname: str
+        @return: tuple[List[str], List[ndarray[Any]]]
+                 List[ndarray[Any]]: List of numpy array, each array contains float numbers
+                 List[str]: List of labels, each label is name of corrensponding dataset in List[ndarray[Any]]
         """
         # Validation the column name to extract data exist in target database or not
-        data_column_list = self._csv_data.columns
-        if not need_data_columnname in data_column_list:
+        data_column_names = self._csv_data.columns
+        if not need_data_columnname in data_column_names:
             return (None, None)
         
-        if not groupby_columnname in data_column_list:
+        if not groupby_columnname in data_column_names:
             return (None, None)
         
         # Extract data from CSV database
         df_needed_data = self._csv_data[[groupby_columnname, need_data_columnname]]
-        df_plot_groups = df_needed_data.groupby(by=groupby_columnname, sort=None)
+        df_grouped_plot_data = df_needed_data.groupby(by=groupby_columnname, sort=None)
 
         # Prepare data
-        list_labels: List[str] = []
+        list_data_labels: List[str] = []
         list_dataset: List[ndarray] = []
 
-        for groupname, groupdata in df_plot_groups:
-            list_labels.append(groupname)
-            list_dataset.append((groupdata[need_data_columnname]).to_numpy(dtype='float')) # get data with type 'float' intentionally
+        for group_name, group_data in df_grouped_plot_data:
+            list_data_labels.append(group_name)
+            list_dataset.append((group_data[need_data_columnname]).to_numpy(dtype='float')) # get data with type 'float' intentionally
             
-        return (list_labels, list_dataset)
+        return (list_dataset, list_data_labels)

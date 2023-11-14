@@ -25,7 +25,6 @@ from model.csv_database import CSV_Database
 - Make canvas = FigureCanvasQTAgg object, returned by FigureCanvasQTAgg(figure)
 - Make 'layout' = QFormLayout object, returned by layout.addWidget()
 - Make main_widget UI = QWidget, returned by 'main_widget'.setLayout(layout)
-            
 """
 
 class WidgetPlotFigure(QWidget):
@@ -39,7 +38,9 @@ class WidgetPlotFigure(QWidget):
         self.pages: List[QWidget] = []
         self.viewtabs = VerticalTabWidget()
         self.ui.layoutMain.addWidget(self.viewtabs)
-        self.viewtabs.clear
+        # need to check if layoutMain stretches to full Widget successufully yet?
+        # 
+        # need to check the viewtabs Widget stretchs to full layoutMain yet?
 
 
     def add_page(
@@ -47,7 +48,6 @@ class WidgetPlotFigure(QWidget):
             add_figure: Figure | FigureCanvas,
             title: str
             ) -> None:
-        
         layout = QFormLayout()
         layout.addWidget(add_figure)
         new_page = QWidget()
@@ -64,34 +64,32 @@ class WidgetPlotFigure(QWidget):
             figure_config: FigureConfig,
             plot_dataset: CSV_Database
             ) -> Figure:
-        
         # Validate the subplot size
         row_size, col_size = figure_config.size
         if col_size <= 0:
             return None
-        
-        # Create the subplot figure
-        # fig, axs = plt.subplots(row_size, col_size)
-        # fig = Figure()
-        # axs = fig.subplots(row_size, col_size)
 
-        fig, axs = plt.subplots(
-            nrows=row_size, 
-            ncols=col_size)
-        
+        fig, axs = plt.subplots(nrows=row_size, ncols=col_size)
         plot_idx: int = 0
+
         for plot in figure_config.subplot_list:
             if not plot.to_plot:
                 continue
         
-            dataset_labels, dataset_list = plot_dataset.get_groupdata_at_column(
-                groupby_columnname=CSV_Database.DATASET_NAME_HEADER,
-                need_data_columnname=plot.subplotname)
+            list_dataset, list_data_label = plot_dataset.get_groupdata_at_column(
+                groupby_columnname=CSV_Database.DATASET_ID_COLUMN_NAME,
+                need_data_columnname=plot.subplot_title)
             
-            if dataset_list is None or dataset_labels is None:
+            if list_data_label is None or list_dataset is None:
                 continue
             
-            axs.flat[plot_idx].boxplot(x=dataset_list, labels=dataset_labels)
+            axs.flat[plot_idx].boxplot(
+                x=list_dataset,
+                labels=list_data_label,
+                showcaps=False,
+                sym='x')
+            axs.flat[plot_idx].set_title(plot.title)
+
             plot_idx += 1
         
         return fig
@@ -101,31 +99,25 @@ class WidgetPlotFigure(QWidget):
             self,
             pages_config: List[FigureConfig],
             plot_dataset: CSV_Database
-    ) -> None:       
-            
+    ) -> None:
         for page_config in pages_config:
             new_fig = self.build_subplot_figure(
-                figure_config=page_config,
-                plot_dataset=plot_dataset)
+                plot_dataset=plot_dataset,
+                figure_config=page_config)
 
             new_fig_canvas = FigureCanvas(new_fig)
             new_fig_canvas.draw()
-
             self.add_page(
                 add_figure=new_fig_canvas,
                 title=page_config.title)
 
 
-    def hideEvent(self, a0: QtGui.QHideEvent | None) -> None:
-        print("Hide event emitted")
-        # close matplotlib figures created previously
-        self.viewtabs.clear()
-        self.pages: List[QWidget] = []
+    def closeEvent(self, a0: QtGui.QCloseEvent | None) -> None:
+        # intentionally close all current existing matplotlib.pyplot figures explicitly
+        # to save memory and prevent Matplotlib module from warning about unclosed figures
         plt.close('all')
 
-        return super().hideEvent(a0)
-
-
+        return super().closeEvent(a0)
 
 
 
