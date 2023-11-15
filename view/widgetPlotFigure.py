@@ -138,8 +138,13 @@ mpl.rcParams['boxplot.boxprops.color'] = 'black'
 mpl.rcParams['boxplot.boxprops.linewidth'] = 0.5
 mpl.rcParams['boxplot.whiskerprops.linewidth'] = 0.5
 mpl.rcParams['boxplot.medianprops.color'] = 'black'
+mpl.rcParams['boxplot.medianprops.linewidth'] = 0.5
+mpl.rcParams['boxplot.showcaps'] = False
 
-
+# SET COLOR OF BOX BODY
+mpl.rcParams['boxplot.boxprops.color'] = 'black'
+mpl.rcParams['boxplot.patchartist'] = True
+mpl.rcParams['patch.facecolor'] = 'cornflowerblue'
 """
 - UI components struture of Plot Figure widget:
 - Main widget
@@ -212,16 +217,8 @@ class WidgetPlotFigure(QWidget):
             if list_data_label is None or list_dataset is None:
                 continue
             
-            axs.flat[plot_idx].boxplot(
-                x=list_dataset,
-                labels=list_data_label,
-                showcaps=False,
-                sym='x')
-            axs.flat[plot_idx].set_title(
-                label=plot.title,
-                fontsize=9,
-                fontweight='bold')
-
+            axs.flat[plot_idx].boxplot(x=list_dataset, labels=list_data_label)
+            axs.flat[plot_idx].set_title(label=plot.title)
             plot_idx += 1
         
         return fig
