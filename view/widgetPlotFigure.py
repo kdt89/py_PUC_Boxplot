@@ -1,15 +1,143 @@
-from cProfile import label
+from typing import List
+# from cProfile import label
 from PyQt6 import QtGui
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
-from view.ui.PlotFigure_ui import Ui_PlotFigure
+
+import matplotlib as mpl # for customize matplotlib plot style
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # for embedded plot to PyQt
+import matplotlib.pyplot as plt # for rendering plot
+from matplotlib.figure import Figure # for rendering plot
 from view.pyqt6_verticalTabWidget import VerticalTabWidget
 
-from typing import List
+from view.ui.PlotFigure_ui import Ui_PlotFigure
 from controller.setting import FigureConfig
 from model.csv_database import CSV_Database
+
+
+"""
+Customize Matplotlib style with rcParams
+"""
+## ***************************************************************************
+## * BOXPLOT                                                                 *
+## ***************************************************************************
+#boxplot.notch:       False
+#boxplot.vertical:    True
+#boxplot.whiskers:    1.5
+#boxplot.bootstrap:   None
+#boxplot.patchartist: False
+#boxplot.showmeans:   False
+#boxplot.showcaps:    True
+#boxplot.showbox:     True
+#boxplot.showfliers:  True
+#boxplot.meanline:    False
+
+#boxplot.flierprops.color:           black
+#boxplot.flierprops.marker:          o
+#boxplot.flierprops.markerfacecolor: none
+#boxplot.flierprops.markeredgecolor: black
+#boxplot.flierprops.markeredgewidth: 1.0
+#boxplot.flierprops.markersize:      6
+#boxplot.flierprops.linestyle:       none
+#boxplot.flierprops.linewidth:       1.0
+
+#boxplot.boxprops.color:     black
+#boxplot.boxprops.linewidth: 1.0
+#boxplot.boxprops.linestyle: -
+
+#boxplot.whiskerprops.color:     black
+#boxplot.whiskerprops.linewidth: 1.0
+#boxplot.whiskerprops.linestyle: -
+
+#boxplot.capprops.color:     black
+#boxplot.capprops.linewidth: 1.0
+#boxplot.capprops.linestyle: -
+
+#boxplot.medianprops.color:     C1
+#boxplot.medianprops.linewidth: 1.0
+#boxplot.medianprops.linestyle: -
+
+#boxplot.meanprops.color:           C2
+#boxplot.meanprops.marker:          ^
+#boxplot.meanprops.markerfacecolor: C2
+#boxplot.meanprops.markeredgecolor: C2
+#boxplot.meanprops.markersize:       6
+#boxplot.meanprops.linestyle:       --
+#boxplot.meanprops.linewidth:       1.0
+
+
+## ***************************************************************************
+## * FONT                                                                    *
+## ***************************************************************************
+## The font properties used by `text.Text`.
+## See https://matplotlib.org/stable/api/font_manager_api.html for more information
+## on font properties.  The 6 font properties used for font matching are
+## given below with their default values.
+##
+## The font.family property can take either a single or multiple entries of any
+## combination of concrete font names (not supported when rendering text with
+## usetex) or the following five generic values:
+##     - 'serif' (e.g., Times),
+##     - 'sans-serif' (e.g., Helvetica),
+##     - 'cursive' (e.g., Zapf-Chancery),
+##     - 'fantasy' (e.g., Western), and
+##     - 'monospace' (e.g., Courier).
+## Each of these values has a corresponding default list of font names
+## (font.serif, etc.); the first available font in the list is used.  Note that
+## for font.serif, font.sans-serif, and font.monospace, the first element of
+## the list (a DejaVu font) will always be used because DejaVu is shipped with
+## Matplotlib and is thus guaranteed to be available; the other entries are
+## left as examples of other possible values.
+##
+## The font.style property has three values: normal (or roman), italic
+## or oblique.  The oblique style will be used for italic, if it is not
+## present.
+##
+## The font.variant property has two values: normal or small-caps.  For
+## TrueType fonts, which are scalable fonts, small-caps is equivalent
+## to using a font size of 'smaller', or about 83 % of the current font
+## size.
+##
+## The font.weight property has effectively 13 values: normal, bold,
+## bolder, lighter, 100, 200, 300, ..., 900.  Normal is the same as
+## 400, and bold is 700.  bolder and lighter are relative values with
+## respect to the current weight.
+##
+## The font.stretch property has 11 values: ultra-condensed,
+## extra-condensed, condensed, semi-condensed, normal, semi-expanded,
+## expanded, extra-expanded, ultra-expanded, wider, and narrower.  This
+## property is not currently implemented.
+##
+## The font.size property is the default font size for text, given in points.
+## 10 pt is the standard value.
+##
+## Note that font.size controls default text sizes.  To configure
+## special text sizes tick labels, axes, labels, title, etc., see the rc
+## settings for axes and ticks.  Special text sizes can be defined
+## relative to font.size, using the following values: xx-small, x-small,
+## small, medium, large, x-large, xx-large, larger, or smaller
+
+#font.family:  sans-serif
+#font.style:   normal
+#font.variant: normal
+#font.weight:  normal
+#font.stretch: normal
+#font.size:    10.0
+
+#font.serif:      DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
+#font.sans-serif: DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif
+#font.cursive:    Apple Chancery, Textile, Zapf Chancery, Sand, Script MT, Felipa, Comic Neue, Comic Sans MS, cursive
+#font.fantasy:    Chicago, Charcoal, Impact, Western, Humor Sans, xkcd, fantasy
+#font.monospace:  DejaVu Sans Mono, Bitstream Vera Sans Mono, Computer Modern Typewriter, Andale Mono, Nimbus Mono L, Courier New, Courier, Fixed, Terminal, monospace
+
+mpl.rcParams['lines.linewidth'] = 1
+mpl.rcParams['boxplot.flierprops.markersize'] = 3
+mpl.rcParams['boxplot.flierprops.linewidth'] = 0.5
+mpl.rcParams['boxplot.flierprops.marker'] = 'x'
+mpl.rcParams['boxplot.flierprops.color'] = 'grey'
+mpl.rcParams['boxplot.boxprops.color'] = 'black'
+mpl.rcParams['boxplot.boxprops.linewidth'] = 0.5
+mpl.rcParams['boxplot.whiskerprops.linewidth'] = 0.5
+mpl.rcParams['boxplot.medianprops.color'] = 'black'
 
 
 """
