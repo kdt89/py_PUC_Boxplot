@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'd:\PJT\PY\py_PUC_Boxplot\view\ui\PlotFigure.ui'
+# Form implementation generated from reading ui file 'c:\PJT\PY\py_PUC_Boxplot\view\ui\PlotFigure.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.0
 #
@@ -12,14 +12,14 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_PlotFigure(object):
     def setupUi(self, PlotFigure):
         PlotFigure.setObjectName("PlotFigure")
-        PlotFigure.resize(1329, 939)
-        self.verticalLayoutWidget = QtWidgets.QWidget(parent=PlotFigure)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 60, 1061, 871))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.layoutMain = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.layoutMain.setContentsMargins(0, 0, 0, 0)
-        self.layoutMain.setSpacing(0)
-        self.layoutMain.setObjectName("layoutMain")
+        PlotFigure.resize(800, 470)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(PlotFigure.sizePolicy().hasHeightForWidth())
+        PlotFigure.setSizePolicy(sizePolicy)
+        PlotFigure.setMinimumSize(QtCore.QSize(800, 470))
+        PlotFigure.setBaseSize(QtCore.QSize(1920, 1080))
         self.horizontalLayoutWidget = QtWidgets.QWidget(parent=PlotFigure)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 0, 202, 52))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
@@ -58,11 +58,17 @@ class Ui_PlotFigure(object):
         self.btnExport_MS_PPT.setAutoDefault(False)
         self.btnExport_MS_PPT.setObjectName("btnExport_MS_PPT")
         self.gridLayout.addWidget(self.btnExport_MS_PPT, 0, 0, 1, 1)
+        self.formLayoutWidget = QtWidgets.QWidget(parent=PlotFigure)
+        self.formLayoutWidget.setGeometry(QtCore.QRect(10, 60, 781, 401))
+        self.formLayoutWidget.setObjectName("formLayoutWidget")
+        self.layoutMain = QtWidgets.QFormLayout(self.formLayoutWidget)
+        self.layoutMain.setContentsMargins(0, 0, 0, 0)
+        self.layoutMain.setObjectName("layoutMain")
 
         self.retranslateUi(PlotFigure)
         QtCore.QMetaObject.connectSlotsByName(PlotFigure)
 
     def retranslateUi(self, PlotFigure):
         _translate = QtCore.QCoreApplication.translate
-        PlotFigure.setWindowTitle(_translate("PlotFigure", "Box Plot Graph"))
+        PlotFigure.setWindowTitle(_translate("PlotFigure", "Box Plot View"))
         self.btnExport_MS_PPT.setText(_translate("PlotFigure", "Export To MS PowerPoint"))

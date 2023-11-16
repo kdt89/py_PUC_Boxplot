@@ -1,61 +1,50 @@
-import matplotlib.pyplot as plt
+import sys
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QFormLayout, QTabWidget
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import numpy as np
 
-# Random test data
-np.random.seed(19680801)
-all_data = [np.random.normal(0, std, size=100) for std in range(1, 4)]
-labels = ['x1', 'x2', 'x3']
+app = QApplication(sys.argv)
 
-# fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(9, 4))
-fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(9, 4))
-# for ax in axs.flat:
-#     ax.boxplot(all_data,
-#                      vert=True,  # vertical box alignment
-#                      patch_artist=True,  # fill with color
-#                      labels=labels)  # will be used to label x-ticks
-# ax.set_title('Rectangular box plot')
+# Create the main widget
+main_widget = QMainWindow()
+main_widget.setWindowTitle("Matplotlib Figure Resize Example")
 
-# rectangular box plot
-bplot1 = axs[0].boxplot(all_data,
-                     vert=True,  # vertical box alignment
-                     patch_artist=True,  # fill with color
-                     labels=labels)  # will be used to label x-ticks
-axs[0].set_title('Rectangular box plot')
+# Create the figure and canvas
+fig = Figure()
+canvas = FigureCanvas(fig)
 
-# # notch shape box plot
-bplot2 = axs[1].boxplot(all_data,
-                     notch=True,  # notch shape
-                     vert=True,  # vertical box alignment
-                     patch_artist=True,  # fill with color
-                     labels=labels)  # will be used to label x-ticks
-axs[1].set_title('Notched box plot')
+# Create a subplot and plot a simple curve
+ax = fig.add_subplot(111)
+x = np.linspace(0, 2*np.pi, 100)
+y = np.sin(x)
+ax.plot(x, y)
 
+# Create the layout for the main widget
+layout = QVBoxLayout()
+main_widget.setLayout(layout)
 
-# rectangular box plot
-# bplot1 = ax1.boxplot(all_data,
-#                      vert=True,  # vertical box alignment
-#                      patch_artist=True,  # fill with color
-#                      labels=labels)  # will be used to label x-ticks
-# ax1.set_title('Rectangular box plot')
+# Create the form layout
+form_layout = QFormLayout()
+layout.addLayout(form_layout)
 
-# # notch shape box plot
-# bplot2 = ax2.boxplot(all_data,
-#                      notch=True,  # notch shape
-#                      vert=True,  # vertical box alignment
-#                      patch_artist=True,  # fill with color
-#                      labels=labels)  # will be used to label x-ticks
-# ax2.set_title('Notched box plot')
+# Create the tab widget
+tab_widget = QTabWidget()
+form_layout.addRow(tab_widget)
 
-# # fill with colors
-# colors = ['pink', 'lightblue', 'lightgreen']
-# for bplot in (bplot1, bplot2):
-#     for patch, color in zip(bplot['boxes'], colors):
-#         patch.set_facecolor(color)
+# Add the canvas to the tab widget
+tab_widget.addTab(canvas, "Figure")
 
-# # adding horizontal grid lines
-# for ax in [ax1, ax2]:
-#     ax.yaxis.grid(True)
-#     ax.set_xlabel('Three separate samples')
-#     ax.set_ylabel('Observed values')
+# Function to handle resizing of the main widget
+def resize_event(event):
+    # Update the figure's layout to fit within the available space
+    fig.tight_layout()
+    canvas.draw()
 
-plt.show()
+# Connect the resize event of the main widget to the resize_event function
+main_widget.resizeEvent = resize_event
+
+# Show the main widget
+main_widget.show()
+
+sys.exit(app.exec())

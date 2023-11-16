@@ -77,7 +77,7 @@ class Controller(Observer): # Controller in MVC pattern
             self.view.PlotFigure.build_plot_pages(
                 Setting.plotpages,
                 self.model.database)
-            self.view.PlotFigure.showMaximized()
+            self.view.PlotFigure.showNormal()
 
 
     """ Grab matched files in Input folder and pass to Model object to import to database """
