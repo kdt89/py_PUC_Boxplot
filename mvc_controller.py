@@ -59,9 +59,8 @@ class Controller(Observer): # Controller in MVC pattern
             return None
 
         self.export_data()        
-        # Build figure plot pages on PlotFigure Widget
         self.build_boxplot()
-        
+
 
     '''
     Function to export data in Model to output folder
@@ -77,7 +76,7 @@ class Controller(Observer): # Controller in MVC pattern
             self.view.PlotFigure.build_plot_pages(
                 Setting.plotpages,
                 self.model.database)
-            self.view.PlotFigure.showNormal()
+            self.view.PlotFigure.showMaximized()
 
 
     """ Grab matched files in Input folder and pass to Model object to import to database """

@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_PlotFigure(object):
     def setupUi(self, PlotFigure):
         PlotFigure.setObjectName("PlotFigure")
-        PlotFigure.resize(800, 470)
+        PlotFigure.resize(800, 547)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -58,17 +58,25 @@ class Ui_PlotFigure(object):
         self.btnExport_MS_PPT.setAutoDefault(False)
         self.btnExport_MS_PPT.setObjectName("btnExport_MS_PPT")
         self.gridLayout.addWidget(self.btnExport_MS_PPT, 0, 0, 1, 1)
-        self.formLayoutWidget = QtWidgets.QWidget(parent=PlotFigure)
-        self.formLayoutWidget.setGeometry(QtCore.QRect(10, 60, 781, 401))
-        self.formLayoutWidget.setObjectName("formLayoutWidget")
-        self.layoutMain = QtWidgets.QFormLayout(self.formLayoutWidget)
+        self.gridLayoutWidget = QtWidgets.QWidget(parent=PlotFigure)
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(9, 59, 781, 471))
+        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+        self.layoutMain = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.layoutMain.setContentsMargins(0, 0, 0, 0)
         self.layoutMain.setObjectName("layoutMain")
+        self.pushButton = QtWidgets.QPushButton(parent=self.gridLayoutWidget)
+        self.pushButton.setObjectName("pushButton")
+        self.layoutMain.addWidget(self.pushButton, 1, 0, 1, 1)
+        self.tabWidget = QtWidgets.QTabWidget(parent=self.gridLayoutWidget)
+        self.tabWidget.setObjectName("tabWidget")
+        self.layoutMain.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         self.retranslateUi(PlotFigure)
+        self.tabWidget.setCurrentIndex(-1)
         QtCore.QMetaObject.connectSlotsByName(PlotFigure)
 
     def retranslateUi(self, PlotFigure):
         _translate = QtCore.QCoreApplication.translate
         PlotFigure.setWindowTitle(_translate("PlotFigure", "Box Plot View"))
         self.btnExport_MS_PPT.setText(_translate("PlotFigure", "Export To MS PowerPoint"))
+        self.pushButton.setText(_translate("PlotFigure", "PushButton"))

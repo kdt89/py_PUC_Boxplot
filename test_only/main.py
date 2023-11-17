@@ -1,25 +1,27 @@
-import timeit
+from PyQt6.QtWidgets import QWidget, QPushButton, QGridLayout, QApplication
+import sys
 
-def clear_list():
-    my_list.clear()
 
-def assign_empty_list():
-    my_list = []
+app = QApplication(sys.argv)
 
-def slice_assignment():
-    my_list[:] = []
+window = QWidget()        
+button1 = QPushButton("One")        
+button2 = QPushButton("Two")
+button3 = QPushButton("Three")
+button4 = QPushButton("Four")
+button5 = QPushButton("Five")
 
-def del_statement():
-    del my_list[:]
+# layout = QGridLayout(window)        
 
-my_list = [1, 2, 3, 4, 5]
+layout = QGridLayout()
+window.setLayout(layout)
+layout.addWidget(button1, 0, 0)
+layout.addWidget(button2, 0, 1)
+layout.addWidget(button3, 1, 0, 1, 2)
+layout.addWidget(button4, 2, 0)
+layout.addWidget(button5, 2, 1)        
 
-clear_time = timeit.timeit(clear_list, number=1000000)
-assign_time = timeit.timeit(assign_empty_list, number=1000000)
-slice_time = timeit.timeit(slice_assignment, number=1000000)
-del_time = timeit.timeit(del_statement, number=1000000)
 
-print("clear():", clear_time)
-print("assign empty list:", assign_time)
-print("slice assignment:", slice_time)
-print("del statement:", del_time)
+
+window.show()
+sys.exit(app.exec())

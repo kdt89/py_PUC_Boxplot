@@ -159,7 +159,7 @@ plt.rcParams['ytick.labelsize'] = 5             # set boxplot y-axis label font 
 plt.rcParams['figure.titlesize'] = '10'
 plt.rcParams['figure.titleweight'] = 'bold'
 plt.rcParams['figure.figsize'] = [400, 300]
-plt.rcParams['figure.dpi'] = 100
+plt.rcParams['figure.dpi'] = 300
 plt.rcParams['figure.edgecolor'] = 'red'
 plt.rcParams['figure.subplot.wspace'] = 0.5     # set subplot width-space
 plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
@@ -201,16 +201,16 @@ class WidgetPlotFigure(QWidget):
         super(WidgetPlotFigure, self).__init__()
         self.ui = Ui_PlotFigure()
         self.ui.setupUi(self)
-        #debug
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        # Add vertical Tab docker widget
         self.figures: List[Figure] = []
-        self.viewtabs = VerticalTabWidget()
-        self.viewtabs.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.ui.layoutMain.addWidget(self.viewtabs)
-        # need to check if layoutMain stretches to full Widget successufully yet?
-         
-        # need to check the viewtabs Widget stretchs to full layoutMain yet?
+        #debug
+        # self.ui.layoutMain.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        # self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        # Add vertical Tab docker widget
+
+        # self.viewtabs = VerticalTabWidget()
+        # self.viewtabs.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.ui.layoutMain.addWidget(self.ui.tabWidget)
+        self.ui.tabWidget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
 
     def add_page(
@@ -226,11 +226,11 @@ class WidgetPlotFigure(QWidget):
         
         new_page = QWidget()
         new_page.setLayout(layout)
-        
         self.figures.append(new_page)
-        self.viewtabs.addTab(new_page, title)
         
-        return new_page
+        # self.viewtabs.addTab(new_page, title) #debug commented out
+        #debug only
+        self.ui.tabWidget.addTab(new_page, title)
 
 
     def build_subplot_figure(
