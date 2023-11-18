@@ -1,7 +1,7 @@
 from typing import List
 # from cProfile import label
 from PyQt6 import QtGui
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QSizePolicy
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QSizePolicy, QTabWidget
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # for embedded plot to PyQt
 import matplotlib.pyplot as plt # for rendering plot
@@ -159,12 +159,12 @@ plt.rcParams['ytick.labelsize'] = 5             # set boxplot y-axis label font 
 plt.rcParams['figure.titlesize'] = '10'
 plt.rcParams['figure.titleweight'] = 'bold'
 plt.rcParams['figure.figsize'] = [400, 300]
-plt.rcParams['figure.dpi'] = 300
+plt.rcParams['figure.dpi'] = 300                # fit full-screen viewing
 plt.rcParams['figure.edgecolor'] = 'red'
 plt.rcParams['figure.subplot.wspace'] = 0.5     # set subplot width-space
 plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
-plt.rcParams['figure.subplot.bottom'] = 0.05       # set subplot bottom margin
-plt.rcParams['figure.subplot.left'] = 0.08         # set subplot left margin
+plt.rcParams['figure.subplot.bottom'] = 0.05    # set subplot bottom margin
+plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
 
 # CONFIGURE THE LINE WIDTH OF SUBPLOT FRAME LINE
 # plt.rcParams['patch.linewidth'] = 0.5
@@ -201,16 +201,20 @@ class WidgetPlotFigure(QWidget):
         super(WidgetPlotFigure, self).__init__()
         self.ui = Ui_PlotFigure()
         self.ui.setupUi(self)
-        self.figures: List[Figure] = []
+        self.setLayout(self.ui.layoutMain)
+        
         #debug
-        # self.ui.layoutMain.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        # self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        # Add vertical Tab docker widget
+        # self.setLayout(self.ui.vboxlayout_hold_plotViewer)
+        # self.ui.tab_plotViewer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.vTabs = VerticalTabWidget()
+        self.vTabs.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.ui.layoutMain.addWidget(self.vTabs)
 
+        self.figures: List[Figure] = []
+        # Add vertical Tab docker widget
         # self.viewtabs = VerticalTabWidget()
         # self.viewtabs.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.ui.layoutMain.addWidget(self.ui.tabWidget)
-        self.ui.tabWidget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        # self.ui.layoutMain.addWidget(self.ui.tabWidget)
 
 
     def add_page(
@@ -230,7 +234,7 @@ class WidgetPlotFigure(QWidget):
         
         # self.viewtabs.addTab(new_page, title) #debug commented out
         #debug only
-        self.ui.tabWidget.addTab(new_page, title)
+        self.vTabs.addTab(new_page, title)
 
 
     def build_subplot_figure(

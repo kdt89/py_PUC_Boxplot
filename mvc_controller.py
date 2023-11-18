@@ -8,7 +8,7 @@ from util.observer import Observer, Subject
 
 class Controller(Observer): # Controller in MVC pattern
 
-    def __init__(self, model: mvc_model.Model, view: mvc_view.UI):
+    def __init__(self, model: mvc_model.Model, view: mvc_view.View):
         self.model = model
         self.view = view
         self.setting = Setting()
@@ -73,9 +73,7 @@ class Controller(Observer): # Controller in MVC pattern
         self.view.wxPlotFigure_newWidget()
         
         if self.view.PlotFigure != None:
-            self.view.PlotFigure.build_plot_pages(
-                Setting.plotpages,
-                self.model.database)
+            self.view.PlotFigure.build_plot_pages(Setting.plotpages, self.model.database)
             self.view.PlotFigure.showMaximized()
 
 

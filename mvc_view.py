@@ -9,7 +9,7 @@ from view.widgetPlotFigure import WidgetPlotFigure
 
 
 # Application UI object contains all other frame objects
-class UI():
+class View():
 
     def __init__(self) -> None:
         self.Main = WidgetMain()
