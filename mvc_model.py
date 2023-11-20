@@ -1,5 +1,7 @@
 from typing import List
-from util.observer import Observer # OBSERVER DESIGN PATTERN
+
+# OBSERVER DESIGN PATTERN
+from util.observer import Observer 
 from model.csv_database import CSV_Database
 
 

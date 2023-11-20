@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>948</width>
-    <height>580</height>
+    <width>872</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>800</width>
-    <height>470</height>
+    <height>430</height>
    </size>
   </property>
   <property name="baseSize">
@@ -36,11 +36,14 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>951</width>
-     <height>581</height>
+     <width>871</width>
+     <height>541</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_main">
+    <item row="2" column="0" colspan="2">
+     <widget class="QTabWidget" name="tab_plotFigureHolder"/>
+    </item>
     <item row="0" column="1">
      <spacer name="hspacer_btn_exportPPT">
       <property name="orientation">
@@ -50,22 +53,6 @@
        <size>
         <width>40</width>
         <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
-     <spacer name="vspacer_btn_exportPPT">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Fixed</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>5</height>
        </size>
       </property>
      </spacer>
@@ -139,12 +126,21 @@ QPushButton:hover {
       </property>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
-     <widget class="QTabWidget" name="tabviewer_plotFigure">
-      <property name="currentIndex">
-       <number>-1</number>
+    <item row="1" column="0">
+     <spacer name="vspacer_btn_exportPPT">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-     </widget>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>5</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>

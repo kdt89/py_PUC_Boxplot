@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'c:\PJT\PY\py_PUC_Boxplot\view\ui\PlotFigure.ui'
+# Form implementation generated from reading ui file 'd:\PJT\PY\py_PUC_Boxplot\view\ui\PlotFigure.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.0
 #
@@ -12,24 +12,25 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_PlotFigure(object):
     def setupUi(self, PlotFigure):
         PlotFigure.setObjectName("PlotFigure")
-        PlotFigure.resize(948, 580)
+        PlotFigure.resize(872, 541)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(PlotFigure.sizePolicy().hasHeightForWidth())
         PlotFigure.setSizePolicy(sizePolicy)
-        PlotFigure.setMinimumSize(QtCore.QSize(800, 470))
+        PlotFigure.setMinimumSize(QtCore.QSize(800, 430))
         PlotFigure.setBaseSize(QtCore.QSize(1920, 1080))
         self.gridLayoutWidget = QtWidgets.QWidget(parent=PlotFigure)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(0, 0, 951, 581))
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(0, 0, 871, 541))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout_main = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.gridLayout_main.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_main.setObjectName("gridLayout_main")
+        self.tab_plotFigureHolder = QtWidgets.QTabWidget(parent=self.gridLayoutWidget)
+        self.tab_plotFigureHolder.setObjectName("tab_plotFigureHolder")
+        self.gridLayout_main.addWidget(self.tab_plotFigureHolder, 2, 0, 1, 2)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_main.addItem(spacerItem, 0, 1, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 5, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Fixed)
-        self.gridLayout_main.addItem(spacerItem1, 1, 0, 1, 1)
         self.btn_exportPPT = QtWidgets.QPushButton(parent=self.gridLayoutWidget)
         self.btn_exportPPT.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
@@ -66,12 +67,10 @@ class Ui_PlotFigure(object):
         self.btn_exportPPT.setFlat(False)
         self.btn_exportPPT.setObjectName("btn_exportPPT")
         self.gridLayout_main.addWidget(self.btn_exportPPT, 0, 0, 1, 1)
-        self.tabviewer_plotFigure = QtWidgets.QTabWidget(parent=self.gridLayoutWidget)
-        self.tabviewer_plotFigure.setObjectName("tabviewer_plotFigure")
-        self.gridLayout_main.addWidget(self.tabviewer_plotFigure, 2, 0, 1, 2)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 5, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Fixed)
+        self.gridLayout_main.addItem(spacerItem1, 1, 0, 1, 1)
 
         self.retranslateUi(PlotFigure)
-        self.tabviewer_plotFigure.setCurrentIndex(-1)
         QtCore.QMetaObject.connectSlotsByName(PlotFigure)
 
     def retranslateUi(self, PlotFigure):

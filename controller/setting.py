@@ -4,6 +4,7 @@ import pandas as pd
 from pandas import DataFrame
 from typing import List
 from controller.workstatus import Status
+from util.string import String
 
 """
 A Figure contains multiple subplot object.
@@ -19,14 +20,12 @@ class PlotConfig:
         lowerspec: float = -1,
         upperspec: float = -1,
         to_plot: bool = False,
-        figuretitle: str = "" 
         ):
         self.item_name = name
         self.title = title
         self.lowerspec = lowerspec
         self.upperspec = upperspec
         self.to_plot = to_plot
-        self.figure_title  = figuretitle
 
 
 class FigureConfig:
@@ -36,16 +35,21 @@ class FigureConfig:
 
     def __init__(self):
         self.subplot_list: List[PlotConfig] = []
+        self._title: str = ""
+        self._name: str = ""        # similar to _title but replace wildcard character with '-'
 
+    @property                       # there is not setter for property 'name'
+    def name(self) -> str:
+        return self._name
 
     @property
     def title(self) -> str:
         return self._title
 
-    @title.setter
-    def title(self, title: str):
-        self._title = title
-
+    @title.setter                   # set value for property 'title' will set 'name' alongside
+    def title(self, string: str):
+        self._title = string
+        self._name = String.replaceUnacceptedString(string, '-')
 
     @property
     def size(self) -> tuple[int, int]:
@@ -79,7 +83,6 @@ class Setting:
     
     LIST_IMPORT_DATA_COLUMN_NAMES: List[str] = []
     DATA_ROW_TO_SKIPREAD: List[int] = [1, 2]
-    
     plotpages: List[FigureConfig] = []
 
 
@@ -94,12 +97,12 @@ class Setting:
         # Update the plot item in local database of setting to class object
         # Clear the list of column name of data to be import before updating again
         Setting.LIST_IMPORT_DATA_COLUMN_NAMES.clear()
-        Setting.plotpages = Setting._dataframe_to_plotpages(df_plot_list)
+        Setting.plotpages = Setting._dataframeToFigureConfig(df_plot_list)
         if len(Setting.plotpages) == 0:
             Status.setting_update_ok = False
 
 
-    def _dataframe_to_plotpages(dataframe: DataFrame) -> List[FigureConfig]:
+    def _dataframeToFigureConfig(dataframe: DataFrame) -> List[FigureConfig]:
             try:
                 if list(dataframe.columns) != ['Plot Item', 'Plot Title', 'LSL', 'USL', 'To Plot', 'Figure']:
                     Status.error_message("Plot item in database have incorrect header.")
@@ -110,9 +113,7 @@ class Setting:
 
             plotpages: List[FigureConfig] = []
             # Divide dataframe to groups by column ['Figure']
-            datagroups = dataframe.groupby(
-                Setting.PLOT_PAGES_GROUPBY_COLUMN_NAME, 
-                sort=False)
+            datagroups = dataframe.groupby(Setting.PLOT_PAGES_GROUPBY_COLUMN_NAME, sort=False)
 
             # Iterate through each Figure group in dataframe and convert to PlotPage class object
             for groupname, group_data in datagroups:
@@ -125,13 +126,11 @@ class Setting:
                         title= str(row[2]), # 'Plot Title'
                         lowerspec= float(row[3]), # 'LSL'
                         upperspec= float(row[4]), # 'USL'
-                        to_plot= bool(row[5]), # 'To Plot'
-                        figuretitle= str(row[6])) # 'Figure'
+                        to_plot= bool(row[5])) # 'To Plot'
                     
                     # Adding ['Plot Item'] value to import_data_column_list, then Model object use this for import CSV data file
                     Setting.LIST_IMPORT_DATA_COLUMN_NAMES.append(str(row[1]))
                     figure_config.subplot_list.append(subplot)
-
                 plotpages.append(figure_config)
 
             return plotpages
