@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'd:\PJT\PY\py_PUC_Boxplot\view\ui\PlotFigure.ui'
+# Form implementation generated from reading ui file 'c:\PJT\PY\py_PUC_Boxplot\view\ui\PlotFigure.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.0
 #

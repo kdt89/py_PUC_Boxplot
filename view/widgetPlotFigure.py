@@ -1,16 +1,15 @@
 from __future__ import annotations
 from typing import List
 from PyQt6 import QtGui
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QSizePolicy, QTabWidget
+from PyQt6.QtWidgets import QWidget, QFormLayout
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # for embedded plot to PyQt
 import matplotlib.pyplot as plt # for rendering plot
 from matplotlib.figure import Figure
-from test_only.Test3 import replace_special_characters # for rendering plot
 from view.pyqt6_verticalTabWidget import VerticalTabWidget
 
 from view.ui.PlotFigure_ui import Ui_PlotFigure
-from controller.setting import FigureConfig
+from controller.setting import FigureConfig, Setting
 from model.csv_database import CSV_Database
 
 
@@ -20,8 +19,8 @@ Customize Matplotlib style with rcParams
 plt.rcParams['lines.linewidth'] = 1
 plt.rcParams['boxplot.flierprops.linewidth'] = 0.5
 plt.rcParams['boxplot.flierprops.marker'] = 'x'
-plt.rcParams['boxplot.flierprops.markersize'] = 2
-plt.rcParams['boxplot.flierprops.markeredgewidth'] = 0.3
+plt.rcParams['boxplot.flierprops.markersize'] = 1.5
+plt.rcParams['boxplot.flierprops.markeredgewidth'] = 0.2
 plt.rcParams['boxplot.flierprops.markerfacecolor'] = 'grey'
 plt.rcParams['boxplot.whiskerprops.linewidth'] = 0.5
 plt.rcParams['boxplot.showcaps'] = False
@@ -36,23 +35,30 @@ plt.rcParams['boxplot.medianprops.linewidth'] = 0.5
 
 # CONFIGURE SUBPLOT TITLE
 plt.rcParams['axes.titlecolor'] = 'black'       # Set color for subplot title
-plt.rcParams['axes.titleweight'] = 'normal'     # Set font weight for subplot title
-plt.rcParams['axes.titlesize'] = 6              # Set font size for subplot title
+plt.rcParams['axes.titleweight'] = 'bold'     # Set font weight for subplot title
+plt.rcParams['axes.titlesize'] = 5              # Set font size for subplot title
 plt.rcParams['xtick.labelcolor'] = 'black'      # set boxplot x-axis label color
 plt.rcParams['xtick.labelsize'] = 5             # set boxplot x-axis label font size
 plt.rcParams['ytick.labelsize'] = 5             # set boxplot y-axis label font size
-# plt.rcParams['figure.labelsize'] = '4'
-# plt.rcParams['figure.labelweight'] = 'bold'
+plt.rcParams['xtick.bottom'] = False
+plt.rcParams['ytick.major.width'] = 0.2    # major tick width in points
+plt.rcParams['ytick.major.size'] = 1.5     # major tick width in points
+# plt.rcParams['xtick.minor.width:'] = 0.6     # minor tick width in points
+#ytick.minor.size:    2       # minor tick size in points
+#ytick.minor.width:   0.6     # minor tick width in points
+
+plt.rcParams['figure.labelsize'] = '3'
+plt.rcParams['figure.labelweight'] = 'bold'
 
 # CONFIGURE BOXPLOT TITLE AND LABEL
 plt.rcParams['figure.titlesize'] = '10'
 plt.rcParams['figure.titleweight'] = 'bold'
 # plt.rcParams['figure.figsize'] = [300, 230]
-plt.rcParams['figure.figsize'] = [10.5, 4.5]
-plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
+# plt.rcParams['figure.figsize'] = [10.5, 4.5]
+plt.rcParams['figure.dpi'] = 300                # fit full-screen viewing
 plt.rcParams['figure.edgecolor'] = 'red'
-plt.rcParams['figure.subplot.wspace'] = 0.5     # set subplot width-space
-plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
+plt.rcParams['figure.subplot.wspace'] = 0.3     # set subplot width-space
+plt.rcParams['figure.subplot.hspace'] = 0.3     # set subplot height-space
 plt.rcParams['figure.subplot.bottom'] = 0.05    # set subplot bottom margin
 plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
 
@@ -63,6 +69,25 @@ plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
 plt.rcParams['axes.edgecolor'] = 'lightgray'
 plt.rcParams['axes.linewidth'] = 0.5
 
+
+## ***************************************************************************
+## * SAVING FIGURES                                                          *
+## ***************************************************************************
+## The default savefig parameters can be different from the display parameters
+## e.g., you may want a higher resolution, or to make the figure
+## background white
+plt.rcParams['savefig.dpi'] = 300                   # figure dots per inch or 'figure'
+plt.rcParams['savefig.facecolor'] = 'auto'          # figure face color when saving
+plt.rcParams['savefig.edgecolor'] = 'auto'          # figure edge color when saving
+plt.rcParams['savefig.format'] = 'png'         # {png, ps, pdf, svg}
+# savefig.pad_inches:  0.1       # padding to be used, when bbox is set to 'tight'
+# default directory in savefig dialog, gets updated after
+# interactive saves, unless set to the empty string (i.e.
+# the current directory); use '.' to start at the current
+# directory but update after interactive saves
+plt.rcParams['savefig.bbox'] = 'tight'
+plt.rcParams['savefig.transparent'] = False         # whether figures are saved with a transparent background by default
+plt.rcParams['savefig.orientation'] = 'portrait'    # orientation of saved figure, for PostScript output only
 
 # plt.rcParams['figure.subplot.right'] = 0.1        # set subplot right margin
 
@@ -91,7 +116,7 @@ class WidgetPlotFigure(QWidget):
         self.ui.setupUi(self)
         self.setLayout(self.ui.gridLayout_main)
         self.ui.tab_plotFigureHolder        
-        self.figures: List[Figure] = []
+        self.figures: List[tuple[str, Figure]] = []
         
         #debug
         # self.vTabs = VerticalTabWidget
@@ -143,15 +168,9 @@ class WidgetPlotFigure(QWidget):
             axs.flat[plot_idx].boxplot(x=list_dataset, labels=list_data_label)
             axs.flat[plot_idx].set_title(label=plot.title)
             plot_idx += 1
-        
-        #debug
-        print(fig.get_size_inches())
-        savefigname = '.\\Output\\' + figure_config.name + '.png'
-        print(savefigname)
-        fig.savefig(savefigname, transparent=True)
 
         return fig
-    
+
 
     def build_plot_pages(
             self,
@@ -161,7 +180,7 @@ class WidgetPlotFigure(QWidget):
         for page_config in pages_config:
             new_fig = self.build_subplot_figure(plot_dataset=plot_dataset, figure_config=page_config)
             self.add_page(add_figure=new_fig, title=page_config.title)
-            self.figures.append(new_fig)
+            self.figures.append((page_config.name, new_fig))
 
 
     def closeEvent(self, a0: QtGui.QCloseEvent | None) -> None:
@@ -172,7 +191,9 @@ class WidgetPlotFigure(QWidget):
         return super().closeEvent(a0)
     
 
-
+    # def exportFigures(self) -> None:
+    #     for fig in self.figures:
+    #         print(fig.get
 
     """
     EXTRA FUNCTION
