@@ -14,8 +14,8 @@ class WidgetMain(QMainWindow):
 
 
     def updateMessage(self, message: str):
-        self.ui.txtbrowserMessage.append(message)
-        self.ui.txtbrowserMessage.repaint()
+        self.ui.txtbrowserOperationMessage.append(message)
+        self.ui.txtbrowserOperationMessage.repaint()
 
 
     def __init__(self):

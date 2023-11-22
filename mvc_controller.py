@@ -36,6 +36,7 @@ class Controller(Observer): # Controller in MVC pattern
     """
     def bindSignalAndSlot(self):
         self.view.Main.ui.btnMakePlot.clicked.connect(self.btnMakePlot_actions)
+        self.view.Main.ui.btnAbout.clicked.connect(self.view.Main.ui.actionShowAbout.trigger)
 
     """
     DEFIND METHODS FOR INTERAL USE WITHIN CONTROLLER MODULE

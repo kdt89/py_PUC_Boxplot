@@ -17,48 +17,50 @@ from model.csv_database import CSV_Database
 Customize Matplotlib style with rcParams
 """
 plt.rcParams['lines.linewidth'] = 1
-plt.rcParams['boxplot.flierprops.linewidth'] = 0.5
+plt.rcParams['boxplot.flierprops.linewidth'] = 0.2
 plt.rcParams['boxplot.flierprops.marker'] = 'x'
 plt.rcParams['boxplot.flierprops.markersize'] = 1.5
 plt.rcParams['boxplot.flierprops.markeredgewidth'] = 0.2
 plt.rcParams['boxplot.flierprops.markerfacecolor'] = 'grey'
 plt.rcParams['boxplot.whiskerprops.linewidth'] = 0.5
 plt.rcParams['boxplot.showcaps'] = False
+plt.rcParams['boxplot.whiskerprops.linewidth'] = 0.5
 
 # CONFIGURE COLOR OF BOX BODY
 plt.rcParams['boxplot.boxprops.linewidth'] = 0.5
 plt.rcParams['boxplot.boxprops.color'] = 'black'
 plt.rcParams['boxplot.patchartist'] = True
-plt.rcParams['patch.facecolor'] = 'cornflowerblue'
+plt.rcParams['patch.facecolor'] = 'lightgray'
 plt.rcParams['boxplot.medianprops.color'] = 'black'
 plt.rcParams['boxplot.medianprops.linewidth'] = 0.5
 
 # CONFIGURE SUBPLOT TITLE
 plt.rcParams['axes.titlecolor'] = 'black'       # Set color for subplot title
-plt.rcParams['axes.titleweight'] = 'bold'     # Set font weight for subplot title
-plt.rcParams['axes.titlesize'] = 5              # Set font size for subplot title
+plt.rcParams['axes.titleweight'] = 'normal'       # Set font weight for subplot title
+plt.rcParams['axes.titlesize'] = 6              # Set font size for subplot title
+plt.rcParams['axes.titlepad'] = 2.0             # pad between axes and title in points
 plt.rcParams['xtick.labelcolor'] = 'black'      # set boxplot x-axis label color
 plt.rcParams['xtick.labelsize'] = 5             # set boxplot x-axis label font size
 plt.rcParams['ytick.labelsize'] = 5             # set boxplot y-axis label font size
 plt.rcParams['xtick.bottom'] = False
-plt.rcParams['ytick.major.width'] = 0.2    # major tick width in points
-plt.rcParams['ytick.major.size'] = 1.5     # major tick width in points
-# plt.rcParams['xtick.minor.width:'] = 0.6     # minor tick width in points
+plt.rcParams['xtick.major.pad'] = 0             # distance to major tick label in points
+plt.rcParams['ytick.major.width'] = 0.2         # major tick width in points
+plt.rcParams['ytick.major.size'] = 1.5          # major tick width in points
+# plt.rcParams['xtick.minor.width:'] = 0.6      # minor tick width in points
 #ytick.minor.size:    2       # minor tick size in points
 #ytick.minor.width:   0.6     # minor tick width in points
 
-plt.rcParams['figure.labelsize'] = '3'
-plt.rcParams['figure.labelweight'] = 'bold'
-
+# plt.rcParams['figure.labelsize'] = '3'
+# plt.rcParams['figure.labelweight'] = 'bold'
 # CONFIGURE BOXPLOT TITLE AND LABEL
-plt.rcParams['figure.titlesize'] = '10'
+plt.rcParams['figure.titlesize'] = '7'
 plt.rcParams['figure.titleweight'] = 'bold'
 # plt.rcParams['figure.figsize'] = [300, 230]
 # plt.rcParams['figure.figsize'] = [10.5, 4.5]
 plt.rcParams['figure.dpi'] = 300                # fit full-screen viewing
 plt.rcParams['figure.edgecolor'] = 'red'
 plt.rcParams['figure.subplot.wspace'] = 0.3     # set subplot width-space
-plt.rcParams['figure.subplot.hspace'] = 0.3     # set subplot height-space
+plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
 plt.rcParams['figure.subplot.bottom'] = 0.05    # set subplot bottom margin
 plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
 
@@ -68,6 +70,7 @@ plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
 # plt.rcParams['patch.force_edgecolor'] = True
 plt.rcParams['axes.edgecolor'] = 'lightgray'
 plt.rcParams['axes.linewidth'] = 0.5
+plt.rcParams['axes.labelpad'] = 2.0             # space between label and axis
 
 
 ## ***************************************************************************
