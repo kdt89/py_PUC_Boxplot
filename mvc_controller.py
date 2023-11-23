@@ -75,6 +75,7 @@ class Controller(Observer): # Controller in MVC pattern
         
         if self.view.PlotFigure != None:
             self.view.PlotFigure.build_plot_pages(Setting.plotpages, self.model.database)
+            self.view.PlotFigure.exportFigure()
             self.view.PlotFigure.showMaximized()
 
 

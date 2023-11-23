@@ -17,22 +17,21 @@ from model.csv_database import CSV_Database
 Customize Matplotlib style with rcParams
 """
 plt.rcParams['lines.linewidth'] = 1
-plt.rcParams['boxplot.flierprops.linewidth'] = 0.2
+plt.rcParams['boxplot.flierprops.linewidth'] = 0.3
 plt.rcParams['boxplot.flierprops.marker'] = 'x'
 plt.rcParams['boxplot.flierprops.markersize'] = 1.5
 plt.rcParams['boxplot.flierprops.markeredgewidth'] = 0.2
 plt.rcParams['boxplot.flierprops.markerfacecolor'] = 'grey'
-plt.rcParams['boxplot.whiskerprops.linewidth'] = 0.5
 plt.rcParams['boxplot.showcaps'] = False
-plt.rcParams['boxplot.whiskerprops.linewidth'] = 0.5
+plt.rcParams['boxplot.whiskerprops.linewidth'] = 0.3
 
 # CONFIGURE COLOR OF BOX BODY
-plt.rcParams['boxplot.boxprops.linewidth'] = 0.5
+plt.rcParams['boxplot.boxprops.linewidth'] = 0.3
 plt.rcParams['boxplot.boxprops.color'] = 'black'
 plt.rcParams['boxplot.patchartist'] = True
 plt.rcParams['patch.facecolor'] = 'lightgray'
 plt.rcParams['boxplot.medianprops.color'] = 'black'
-plt.rcParams['boxplot.medianprops.linewidth'] = 0.5
+plt.rcParams['boxplot.medianprops.linewidth'] = 0.3
 
 # CONFIGURE SUBPLOT TITLE
 plt.rcParams['axes.titlecolor'] = 'black'       # Set color for subplot title
@@ -57,7 +56,7 @@ plt.rcParams['figure.titlesize'] = '7'
 plt.rcParams['figure.titleweight'] = 'bold'
 # plt.rcParams['figure.figsize'] = [300, 230]
 # plt.rcParams['figure.figsize'] = [10.5, 4.5]
-plt.rcParams['figure.dpi'] = 300                # fit full-screen viewing
+plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
 plt.rcParams['figure.edgecolor'] = 'red'
 plt.rcParams['figure.subplot.wspace'] = 0.3     # set subplot width-space
 plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
@@ -91,8 +90,6 @@ plt.rcParams['savefig.format'] = 'png'         # {png, ps, pdf, svg}
 plt.rcParams['savefig.bbox'] = 'tight'
 plt.rcParams['savefig.transparent'] = False         # whether figures are saved with a transparent background by default
 plt.rcParams['savefig.orientation'] = 'portrait'    # orientation of saved figure, for PostScript output only
-
-# plt.rcParams['figure.subplot.right'] = 0.1        # set subplot right margin
 
 
 """
@@ -139,7 +136,6 @@ class WidgetPlotFigure(QWidget):
         
         new_page = QWidget()
         new_page.setLayout(layout)
-        self.figures.append(new_page)
         self.ui.tab_plotFigureHolder.addTab(new_page, title)
 
 
@@ -201,6 +197,12 @@ class WidgetPlotFigure(QWidget):
     """
     EXTRA FUNCTION
     """
+    def exportFigure(self) -> None:
+        for figname, fig in self.figures:
+            fig.savefig(
+                fname=Setting.OUTPUT_DIR + "\\" + figname,
+                pad_inches=0.05)
+
 
 
 
