@@ -1,16 +1,11 @@
+import matplotlib.pyplot as plt
+import numpy as np
 
-import string
+data1 = np.random.normal(size=(100, 5))
+data2 = np.random.normal(size=(100, 5))
+data3 = np.random.normal(size=(100, 5))
+data4 = np.random.normal(size=(100, 5))
 
-def replace_special_characters(text, accepted_character):
-    for wildcard in string.punctuation:
-        text = text.replace(wildcard, accepted_character)
+fig, axs = plt.subplots(2,2)
 
-    return text
-
-# Example usage
-text = "Hello|world|how|are|you"
-accepted_character = "-"
-
-
-new_text = replace_special_characters(text, accepted_character)
-print(new_text)  # Output: Hello-world-how-are-you
+plt.show()

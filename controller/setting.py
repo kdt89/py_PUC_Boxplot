@@ -85,6 +85,10 @@ class Setting:
     DATA_ROW_TO_SKIPREAD: List[int] = [1, 2]
     plotpages: List[FigureConfig] = []
 
+    # FOR PLOT FIGURE
+    WIDTH_HEIGHT_RATIO: float = 1.48
+    MAX_WIDTH: float = 10.5
+    MAX_HEIGHT: float = 4.65
 
     @staticmethod
     def update():

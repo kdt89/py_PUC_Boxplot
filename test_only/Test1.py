@@ -59,9 +59,21 @@ class Window(QDialog):
 		# self.figure.clear()
 
 		# create an axis
-		ax = self.figure.add_subplot(5, 5, self.plot_pos)
+		ax = self.figure.add_subplot(2, 2, self.plot_pos)
+		ax.axhline()
 		# self.button2 = QPushButton('Next Plot')
 		# self
+		width_proportion = random.uniform(0, 1.5)
+
+		figwidth = self.figure.get_figwidth()
+		figheight = self.figure.get_figheight()
+
+		print(f"figure size W x H: {figwidth}	x	{figheight}") # print(figheight)
+		
+		figwidth = figwidth * width_proportion
+		self.figure.set_figwidth(figwidth)
+
+		print(f"new figure size W x H: {figwidth}	x	{figheight}")
 
 		# plot data
 		ax.boxplot(data, '*-')

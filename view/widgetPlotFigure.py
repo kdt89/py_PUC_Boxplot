@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QWidget, QFormLayout
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # for embedded plot to PyQt
 import matplotlib.pyplot as plt # for rendering plot
+from matplotlib import patches
 from matplotlib.figure import Figure
 from view.pyqt6_verticalTabWidget import VerticalTabWidget
 
@@ -16,61 +17,64 @@ from model.csv_database import CSV_Database
 """
 Customize Matplotlib style with rcParams
 """
-plt.rcParams['lines.linewidth'] = 1
+# CONFIGURE LINE STYLE (Ref LINE of BOX PLOT)
+plt.rcParams['lines.linewidth'] = 0.3
+plt.rcParams['lines.color'] = 'red'
+plt.rcParams['lines.linestyle'] = '--'
+
+# CONFIGURE COLOR OF OUTLIERS
 plt.rcParams['boxplot.flierprops.linewidth'] = 0.3
 plt.rcParams['boxplot.flierprops.marker'] = 'x'
-plt.rcParams['boxplot.flierprops.markersize'] = 1.5
-plt.rcParams['boxplot.flierprops.markeredgewidth'] = 0.2
+plt.rcParams['boxplot.flierprops.markersize'] = 3
+plt.rcParams['boxplot.flierprops.markeredgewidth'] = 0.3
 plt.rcParams['boxplot.flierprops.markerfacecolor'] = 'grey'
 plt.rcParams['boxplot.showcaps'] = False
-plt.rcParams['boxplot.whiskerprops.linewidth'] = 0.3
+plt.rcParams['boxplot.whiskerprops.linewidth'] = 0.4
 
 # CONFIGURE COLOR OF BOX BODY
-plt.rcParams['boxplot.boxprops.linewidth'] = 0.3
+plt.rcParams['boxplot.boxprops.linewidth'] = 0.4
 plt.rcParams['boxplot.boxprops.color'] = 'black'
 plt.rcParams['boxplot.patchartist'] = True
 plt.rcParams['patch.facecolor'] = 'lightgray'
 plt.rcParams['boxplot.medianprops.color'] = 'black'
-plt.rcParams['boxplot.medianprops.linewidth'] = 0.3
+plt.rcParams['boxplot.medianprops.linewidth'] = 0.4
 
 # CONFIGURE SUBPLOT TITLE
+plt.rcParams['axes.edgecolor'] = 'lightgray'
+plt.rcParams['axes.linewidth'] = 0.2
+plt.rcParams['axes.labelpad'] = 2.0             # space between label and axis
 plt.rcParams['axes.titlecolor'] = 'black'       # Set color for subplot title
-plt.rcParams['axes.titleweight'] = 'normal'       # Set font weight for subplot title
-plt.rcParams['axes.titlesize'] = 6              # Set font size for subplot title
-plt.rcParams['axes.titlepad'] = 2.0             # pad between axes and title in points
+plt.rcParams['axes.titleweight'] = 'bold'     # Set font weight for subplot title
+plt.rcParams['axes.titlesize'] = 8              # Set font size for subplot title
+plt.rcParams['axes.titlepad'] = 2.5             # pad between axes and title in points
+plt.rcParams['axes.grid'] = True                
+
+plt.rcParams['polaraxes.grid'] = True
+
+
 plt.rcParams['xtick.labelcolor'] = 'black'      # set boxplot x-axis label color
-plt.rcParams['xtick.labelsize'] = 5             # set boxplot x-axis label font size
-plt.rcParams['ytick.labelsize'] = 5             # set boxplot y-axis label font size
+plt.rcParams['xtick.labelsize'] = 8             # set boxplot x-axis label font size
 plt.rcParams['xtick.bottom'] = False
 plt.rcParams['xtick.major.pad'] = 0             # distance to major tick label in points
+
+plt.rcParams['ytick.labelsize'] = 8             # set boxplot y-axis label font size
 plt.rcParams['ytick.major.width'] = 0.2         # major tick width in points
 plt.rcParams['ytick.major.size'] = 1.5          # major tick width in points
-# plt.rcParams['xtick.minor.width:'] = 0.6      # minor tick width in points
-#ytick.minor.size:    2       # minor tick size in points
-#ytick.minor.width:   0.6     # minor tick width in points
 
-# plt.rcParams['figure.labelsize'] = '3'
-# plt.rcParams['figure.labelweight'] = 'bold'
 # CONFIGURE BOXPLOT TITLE AND LABEL
 plt.rcParams['figure.titlesize'] = '7'
 plt.rcParams['figure.titleweight'] = 'bold'
-# plt.rcParams['figure.figsize'] = [300, 230]
-# plt.rcParams['figure.figsize'] = [10.5, 4.5]
 plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
-plt.rcParams['figure.edgecolor'] = 'red'
+
+plt.rcParams['grid.color'] = 'lightgray'        # grid color
+plt.rcParams['grid.linestyle'] = 'solid'
+plt.rcParams['grid.linewidth'] = 0.3            # in points
+
+# plt.rcParams['figure.edgecolor'] = 'red'
 plt.rcParams['figure.subplot.wspace'] = 0.3     # set subplot width-space
 plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
 plt.rcParams['figure.subplot.bottom'] = 0.05    # set subplot bottom margin
 plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
-
-# CONFIGURE THE LINE WIDTH OF SUBPLOT FRAME LINE
-# plt.rcParams['patch.linewidth'] = 0.5
-# plt.rcParams['patch.edgecolor'] = 'red'
-# plt.rcParams['patch.force_edgecolor'] = True
-plt.rcParams['axes.edgecolor'] = 'lightgray'
-plt.rcParams['axes.linewidth'] = 0.5
-plt.rcParams['axes.labelpad'] = 2.0             # space between label and axis
-
 
 ## ***************************************************************************
 ## * SAVING FIGURES                                                          *
@@ -117,7 +121,7 @@ class WidgetPlotFigure(QWidget):
         self.setLayout(self.ui.gridLayout_main)
         self.ui.tab_plotFigureHolder        
         self.figures: List[tuple[str, Figure]] = []
-        
+
         #debug
         # self.vTabs = VerticalTabWidget
         # self.vTabs.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -149,9 +153,13 @@ class WidgetPlotFigure(QWidget):
         if col_size <= 0:
             return None
 
-        fig, axs = plt.subplots(nrows=row_size, ncols=col_size)
-        plot_idx: int = 0
+        fig, axs = plt.subplots(
+            nrows=row_size, 
+            ncols=col_size, 
+            constrained_layout=True)
+        
         fig.suptitle(figure_config.title)
+        plot_idx: int = 0
 
         for plot in figure_config.subplot_list:
             if not plot.to_plot:
@@ -160,13 +168,30 @@ class WidgetPlotFigure(QWidget):
             list_dataset, list_data_label = plot_dataset.get_groupdata_at_column(
                 groupby_columnname=CSV_Database.DATASET_ID_COLUMN_NAME,
                 need_data_columnname=plot.item_name)
-            
+
             if list_data_label is None or list_dataset is None:
                 continue
-            
+
             axs.flat[plot_idx].boxplot(x=list_dataset, labels=list_data_label)
             axs.flat[plot_idx].set_title(label=plot.title)
+
+            # Set title and add reference line (USL/LSL)
+            if not plot.lowerspec is None:
+                axs.flat[plot_idx].axhline(y=plot.lowerspec)
+            
+            if not plot.upperspec is None:
+                axs.flat[plot_idx].axhline(y=plot.upperspec)
+
             plot_idx += 1
+
+        # resize the figure to fit the maximum size
+        WidgetPlotFigure.figure_sizefitting(
+            figure=fig,
+            nrows=row_size,
+            ncols=col_size,
+            width_height_ratio= Setting.WIDTH_HEIGHT_RATIO,
+            max_width= Setting.MAX_WIDTH,
+            max_height=Setting.MAX_HEIGHT)
 
         return fig
 
@@ -188,11 +213,6 @@ class WidgetPlotFigure(QWidget):
         plt.close('all')
 
         return super().closeEvent(a0)
-    
-
-    # def exportFigures(self) -> None:
-    #     for fig in self.figures:
-    #         print(fig.get
 
     """
     EXTRA FUNCTION
@@ -202,6 +222,50 @@ class WidgetPlotFigure(QWidget):
             fig.savefig(
                 fname=Setting.OUTPUT_DIR + "\\" + figname,
                 pad_inches=0.05)
+            
+
+    @staticmethod
+    def figure_sizefitting(
+            figure: Figure,
+            nrows: int,
+            ncols: int,
+            width_height_ratio: float, # width/height ratio
+            max_width: float,
+            max_height: float
+            ) -> Figure:
+        if max_width <= 0 or max_height <= 0:
+            # raise ValueError("max_width and max_height should be greater than 0")
+            return
+
+        # get current figure width and height
+        figwidth = figure.get_figwidth()
+        figheight = figure.get_figheight()
+
+        # STANDARDIZE SUBPLOT/FIGURE WIDTH PER HEIGHT PROPORTION
+        # calculate size of single subplot
+        subplot_width = figwidth / ncols
+        # subplot_height = figheight / nrows
+
+        # adjust figure height to comply with specified Ratio
+        subplot_height = subplot_width / width_height_ratio
+
+        # calculate figure width and height from subplot size
+        figheight = subplot_height * nrows
+        figwidth = subplot_width * ncols
+
+        # scale figure size to max fit with max_width and max_height
+        width_scale = max_width / figwidth
+        height_scale = max_height / figheight
+        scale = min(width_scale, height_scale)
+
+        new_figwidth = figwidth * scale
+        new_figheight = figheight * scale
+
+        # resize the figure to new size fit with max_width, max_height
+        figure.set_figwidth(new_figwidth)
+        figure.set_figheight(new_figheight)
+
+        return
 
 
 
