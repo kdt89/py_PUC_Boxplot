@@ -7,7 +7,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt # for rendering plot
 from matplotlib import patches
 from matplotlib.figure import Figure
-from view.pyqt6_verticalTabWidget import VerticalTabWidget
 
 from view.ui.PlotFigure_ui import Ui_PlotFigure
 from controller.setting import FigureConfig, Setting
@@ -18,7 +17,7 @@ from model.csv_database import CSV_Database
 Customize Matplotlib style with rcParams
 """
 # CONFIGURE LINE STYLE (Ref LINE of BOX PLOT)
-plt.rcParams['lines.linewidth'] = 0.3
+plt.rcParams['lines.linewidth'] = 0.5
 plt.rcParams['lines.color'] = 'red'
 plt.rcParams['lines.linestyle'] = '--'
 
@@ -40,8 +39,8 @@ plt.rcParams['boxplot.medianprops.color'] = 'black'
 plt.rcParams['boxplot.medianprops.linewidth'] = 0.4
 
 # CONFIGURE SUBPLOT TITLE
-plt.rcParams['axes.edgecolor'] = 'lightgray'
-plt.rcParams['axes.linewidth'] = 0.2
+plt.rcParams['axes.edgecolor'] = 'gray'
+plt.rcParams['axes.linewidth'] = 0.3
 plt.rcParams['axes.labelpad'] = 2.0             # space between label and axis
 plt.rcParams['axes.titlecolor'] = 'black'       # Set color for subplot title
 plt.rcParams['axes.titleweight'] = 'bold'     # Set font weight for subplot title
@@ -64,17 +63,17 @@ plt.rcParams['ytick.major.size'] = 1.5          # major tick width in points
 # CONFIGURE BOXPLOT TITLE AND LABEL
 plt.rcParams['figure.titlesize'] = '7'
 plt.rcParams['figure.titleweight'] = 'bold'
-plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
+# plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
 
 plt.rcParams['grid.color'] = 'lightgray'        # grid color
 plt.rcParams['grid.linestyle'] = 'solid'
-plt.rcParams['grid.linewidth'] = 0.3            # in points
+plt.rcParams['grid.linewidth'] = 0.2            # in points
 
 # plt.rcParams['figure.edgecolor'] = 'red'
-plt.rcParams['figure.subplot.wspace'] = 0.3     # set subplot width-space
-plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
-plt.rcParams['figure.subplot.bottom'] = 0.05    # set subplot bottom margin
-plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
+# plt.rcParams['figure.subplot.wspace'] = 0.3     # set subplot width-space
+# plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
+# plt.rcParams['figure.subplot.bottom'] = 0.05    # set subplot bottom margin
+# plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
 
 ## ***************************************************************************
 ## * SAVING FIGURES                                                          *
@@ -121,11 +120,6 @@ class WidgetPlotFigure(QWidget):
         self.setLayout(self.ui.gridLayout_main)
         self.ui.tab_plotFigureHolder        
         self.figures: List[tuple[str, Figure]] = []
-
-        #debug
-        # self.vTabs = VerticalTabWidget
-        # self.vTabs.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        # self.ui.layoutMain.addWidget(self.ui.tabWidget)
 
 
     def add_page(
@@ -182,6 +176,9 @@ class WidgetPlotFigure(QWidget):
             if not plot.upperspec is None:
                 axs.flat[plot_idx].axhline(y=plot.upperspec)
 
+            # axs.flat[plot_idx].patch.set_edgecolor('black')  
+            # axs.flat[plot_idx].patch.set_linewidth(1)  
+
             plot_idx += 1
 
         # resize the figure to fit the maximum size
@@ -213,6 +210,7 @@ class WidgetPlotFigure(QWidget):
         plt.close('all')
 
         return super().closeEvent(a0)
+
 
     """
     EXTRA FUNCTION
