@@ -7,6 +7,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt # for rendering plot
 from matplotlib import patches
 from matplotlib.figure import Figure
+from matplotlib.axes import Axes
+from matplotlib import transforms as mtrans
+import numpy as np
 
 from view.ui.PlotFigure_ui import Ui_PlotFigure
 from controller.setting import FigureConfig, Setting
@@ -63,7 +66,7 @@ plt.rcParams['ytick.major.size'] = 1.5          # major tick width in points
 # CONFIGURE BOXPLOT TITLE AND LABEL
 plt.rcParams['figure.titlesize'] = '7'
 plt.rcParams['figure.titleweight'] = 'bold'
-# plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
+plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
 
 plt.rcParams['grid.color'] = 'lightgray'        # grid color
 plt.rcParams['grid.linestyle'] = 'solid'
@@ -147,16 +150,12 @@ class WidgetPlotFigure(QWidget):
         if col_size <= 0:
             return None
 
-        fig, axs = plt.subplots(
-            nrows=row_size, 
-            ncols=col_size, 
-            constrained_layout=True)
-        
+        fig, axs = plt.subplots(nrows=row_size, ncols=col_size)        
         fig.suptitle(figure_config.title)
         plot_idx: int = 0
 
         for plot in figure_config.subplot_list:
-            if not plot.to_plot:
+            if plot.to_plot is False:
                 continue
         
             list_dataset, list_data_label = plot_dataset.get_groupdata_at_column(
@@ -176,12 +175,9 @@ class WidgetPlotFigure(QWidget):
             if not plot.upperspec is None:
                 axs.flat[plot_idx].axhline(y=plot.upperspec)
 
-            # axs.flat[plot_idx].patch.set_edgecolor('black')  
-            # axs.flat[plot_idx].patch.set_linewidth(1)  
-
             plot_idx += 1
 
-        # resize the figure to fit the maximum size
+        # Standardize the figure size to fit MS PPT report
         WidgetPlotFigure.figure_sizefitting(
             figure=fig,
             nrows=row_size,
@@ -189,6 +185,9 @@ class WidgetPlotFigure(QWidget):
             width_height_ratio= Setting.WIDTH_HEIGHT_RATIO,
             max_width= Setting.MAX_WIDTH,
             max_height=Setting.MAX_HEIGHT)
+
+        # Add bounding box to figure
+        WidgetPlotFigure.drawFigureGrid(figure=fig, axes=axs)
 
         return fig
 
@@ -221,6 +220,7 @@ class WidgetPlotFigure(QWidget):
                 fname=Setting.OUTPUT_DIR + "\\" + figname,
                 pad_inches=0.05)
             
+
 
     @staticmethod
     def figure_sizefitting(
@@ -266,6 +266,27 @@ class WidgetPlotFigure(QWidget):
         return
 
 
+    @staticmethod
+    def drawFigureGrid(figure: Figure, axes: Axes) -> None:
+        # rearange the axes for no overlap
+        figure.tight_layout()
+
+        # Get the bounding boxes of the axes including text decorations
+        renderer = figure.canvas.get_renderer()
+        get_bbox = lambda ax: ax.get_tightbbox(renderer).transformed(figure.transFigure.inverted())
+        bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(axes.shape)
+
+        #Get the minimum and maximum extent, get the coordinate half-way between those
+        ymax = np.array(list(map(lambda b: b.y1, bboxes.flat))).reshape(axes.shape).max(axis=1)
+        ymin = np.array(list(map(lambda b: b.y0, bboxes.flat))).reshape(axes.shape).min(axis=1)
+        ys = np.c_[ymax[1:], ymin[:-1]].mean(axis=1)
+
+        # Draw a horizontal lines at those coordinates
+        for y in ys:
+            line = plt.Line2D([0,1],[y,y], transform=figure.transFigure, color="black")
+            figure.add_artist(line)
+
+        return None
 
 
 

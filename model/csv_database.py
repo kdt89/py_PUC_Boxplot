@@ -56,7 +56,7 @@ class CSV_Database():
         for filepath in filepaths:
             filename = path.splitext(path.basename(filepath))[0] # splitext() return (filename, extension)
             # Notice reading file:
-            callbackMessage(f"Reading file:  {filename}")
+            callbackMessage(f"Reading file:  {path.basename(filepath)}")
 
             df_extracted_from_file = pd.DataFrame()
             df_current_chunk = pd.DataFrame()

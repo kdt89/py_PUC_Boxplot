@@ -41,10 +41,15 @@ def resize_event(event):
     fig.tight_layout()
     canvas.draw()
 
+
+
+
 # Connect the resize event of the main widget to the resize_event function
 main_widget.resizeEvent = resize_event
 
 # Show the main widget
 main_widget.show()
+
+
 
 sys.exit(app.exec())

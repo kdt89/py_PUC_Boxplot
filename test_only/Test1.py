@@ -17,12 +17,12 @@ class Window(QDialog):
 		super(Window, self).__init__(parent)
 
 		# a figure instance to plot on
-		self.figure = plt.figure()
+		self.fig = plt.figure()
 
 		# this is the Canvas Widget that 
 		# displays the 'figure'it takes the
 		# 'figure' instance as a parameter to __init__
-		self.canvas = FigureCanvas(self.figure)
+		self.canvas = FigureCanvas(self.fig)
 
 		# this is the Navigation widget
 		# it takes the Canvas widget and a parent
@@ -59,13 +59,17 @@ class Window(QDialog):
 		# self.figure.clear()
 
 		# create an axis
-		ax = self.figure.add_subplot(2, 2, self.plot_pos)
+		ax = self.fig.add_subplot(2, 2, self.plot_pos)
 		
 		# plot data
 		ax.boxplot(data, '*-')
 
 		# refresh canvas
 		self.canvas.draw()
+
+		print(self.fig.transFigure)
+		print("inverting: ")
+		print(self.fig.transFigure.inverted())
 
 		self.plot_pos += 1
 

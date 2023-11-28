@@ -1,30 +1,37 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.transforms as mtrans
 
-x = np.linspace(0, 2 * np.pi, 100)
-y = 2 * np.sin(x)
+fig, axes = plt.subplots(3,2, squeeze=False)
 
-# Constrained layout makes sure the labels don't overlap the axes.
-fig, (ax0, ax1, ax2) = plt.subplots(nrows=3, layout='constrained')
+for i, ax in enumerate(axes.flat):
+    ax.plot([1,2])
+    ax.set_title('Title ' + str(i+1))
+    ax.set_xlabel('xaxis')
+    ax.set_ylabel('yaxis')
+    ax.get_tightbbox()
 
-ax0.plot(x, y)
-ax0.set_title('normal spines')
+# rearange the axes for no overlap
+fig.tight_layout()
 
-ax1.plot(x, y)
-ax1.set_title('bottom-left spines')
+# Get the bounding boxes of the axes including text decorations
+r = fig.canvas.get_renderer()
+get_bbox = lambda ax: ax.get_tightbbox(r).transformed(fig.transFigure.inverted())
+bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(axes.shape)
 
-# Hide the right and top spines
-ax1.spines.right.set_visible(False)
-ax1.spines.top.set_visible(False)
+#Get the minimum and maximum extent, get the coordinate half-way between those
+ymax = np.array(list(map(lambda b: b.y1, bboxes.flat))).reshape(axes.shape).max(axis=1)
+ymin = np.array(list(map(lambda b: b.y0, bboxes.flat))).reshape(axes.shape).min(axis=1)
+ys = np.c_[ymax[1:], ymin[:-1]].mean(axis=1)
 
-ax2.plot(x, y)
-ax2.set_title('spines with bounds limited to data range')
+# Draw a horizontal lines at those coordinates
+for y in ys:
+    line = plt.Line2D([0,1],[y,y], transform=fig.transFigure, color="black")
+    fig.add_artist(line)
 
-# Only draw spines for the data range, not in the margins
-ax2.spines.bottom.set_bounds(x.min(), x.max())
-ax2.spines.left.set_bounds(y.min(), y.max())
-# Hide the right and top spines
-ax2.spines.right.set_visible(False)
-ax2.spines.top.set_visible(False)
+
 
 plt.show()
+
+
+
