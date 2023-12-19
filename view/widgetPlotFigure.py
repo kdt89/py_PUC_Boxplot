@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt # for rendering plot
 from matplotlib import patches
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
+from matplotlib.axis import Axis
 from matplotlib import transforms as mtrans
 import numpy as np
 
@@ -157,7 +158,8 @@ class WidgetPlotFigure(QWidget):
         for plot in figure_config.subplot_list:
             if plot.to_plot is False:
                 continue
-        
+            
+            ax = axs.flat[plot_idx]
             list_dataset, list_data_label = plot_dataset.get_groupdata_at_column(
                 groupby_columnname=CSV_Database.DATASET_ID_COLUMN_NAME,
                 need_data_columnname=plot.item_name)
@@ -165,16 +167,17 @@ class WidgetPlotFigure(QWidget):
             if list_data_label is None or list_dataset is None:
                 continue
 
-            axs.flat[plot_idx].boxplot(x=list_dataset, labels=list_data_label)
-            axs.flat[plot_idx].set_title(label=plot.title)
+            ax.boxplot(x=list_dataset, labels=list_data_label)
+            ax.set_title(label=plot.title)
 
             # Set title and add reference line (USL/LSL)
             if not plot.lowerspec is None:
-                axs.flat[plot_idx].axhline(y=plot.lowerspec)
+                ax.axhline(y=plot.lowerspec)
             
             if not plot.upperspec is None:
-                axs.flat[plot_idx].axhline(y=plot.upperspec)
+                ax.axhline(y=plot.upperspec)
 
+            # WidgetPlotFigure.drawAxisBbox(figure=fig, axis=ax)
             plot_idx += 1
 
         # Standardize the figure size to fit MS PPT report
@@ -187,7 +190,7 @@ class WidgetPlotFigure(QWidget):
             max_height=Setting.MAX_HEIGHT)
 
         # Add bounding box to figure
-        WidgetPlotFigure.drawFigureGrid(figure=fig, axes=axs)
+        WidgetPlotFigure.drawFigureBbox(figure=fig, axes=axs)
 
         return fig
 
@@ -220,7 +223,6 @@ class WidgetPlotFigure(QWidget):
                 fname=Setting.OUTPUT_DIR + "\\" + figname,
                 pad_inches=0.05)
             
-
 
     @staticmethod
     def figure_sizefitting(
@@ -267,18 +269,18 @@ class WidgetPlotFigure(QWidget):
 
 
     @staticmethod
-    def drawFigureGrid(figure: Figure, axes: Axes) -> None:
+    def drawFigureBbox(figure: Figure, axes: Axes) -> None:
         # rearange the axes for no overlap
-        figure.tight_layout()
+        # figure.tight_layout()
 
         # Get the bounding boxes of the axes including text decorations
         renderer = figure.canvas.get_renderer()
         get_bbox = lambda ax: ax.get_tightbbox(renderer).transformed(figure.transFigure.inverted())
-        bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(axes.shape)
+        bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(np.atleast_2d(axes).shape)
 
         #Get the minimum and maximum extent, get the coordinate half-way between those
-        ymax = np.array(list(map(lambda b: b.y1, bboxes.flat))).reshape(axes.shape).max(axis=1)
-        ymin = np.array(list(map(lambda b: b.y0, bboxes.flat))).reshape(axes.shape).min(axis=1)
+        ymax = np.array(list(map(lambda b: b.y1, bboxes.flat))).reshape(np.atleast_2d(axes).shape).max(axis=1)
+        ymin = np.array(list(map(lambda b: b.y0, bboxes.flat))).reshape(np.atleast_2d(axes).shape).min(axis=1)
         ys = np.c_[ymax[1:], ymin[:-1]].mean(axis=1)
 
         # Draw a horizontal lines at those coordinates
@@ -289,4 +291,24 @@ class WidgetPlotFigure(QWidget):
         return None
 
 
+    @staticmethod
+    def drawAxisBbox(figure: Figure, axis: Axis) -> None:
+        # rearange the axes for no overlap
+        # figure.tight_layout()
 
+        # Get the bounding boxes of the axes including text decorations
+        renderer = figure.canvas.get_renderer()
+        bbox = axis.get_tightbbox(renderer).transformed(figure.transFigure.inverted())
+
+        rec = patches.Rectangle(
+            xy=(bbox.x0, bbox.y0),
+            width=bbox.width,
+            height=bbox.height,
+            lw=1,
+            edgecolor="red",
+            facecolor="none",
+            fill=False
+        )
+        axis.add_patch(rec)
+
+        return None

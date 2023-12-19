@@ -11,7 +11,7 @@ Main Program
 if __name__ == "__main__":
     # UI intialize
     app = QApplication(sys.argv)
-    # generate main View object
+    # generate main View objectpip up
     view = View()
     # generate main program data Model
     model = Model()
