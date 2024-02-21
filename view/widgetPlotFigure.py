@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QWidget, QFormLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # for embedded plot to PyQt
 import matplotlib.pyplot as plt # for rendering plot
 from matplotlib import patches
+from matplotlib import ticker
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 from matplotlib.axis import Axis
@@ -47,24 +48,23 @@ plt.rcParams['axes.edgecolor'] = 'gray'
 plt.rcParams['axes.linewidth'] = 0.3
 plt.rcParams['axes.labelpad'] = 2.0             # space between label and axis
 plt.rcParams['axes.titlecolor'] = 'black'       # Set color for subplot title
-plt.rcParams['axes.titleweight'] = 'bold'     # Set font weight for subplot title
-plt.rcParams['axes.titlesize'] = 8              # Set font size for subplot title
+# plt.rcParams['axes.titleweight'] = 'bold'     # Set font weight for subplot title
+plt.rcParams['axes.titlesize'] = 6              # Set font size for subplot title
 plt.rcParams['axes.titlepad'] = 2.5             # pad between axes and title in points
 plt.rcParams['axes.grid'] = True                
 
 plt.rcParams['polaraxes.grid'] = True
-
-
 plt.rcParams['xtick.labelcolor'] = 'black'      # set boxplot x-axis label color
-plt.rcParams['xtick.labelsize'] = 8             # set boxplot x-axis label font size
+plt.rcParams['xtick.labelsize'] = 5             # set boxplot x-axis label font size
 plt.rcParams['xtick.bottom'] = False
 plt.rcParams['xtick.major.pad'] = 0             # distance to major tick label in points
 
-plt.rcParams['ytick.labelsize'] = 8             # set boxplot y-axis label font size
+plt.rcParams['ytick.labelsize'] = 5             # set boxplot y-axis label font size
 plt.rcParams['ytick.major.width'] = 0.2         # major tick width in points
 plt.rcParams['ytick.major.size'] = 1.5          # major tick width in points
 
 # CONFIGURE BOXPLOT TITLE AND LABEL
+plt.rcParams['figure.subplot.hspace'] = 0.4
 plt.rcParams['figure.titlesize'] = '7'
 plt.rcParams['figure.titleweight'] = 'bold'
 plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
@@ -72,12 +72,6 @@ plt.rcParams['figure.dpi'] = 200                # fit full-screen viewing
 plt.rcParams['grid.color'] = 'lightgray'        # grid color
 plt.rcParams['grid.linestyle'] = 'solid'
 plt.rcParams['grid.linewidth'] = 0.2            # in points
-
-# plt.rcParams['figure.edgecolor'] = 'red'
-# plt.rcParams['figure.subplot.wspace'] = 0.3     # set subplot width-space
-# plt.rcParams['figure.subplot.hspace'] = 0.4     # set subplot height-space
-# plt.rcParams['figure.subplot.bottom'] = 0.05    # set subplot bottom margin
-# plt.rcParams['figure.subplot.left'] = 0.08      # set subplot left margin
 
 ## ***************************************************************************
 ## * SAVING FIGURES                                                          *
@@ -89,11 +83,6 @@ plt.rcParams['savefig.dpi'] = 300                   # figure dots per inch or 'f
 plt.rcParams['savefig.facecolor'] = 'auto'          # figure face color when saving
 plt.rcParams['savefig.edgecolor'] = 'auto'          # figure edge color when saving
 plt.rcParams['savefig.format'] = 'png'         # {png, ps, pdf, svg}
-# savefig.pad_inches:  0.1       # padding to be used, when bbox is set to 'tight'
-# default directory in savefig dialog, gets updated after
-# interactive saves, unless set to the empty string (i.e.
-# the current directory); use '.' to start at the current
-# directory but update after interactive saves
 plt.rcParams['savefig.bbox'] = 'tight'
 plt.rcParams['savefig.transparent'] = False         # whether figures are saved with a transparent background by default
 plt.rcParams['savefig.orientation'] = 'portrait'    # orientation of saved figure, for PostScript output only
@@ -123,7 +112,7 @@ class WidgetPlotFigure(QWidget):
         self.ui.setupUi(self)
         self.setLayout(self.ui.gridLayout_main)
         self.ui.tab_plotFigureHolder        
-        self.figures: List[tuple[str, Figure]] = []
+        self.list_figures: List[tuple[str, Figure]] = []
 
 
     def add_page(
@@ -152,7 +141,7 @@ class WidgetPlotFigure(QWidget):
             return None
 
         fig, axs = plt.subplots(nrows=row_size, ncols=col_size)        
-        fig.suptitle(figure_config.title)
+        # fig.suptitle(figure_config.title)
         plot_idx: int = 0
 
         for plot in figure_config.subplot_list:
@@ -168,14 +157,17 @@ class WidgetPlotFigure(QWidget):
                 continue
 
             ax.boxplot(x=list_dataset, labels=list_data_label)
+            # set y-axis label tick format (float to 2 decimal places)
             ax.set_title(label=plot.title)
 
             # Set title and add reference line (USL/LSL)
-            if not plot.lowerspec is None:
-                ax.axhline(y=plot.lowerspec)
+            if (plot.lowerspec != None and isinstance(plot.lowerspec, (int, float))):
+                ax.axhline(y=plot.lowerspec, linewidth=0.4)
             
-            if not plot.upperspec is None:
-                ax.axhline(y=plot.upperspec)
+            if (plot.upperspec != None and isinstance(plot.upperspec, (int, float))):
+                ax.axhline(y=plot.upperspec, linewidth=0.4)
+                yticklabel_format = "{{x:.{0}f}}".format(len(str(plot.upperspec).split('.')[1]))
+                ax.yaxis.set_major_formatter(ticker.StrMethodFormatter(yticklabel_format))
 
             # WidgetPlotFigure.drawAxisBbox(figure=fig, axis=ax)
             plot_idx += 1
@@ -195,15 +187,26 @@ class WidgetPlotFigure(QWidget):
         return fig
 
 
+        """
+        Build plot pages based on the given pages configuration and plot dataset.
+
+        Parameters:
+            pages_config (List[FigureConfig]): A list of FigureConfig objects representing the configuration for each page.
+            plot_dataset (CSV_Database): The CSV database used for plotting.
+
+        Returns:
+            None: This function does not return anything.
+        """
     def build_plot_pages(
             self,
             pages_config: List[FigureConfig],
             plot_dataset: CSV_Database
-    ) -> None:
+            ) -> None:
+
         for page_config in pages_config:
             new_fig = self.build_subplot_figure(plot_dataset=plot_dataset, figure_config=page_config)
             self.add_page(add_figure=new_fig, title=page_config.title)
-            self.figures.append((page_config.name, new_fig))
+            self.list_figures.append((page_config.name, new_fig))
 
 
     def closeEvent(self, a0: QtGui.QCloseEvent | None) -> None:
@@ -218,11 +221,13 @@ class WidgetPlotFigure(QWidget):
     EXTRA FUNCTION
     """
     def exportFigure(self) -> None:
-        for figname, fig in self.figures:
-            fig.savefig(
-                fname=Setting.OUTPUT_DIR + "\\" + figname,
-                pad_inches=0.05)
+        for figname, fig in self.list_figures:
+            figname = Setting.OUTPUT_DIR + "\\" + figname,
+            fig.savefig(fname=figname, pad_inches=0.05)
             
+            # save figure name to list for future use
+            Setting.LIST_FIGURE_IMAGES.append(figname)
+
 
     @staticmethod
     def figure_sizefitting(
@@ -285,7 +290,12 @@ class WidgetPlotFigure(QWidget):
 
         # Draw a horizontal lines at those coordinates
         for y in ys:
-            line = plt.Line2D([0,1],[y,y], transform=figure.transFigure, color="black")
+            line = plt.Line2D(
+                [0,1],[y,y],
+                linestyle = 'solid',
+                linewidth = 0.1,
+                transform = figure.transFigure, 
+                color = 'black')
             figure.add_artist(line)
 
         return None
@@ -307,8 +317,7 @@ class WidgetPlotFigure(QWidget):
             lw=1,
             edgecolor="red",
             facecolor="none",
-            fill=False
-        )
+            fill=False)
         axis.add_patch(rec)
 
         return None

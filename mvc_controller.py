@@ -42,9 +42,6 @@ class Controller(Observer): # Controller in MVC pattern
     DEFIND METHODS FOR INTERAL USE WITHIN CONTROLLER MODULE
     """
     
-
-
-
     """
     Define methods execute when occuring Event from View
     """
@@ -59,14 +56,14 @@ class Controller(Observer): # Controller in MVC pattern
             self.view.Main.updateMessage("There are no data files in Input directory") # status bar
             return None
 
-        self.export_data()        
+        self.export_database()        
         self.build_boxplot()
 
 
     '''
     Function to export data in Model to output folder
     '''
-    def export_data(self)->None:
+    def export_database(self)->None:
         self.model.database.export_data(Setting.OUTPUT_DIR)
 
 
@@ -77,6 +74,9 @@ class Controller(Observer): # Controller in MVC pattern
             self.view.PlotFigure.build_plot_pages(Setting.plotpages, self.model.database)
             self.view.PlotFigure.exportFigure()
             self.view.PlotFigure.showMaximized()
+
+
+
 
 
     """ Grab matched files in Input folder and pass to Model object to import to database """

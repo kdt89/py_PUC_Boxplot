@@ -17,15 +17,25 @@ class PlotConfig:
         self, 
         name: str = "",
         title: str = "",
-        lowerspec: float = -1,
-        upperspec: float = -1,
+        lowerspec: float = -1.0,
+        upperspec: float = -1.0,
         to_plot: bool = False,
         ):
+
         self.item_name = name
         self.title = title
-        self.lowerspec = lowerspec
-        self.upperspec = upperspec
         self.to_plot = to_plot
+
+        # validate lowerspec is 'nan'? If it is 'nan' then pass 'None' to constructor
+        if lowerspec != lowerspec: # Nan will return true at comparison to itself
+            self.lowerspec = None
+        else:
+            self.lowerspec = lowerspec
+
+        if upperspec != upperspec: # Nan will return true at comparison to itself
+            self.upperspec = None
+        else:
+            self.upperspec = upperspec
 
 
 class FigureConfig:
@@ -80,7 +90,8 @@ class Setting:
     INPUT_DIR = os.path.abspath("Input")
     OUTPUT_DIR = os.path.abspath("Output")
     PLOT_PAGES_GROUPBY_COLUMN_NAME: str = 'Figure'
-    
+    LIST_FIGURE_IMAGES: List[str] = []
+
     LIST_IMPORT_DATA_COLUMN_NAMES: List[str] = []
     DATA_ROW_TO_SKIPREAD: List[int] = [1, 2]
     plotpages: List[FigureConfig] = []
@@ -126,11 +137,11 @@ class Setting:
 
                 for row in group_data.itertuples():
                     subplot = PlotConfig(
-                        name= str(row[1]), # ['Plot Item']
-                        title= str(row[2]), # 'Plot Title'
-                        lowerspec= float(row[3]), # 'LSL'
-                        upperspec= float(row[4]), # 'USL'
-                        to_plot= bool(row[5])) # 'To Plot'
+                        name=str(row[1]), # ['Plot Item']
+                        title=str(row[2]), # 'Plot Title'
+                        lowerspec=float(row[3]), # 'LSL'
+                        upperspec=float(row[4]), # 'USL'
+                        to_plot=bool(row[5])) # 'To Plot'
                     
                     # Adding ['Plot Item'] value to import_data_column_list, then Model object use this for import CSV data file
                     Setting.LIST_IMPORT_DATA_COLUMN_NAMES.append(str(row[1]))

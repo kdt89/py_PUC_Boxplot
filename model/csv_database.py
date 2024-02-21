@@ -10,7 +10,7 @@ from os import path
 # Module to store database
 class CSV_Database():
 
-    DATASET_ID_COLUMN_NAME = "DATA_FILENAME"
+    DATASET_ID_COLUMN_NAME: str = "DATA_FILENAME"
 
     # Attributes
     def __init__(self) -> None:
@@ -20,10 +20,7 @@ class CSV_Database():
     @property
     def size(self) -> tuple[int, int]:
         return len(self._csv_data.index), len(self._csv_data.columns)
-    
-    
-    # def clearDatabase(self) -> None:
-    #     self._csv_data = DataFrame(data=None)
+
 
     def export_data(self, output_dir) -> None:
         if self._csv_data.empty:
@@ -101,14 +98,15 @@ class CSV_Database():
 
             # For later use when making plot, we need to categorize the dataset by its name,...
             # by adding extra column [DATA_FILENAME] with row value is the name of file we extract data from
-            data_filename = pd.Series(
+            df_series_asfilename = pd.Series(
                 data=filename,
+                dtype='string',
                 index=range(0, df_extracted_from_file.shape[0])) # range from 0 to number of rows of 'df_extracted_from_file'
         
             df_extracted_from_file.insert(
                 loc=0, # insert new column as first (left-most) column
-                column = CSV_Database.DATASET_ID_COLUMN_NAME,
-                value=data_filename)
+                column=CSV_Database.DATASET_ID_COLUMN_NAME,
+                value=df_series_asfilename.values)
 
             # append the dataframe extracted from file to total list dataframe
             if not df_extracted_from_file.empty:
