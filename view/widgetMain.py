@@ -6,7 +6,6 @@ from PyQt6.QtWidgets import QMainWindow
 class WidgetMain(QMainWindow):
 
     # message = ""
-
     # update status bar message
     def updateSttBar(self, message: str):
         self.ui.statusbar.showMessage(message, 1000)
@@ -23,3 +22,7 @@ class WidgetMain(QMainWindow):
         # GUI Main form
         self.ui = Ui_Main()
         self.ui.setupUi(self)
+
+        self.ui.btnAbout.clicked.connect(self.ui.actionShowAbout)
+        self.ui.btnMakePlot.clicked.connect(self.ui.actionMakePlot)
+        self.ui.btnPreferences.clicked.connect(self.ui.actionShowPreferences)

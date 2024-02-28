@@ -2,9 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-
 from pptx import Presentation
 from pptx.util import Inches
+from pptx.enum.shapes import MSO_SHAPE_TYPE
 
 
 column1 = 'DATA_FILENAME'
@@ -35,32 +35,33 @@ for groupname, groupdata in df_plot_groups:
 
 plt.boxplot(x=plot_data_array, labels=plot_data_labels)
 plt.savefig('boxplot.png', transparent=True)
-plt.show()
+
 
 # Open the PPT
-ppt_output = Presentation('Template_Report.pptx')
+prs = Presentation('Template_Report.pptx')
 
 # Select the slide to be editted
-slide = ppt_output.slides[0]
+slide = prs.slides[0]
 
-# Remove the old figures
-shapes = slide.shapes
-for shape in shapes:
-    #print(shape.shape_type)
-    if shape.shape_type == 13: # 13 = PICTURE
-        shapes.element.remove(shape.element)
+for slide in prs.slides:
+    # Remove the old figures
+    shapes = slide.shapes
+    for shape in shapes:
+        match shape.shape_type:
+            case MSO_SHAPE_TYPE.GROUP | MSO_SHAPE_TYPE.PICTURE | MSO_SHAPE_TYPE.TABLE:
+                shapes.element.remove(shape.element)
 
 # Add the new figures
-plot_img_path = 'boxplot.png'
-plot_img = slide.shapes.add_picture(plot_img_path, Inches(0.40), Inches(4.85), width=Inches(5.30))
+# plot_img_path = 'boxplot.png'
+# plot_img = slide.shapes.add_picture(plot_img_path, Inches(0.40), Inches(4.85), width=Inches(5.30))
 
-# Send the figures to the back
-ref_element = slide.shapes[0]._element
-ref_element.addprevious(plot_img._element)
+# # Send the figures to the back
+# ref_element = slide.shapes[0]._element
+# ref_element.addprevious(plot_img._element)
 
 # Save the PPT
-ppt_output.save('Template_Report_new.pptx')
-
+prs.save('Template_Report_new.pptx')
+plt.show()
 
 
 def df_to_list_array(

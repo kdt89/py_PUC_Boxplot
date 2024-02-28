@@ -5,7 +5,6 @@ from controller.setting import Setting
 from controller.workstatus import Status
 from util.observer import Observer, Subject
 
-
 class Controller(Observer): # Controller in MVC pattern
 
     def __init__(self, model: mvc_model.Model, view: mvc_view.View):
@@ -35,17 +34,19 @@ class Controller(Observer): # Controller in MVC pattern
     Binding PyQt signal & slot
     """
     def bindSignalAndSlot(self):
-        self.view.Main.ui.btnMakePlot.clicked.connect(self.btnMakePlot_actions)
-        self.view.Main.ui.btnAbout.clicked.connect(self.view.Main.ui.actionShowAbout.trigger)
+        self.view.Main.ui.actionMakePlot.triggered.connect(self.btnMakePlot_action)
+        # self.view.Main.ui.btnAbout.clicked.connect(self.view.Main.ui.actionShowAbout.trigger)
+        # self.view.Main.ui.actionShowAbout.triggered.connect(self.view.Main.ui.actionShowAbout.trigger)
+
 
     """
     DEFIND METHODS FOR INTERAL USE WITHIN CONTROLLER MODULE
     """
-    
+
     """
     Define methods execute when occuring Event from View
     """
-    def btnMakePlot_actions(self):
+    def btnMakePlot_action(self):
         # Notice to UI
         self.view.Main.updateMessage(f"\n <b>Making Plot from data files in Input directory</b>...")
         Setting.update()
@@ -72,11 +73,8 @@ class Controller(Observer): # Controller in MVC pattern
         
         if self.view.PlotFigure != None:
             self.view.PlotFigure.build_plot_pages(Setting.plotpages, self.model.database)
-            self.view.PlotFigure.exportFigure()
+            self.view.PlotFigure.exportFigure2Image()
             self.view.PlotFigure.showMaximized()
-
-
-
 
 
     """ Grab matched files in Input folder and pass to Model object to import to database """

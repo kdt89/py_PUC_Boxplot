@@ -16,6 +16,7 @@ import numpy as np
 from view.ui.PlotFigure_ui import Ui_PlotFigure
 from controller.setting import FigureConfig, Setting
 from model.csv_database import CSV_Database
+from util.image_embed_pptx import ImageEmbedPptx
 
 
 """
@@ -111,7 +112,8 @@ class WidgetPlotFigure(QWidget):
         self.ui = Ui_PlotFigure()
         self.ui.setupUi(self)
         self.setLayout(self.ui.gridLayout_main)
-        self.ui.tab_plotFigureHolder        
+        # self.ui.tab_plotFigureHolder
+        self.bindingSignal2Slot()
         self.list_figures: List[tuple[str, Figure]] = []
 
 
@@ -213,20 +215,24 @@ class WidgetPlotFigure(QWidget):
         # intentionally close all current existing matplotlib.pyplot figures explicitly
         # to save memory and prevent Matplotlib module from warning about unclosed figures
         plt.close('all')
-
         return super().closeEvent(a0)
 
 
     """
     EXTRA FUNCTION
     """
-    def exportFigure(self) -> None:
+    def exportFigure2Image(self) -> None:
         for figname, fig in self.list_figures:
-            figname = Setting.OUTPUT_DIR + "\\" + figname,
+            figname = Setting.OUTPUT_DIR + "\\" + figname
             fig.savefig(fname=figname, pad_inches=0.05)
-            
             # save figure name to list for future use
             Setting.LIST_FIGURE_IMAGES.append(figname)
+
+
+    def exportFigure2PPTX(self) -> None:
+        img2pptx = ImageEmbedPptx()
+        img2pptx.clearAllShapes()
+        img2pptx.exportFigures2PPTX()
 
 
     @staticmethod
@@ -321,3 +327,7 @@ class WidgetPlotFigure(QWidget):
         axis.add_patch(rec)
 
         return None
+
+
+    def bindingSignal2Slot(self) -> None:
+        self.ui.btn_exportPPT.clicked.connect(self.ui.actionExportGraph2PPTX.trigger)

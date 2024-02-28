@@ -144,6 +144,17 @@ QPushButton:hover {
     </item>
    </layout>
   </widget>
+  <action name="actionExportGraph2PPTX">
+   <property name="text">
+    <string>ExportGraph2PPTX</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Graph to MS PowerPoint</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

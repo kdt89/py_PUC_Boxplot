@@ -8,3 +8,6 @@ class WidgetAbout(QWidget):
         super(WidgetAbout, self).__init__()
         self.ui = Ui_About()
         self.ui.setupUi(self)
+
+        # binding UI element trigger signal to action
+        self.ui.btnOK_ToClose.clicked.connect(self.close)

@@ -65,7 +65,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btnClose">
+  <widget class="QPushButton" name="btnOK_ToClose">
    <property name="geometry">
     <rect>
      <x>190</x>
@@ -82,7 +82,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
  <resources/>
  <connections>
   <connection>
-   <sender>btnClose</sender>
+   <sender>btnOK_ToClose</sender>
    <signal>clicked()</signal>
    <receiver>About</receiver>
    <slot>close()</slot>
