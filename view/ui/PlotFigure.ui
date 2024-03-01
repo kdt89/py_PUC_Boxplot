@@ -58,7 +58,7 @@
      </spacer>
     </item>
     <item row="0" column="0">
-     <widget class="QPushButton" name="btn_exportPPT">
+     <widget class="QPushButton" name="btn_exportPPTX">
       <property name="enabled">
        <bool>true</bool>
       </property>

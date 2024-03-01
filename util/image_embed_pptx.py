@@ -43,11 +43,9 @@ class ImageEmbedPptx:
             return
 
         # Push images to PPT file
-        max_slides = len(self.ppt_output.slides)
         i = 0
-
         for img in self.LIST_IMAGE_FILEPATHS:
-            if i >= max_slides:
+            if i >= len(self.pptx.slides):
                 self.pptx.slides.add_slide(self.pptx.layouts[0])
             
             slide_current = self.pptx.slides[i]
@@ -60,4 +58,5 @@ class ImageEmbedPptx:
             i += 1
 
         # Save the PPT
-        self.pptx.save(self.PPTX_OUTPUT_NAME)
+        pptx_output_file = Setting.OUTPUT_DIR + "\\" + self.PPTX_OUTPUT_NAME
+        self.pptx.save(pptx_output_file)

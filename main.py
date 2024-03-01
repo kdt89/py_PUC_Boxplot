@@ -11,11 +11,9 @@ Main Program
 if __name__ == "__main__":
     # UI intialize
     app = QApplication(sys.argv)
-    # generate main View objectpip up
+
     view = View()
-    # generate main program data Model
     model = Model()
-    # Let Controller setup the Logic flow
     mainController = Controller(model=model, view=view)
 
     sys.exit(app.exec())  # loop in ui event

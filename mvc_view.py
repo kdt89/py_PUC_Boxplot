@@ -18,7 +18,7 @@ class View():
         
         # Binding Menu action to slots
         self.Main.ui.actionShowAbout.triggered.connect(self.About.show)
-        self.PlotFigure.ui.actionExportGraph2PPTX.triggered.connect(self.PlotFigure.exportFigure2PPTX)
+        # self.PlotFigure.ui.actionExportGraph2PPTX.triggered.connect(self.PlotFigure.exportFigure2PPTX)
 
         # Display main window
         self.Main.show()

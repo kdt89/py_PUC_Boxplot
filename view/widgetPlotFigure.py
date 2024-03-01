@@ -223,13 +223,14 @@ class WidgetPlotFigure(QWidget):
     """
     def exportFigure2Image(self) -> None:
         for figname, fig in self.list_figures:
-            figname = Setting.OUTPUT_DIR + "\\" + figname
+            figname = Setting.OUTPUT_DIR + "\\" + figname + ".png"
             fig.savefig(fname=figname, pad_inches=0.05)
             # save figure name to list for future use
             Setting.LIST_FIGURE_IMAGES.append(figname)
 
 
     def exportFigure2PPTX(self) -> None:
+        print('Exporting figure to PPTX...')
         img2pptx = ImageEmbedPptx()
         img2pptx.clearAllShapes()
         img2pptx.exportFigures2PPTX()
@@ -330,4 +331,6 @@ class WidgetPlotFigure(QWidget):
 
 
     def bindingSignal2Slot(self) -> None:
-        self.ui.btn_exportPPT.clicked.connect(self.ui.actionExportGraph2PPTX.trigger)
+        self.ui.btn_exportPPTX.clicked.connect(self.ui.actionExportGraph2PPTX.trigger)
+        # binding Action to function
+        self.ui.actionExportGraph2PPTX.triggered.connect(self.exportFigure2PPTX)

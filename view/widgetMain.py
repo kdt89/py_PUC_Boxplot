@@ -23,6 +23,6 @@ class WidgetMain(QMainWindow):
         self.ui = Ui_Main()
         self.ui.setupUi(self)
 
-        self.ui.btnAbout.clicked.connect(self.ui.actionShowAbout)
-        self.ui.btnMakePlot.clicked.connect(self.ui.actionMakePlot)
-        self.ui.btnPreferences.clicked.connect(self.ui.actionShowPreferences)
+        self.ui.btnAbout.clicked.connect(self.ui.actionShowAbout.trigger)
+        self.ui.btnMakePlot.clicked.connect(self.ui.actionMakePlot.trigger)
+        self.ui.btnPreferences.clicked.connect(self.ui.actionShowPreferences.trigger)
