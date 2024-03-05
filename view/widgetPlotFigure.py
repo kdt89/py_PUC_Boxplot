@@ -6,16 +6,17 @@ import numpy as np
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # for embedded plot to PyQt
 import matplotlib.pyplot as mpl
-from matplotlib import patches
-from matplotlib import ticker
+from matplotlib import patches, ticker
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 from matplotlib.axis import Axis
 from matplotlib import transforms as mtrans
 
+
 from view.ui.PlotFigure_ui import Ui_PlotFigure
-from controller.setting import FigureConfig, Setting
+from controller.setting import Setting
 from model.csv_database import CSV_Database
+from model.figureconfig import FigureConfig
 from util.image_embed_pptx import ImageEmbedPPTX
 
 
@@ -132,10 +133,10 @@ class WidgetPlotFigure(QWidget):
         self.ui.tab_plotFigureHolder.addTab(new_page, title)
 
 
-    def build_subplot_figure(
+    def build_figure(
             self, 
             figure_config: FigureConfig,
-            plot_dataset: CSV_Database
+            dataset: CSV_Database
             ) -> Figure:
         # Validate the subplot size
         row_size, col_size = figure_config.size
@@ -144,32 +145,36 @@ class WidgetPlotFigure(QWidget):
 
         fig, axs = mpl.subplots(nrows=row_size, ncols=col_size)
         plot_idx: int = 0
-        for plot in figure_config.subplot_list:
+
+        for plot in figure_config.plotconfig_list:
             if plot.to_plot is False:
                 continue
 
             ax = axs.flat[plot_idx]
-            list_dataset, list_data_label = plot_dataset.get_groupdata_at_column(
+            list_dataset, list_data_label = dataset.get_groupdata_at_column(
                 groupby_columnname=CSV_Database.DATASET_ID_COLUMN_NAME,
                 need_data_columnname=plot.item_name)
 
             if list_data_label is None or list_dataset is None:
                 continue
 
-            ax.boxplot(x=list_dataset, labels=list_data_label)
+            bp = ax.boxplot(x=list_dataset, labels=list_data_label)
             # set y-axis label tick format (float to 2 decimal places)
             ax.set_title(label=plot.title)
+
+            #debug
+            fig.savefig('debug_saved_figure.png')
 
             # Set title and add reference line (USL/LSL)
             if (plot.lowerspec != None and isinstance(plot.lowerspec, (int, float))):
                 ax.axhline(y=plot.lowerspec, linewidth=0.4)
-            
+
             if (plot.upperspec != None and isinstance(plot.upperspec, (int, float))):
                 ax.axhline(y=plot.upperspec, linewidth=0.4)
                 yticklabel_format = "{{x:.{0}f}}".format(len(str(plot.upperspec).split('.')[1]))
                 ax.yaxis.set_major_formatter(ticker.StrMethodFormatter(yticklabel_format))
 
-            # WidgetPlotFigure.drawAxisBbox(figure=fig, axis=ax)
+            # add annotation for Boxplot median values
             plot_idx += 1
 
         # Standardize the figure size to fit MS PPT report
@@ -197,16 +202,16 @@ class WidgetPlotFigure(QWidget):
         Returns:
             None: This function does not return anything.
         """
-    def build_plot_pages(
+    def build_figure_pages(
             self,
-            pages_config: List[FigureConfig],
+            figureconfig_list: List[FigureConfig],
             plot_dataset: CSV_Database
             ) -> None:
 
-        for page_config in pages_config:
-            new_fig = self.build_subplot_figure(plot_dataset=plot_dataset, figure_config=page_config)
-            self.add_page(add_figure=new_fig, title=page_config.title)
-            self.list_figures.append((page_config.name, new_fig))
+        for figureconfig in figureconfig_list:
+            new_fig = self.build_figure(dataset=plot_dataset, figure_config=figureconfig)
+            self.add_page(add_figure=new_fig, title=figureconfig.title)
+            self.list_figures.append((figureconfig.name, new_fig))
 
 
     def closeEvent(self, a0: QtGui.QCloseEvent | None) -> None:

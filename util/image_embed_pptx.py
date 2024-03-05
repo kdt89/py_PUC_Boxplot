@@ -96,7 +96,7 @@ class ImageEmbedPPTX:
         for img in self.LIST_IMAGE_FILEPATHS:
             if i >= len(self.pptx.slides):
                 self.pptx.slides.add_slide(self.pptx.layouts[0])
-
+                
             slide_current = self.pptx.slides[i]
             # plot_img = slide_current.shapes.add_picture(img, Inches(0.40), Inches(4.85), width=Inches(5.30))
             added_img = slide_current.shapes.add_picture(image_file=img, left=0, top=0)
@@ -112,11 +112,8 @@ class ImageEmbedPPTX:
             added_img.height = int(added_img.height * img_scale)
 
             # align picture to the center horizontally and vertically
-            added_img.left = int(ImageEmbedPPTX.SLIDE_WIDTH - ImageEmbedPPTX.GRAPH_LEFT_MARGIN
-                - (ImageEmbedPPTX.GRAPH_WIDTH - added_img.width) / 2)
-
-            added_img.top = int(ImageEmbedPPTX.SLIDE_HEIGHT - ImageEmbedPPTX.GRAPH_TOP_MARGIN
-                - (ImageEmbedPPTX.GRAPH_HEIGHT - added_img.height) / 2)
+            added_img.left = int(ImageEmbedPPTX.GRAPH_LEFT_MARGIN + (ImageEmbedPPTX.GRAPH_WIDTH - added_img.width) / 2)
+            added_img.top = int(ImageEmbedPPTX.GRAPH_TOP_MARGIN + (ImageEmbedPPTX.GRAPH_HEIGHT - added_img.height) / 2)
 
             # Send the figures to the back
             ref_element = slide_current.shapes[0]._element

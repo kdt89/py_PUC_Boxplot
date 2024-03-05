@@ -3,7 +3,7 @@ from typing import List
 # OBSERVER DESIGN PATTERN
 from util.observer import Observer 
 from model.csv_database import CSV_Database
-
+from model.figureconfig import FigureConfigList
 
 class Model:
 
@@ -12,7 +12,7 @@ class Model:
 
     def __init__(self):
         self.database = CSV_Database()
-
+        self.figureconfig_list = FigureConfigList()
     '''
     Define normal class method
     '''
@@ -23,7 +23,7 @@ class Model:
     def attach(self, observer: Observer) -> None:
        self._observers.append(observer)
 
-    
+
     def detach(self, observer: Observer) -> None:
         self._observers.remove(observer)    
 

@@ -13,8 +13,8 @@ class WidgetMain(QMainWindow):
 
 
     def updateMessage(self, message: str):
-        self.ui.txtbrowserOperationMessage.append(message)
-        self.ui.txtbrowserOperationMessage.repaint()
+        self.ui.txtbrowser_operationMessage.append(message)
+        self.ui.txtbrowser_operationMessage.repaint()
 
 
     def __init__(self):
@@ -23,6 +23,6 @@ class WidgetMain(QMainWindow):
         self.ui = Ui_Main()
         self.ui.setupUi(self)
 
-        self.ui.btnAbout.clicked.connect(self.ui.actionShowAbout.trigger)
-        self.ui.btnMakePlot.clicked.connect(self.ui.actionMakePlot.trigger)
-        self.ui.btnPreferences.clicked.connect(self.ui.actionShowPreferences.trigger)
+        self.ui.btn_about.clicked.connect(self.ui.actionShowAbout.trigger)
+        self.ui.btn_makePlot.clicked.connect(self.ui.actionMakePlot.trigger)
+        self.ui.btn_preferences.clicked.connect(self.ui.actionShowPreferences.trigger)

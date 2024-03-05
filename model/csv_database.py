@@ -21,15 +21,20 @@ class CSV_Database():
     def size(self) -> tuple[int, int]:
         return len(self._csv_data.index), len(self._csv_data.columns)
 
+    @property
+    def data(self) -> DataFrame:
+        return self._csv_data
 
-    def export_data(self, output_dir) -> None:
+    def export_to_local(self, output_dir) -> None:
         if self._csv_data.empty:
             return
         else:
             try:
                 self._csv_data.to_csv(output_dir + "\\" + "merged data.csv", 
-                                    header=True, index=False, 
-                                    sep=",", compression=None)
+                                    header=True, 
+                                    index=False, 
+                                    sep=",", 
+                                    compression=None)
             except Exception as e:
                 print(str(e))
                 # self._status = f"An error occurred: <font color='red'>{str(e)}</font>"
@@ -42,7 +47,7 @@ class CSV_Database():
             reading_cols: List[str],
             skip_rows: List[int],
             callbackMessage: Callable[[str], None]
-    ) -> DataFrame:
+            ) -> DataFrame:
 
         if reading_cols is None:
             return

@@ -1,55 +1,56 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QFormLayout, QTabWidget
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
-app = QApplication(sys.argv)
+# Load the data
+df = pd.read_csv('data.csv', header=0)
 
-# Create the main widget
-main_widget = QMainWindow()
-main_widget.setWindowTitle("Matplotlib Figure Resize Example")
+# Create a figure instance
+fig = plt.figure(figsize=(10, 7))
 
-# Create the figure and canvas
-fig = Figure()
-canvas = FigureCanvas(fig)
-
-# Create a subplot and plot a simple curve
+# Create an axes instance
 ax = fig.add_subplot(111)
-x = np.linspace(0, 2*np.pi, 100)
-y = np.sin(x)
-ax.plot(x, y)
 
-# Create the layout for the main widget
-layout = QVBoxLayout()
-main_widget.setLayout(layout)
+# Create the boxplot
+bp = ax.boxplot([df['501'], df['502'], df['503']], patch_artist=True, notch=True, vert=0)
 
-# Create the form layout
-form_layout = QFormLayout()
-layout.addLayout(form_layout)
+colors = ['#0000FF', '#00FF00', '#FFFF00']
 
-# Create the tab widget
-tab_widget = QTabWidget()
-form_layout.addRow(tab_widget)
+for patch, color in zip(bp['boxes'], colors):
+    patch.set_facecolor(color)
 
-# Add the canvas to the tab widget
-tab_widget.addTab(canvas, "Figure")
+# Changing color and line width of whiskers
+for whisker in bp['whiskers']:
+    whisker.set(color ='#8B008B',
+                linewidth = 1.5,
+                linestyle =":")
 
-# Function to handle resizing of the main widget
-def resize_event(event):
-    # Update the figure's layout to fit within the available space
-    fig.tight_layout()
-    canvas.draw()
+# Changing color and line width of caps
+for cap in bp['caps']:
+    cap.set(color ='#8B008B',
+            linewidth = 2)
 
+# Changing color and line width of medians
+for median in bp['medians']:
+    median.set(color ='red',
+               linewidth = 3)
 
+# Changing style of fliers
+for flier in bp['fliers']:
+    flier.set(marker ='D',
+               color ='#e7298a',
+               alpha = 0.5)
 
+# annotate median values
+for i, line in enumerate(bp["medians"]):
+    # get position data for median line
+    x, y = line.get_xydata()[1] # top of median line
+    # overlay median value
+    ax.annotate(f'{y}', (x, y), xytext=(10, -5), 
+                textcoords='offset points', horizontalalignment='right', 
+                verticalalignment='center', fontsize=12, color='red')
 
-# Connect the resize event of the main widget to the resize_event function
-main_widget.resizeEvent = resize_event
+# Adding title
+plt.title("Box Plots of Columns")
 
-# Show the main widget
-main_widget.show()
-
-
-
-sys.exit(app.exec())
+# show plot
+plt.show()
