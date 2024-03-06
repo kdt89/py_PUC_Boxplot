@@ -17,7 +17,7 @@ class Setting:
     WIDTH_HEIGHT_RATIO: float = 1.48 # following Minitab software Boxplot style
     MAX_WIDTH: float = 10.5
     MAX_HEIGHT: float = 4.65
-
+    DATASET_NAME_LIST_IN_PLOT: List[str] = []
 
     @staticmethod
     def update():

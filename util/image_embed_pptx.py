@@ -83,19 +83,10 @@ class ImageEmbedPPTX:
         if self.pptx is None:
             return
 
-        # Push images to PPT file
-        # graph_area_height = self.slide_height - (
-        #     ImageEmbedPPTX.GRAPH_TOP_MARGIN + 
-        #     ImageEmbedPPTX.GRAPH_BOT_MARGIN)
-        
-        # graph_area_width = self.slide_width - (
-        #     ImageEmbedPPTX.GRAPH_LEFT_MARGIN + 
-        #     ImageEmbedPPTX.GRAPH_RIGHT_MARGIN)
-
         i = 0
         for img in self.LIST_IMAGE_FILEPATHS:
             if i >= len(self.pptx.slides):
-                self.pptx.slides.add_slide(self.pptx.layouts[0])
+                self.pptx.slides.add_slide(self.pptx.slide_layouts[0])
                 
             slide_current = self.pptx.slides[i]
             # plot_img = slide_current.shapes.add_picture(img, Inches(0.40), Inches(4.85), width=Inches(5.30))

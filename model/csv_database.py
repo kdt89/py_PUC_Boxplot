@@ -48,6 +48,18 @@ class CSV_Database():
             skip_rows: List[int],
             callbackMessage: Callable[[str], None]
             ) -> DataFrame:
+        """
+        Imports data from CSV files, processes the data, and returns the count of imported files. 
+
+        Args:
+            filepaths (str): The filepaths of the CSV files to be imported.
+            reading_cols (List[str]): The list of columns to be read from the CSV files.
+            skip_rows (List[int]): The list of rows to be skipped while reading the CSV files.
+            callbackMessage (Callable[[str], None]): A callback function to send messages during the import process.
+
+        Returns:
+            DataFrame: The count of imported files.
+        """
 
         if reading_cols is None:
             return
@@ -82,7 +94,6 @@ class CSV_Database():
                         df_empty_chunk = pd.Series(data=None, name=col, dtype='object')
                         # push it to 'extracted_df'
                         df_extracted_from_file = pd.concat([df_extracted_from_file, df_current_chunk, df_empty_chunk], axis=1)
-
                         found_cols.clear()
                         df_current_chunk = None
 
@@ -91,13 +102,11 @@ class CSV_Database():
             if len(found_cols) > 0:
                 df_current_chunk = df_raw_imported[found_cols]
                 df_extracted_from_file = pd.concat([df_extracted_from_file, df_current_chunk], axis=1)
-                
                 df_extracted_from_file = df_extracted_from_file.drop_duplicates()
                 df_extracted_from_file = df_extracted_from_file.dropna(
                     axis=0, # drop rows which contain missing values
                     how='all', # if all values of checking columns are NA, drop that row or column
                     subset=None) # check all columns
-
                 found_cols.clear()
                 df_current_chunk = None
 
@@ -117,6 +126,8 @@ class CSV_Database():
             if not df_extracted_from_file.empty:
                 total_df.append(df_extracted_from_file)
                 imported_count += 1
+
+        callbackMessage(f"")
 
         # Merging data frames into one frame
         # Abandon previous data in self._csv_data and hooked up to newly imported data

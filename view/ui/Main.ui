@@ -103,7 +103,7 @@
       </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QLabel" name="lbl_datasetOrder">
+      <widget class="QLabel" name="lbl_datasetNameList">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -316,7 +316,7 @@ QPushButton:hover {
       </spacer>
      </item>
      <item row="5" column="0" colspan="2">
-      <widget class="QTextEdit" name="textEdit_datasetOrder">
+      <widget class="QTextEdit" name="textEdit_datasetNameList">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -361,6 +361,9 @@ QPushButton:hover {
          <pointsize>12</pointsize>
          <bold>true</bold>
         </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Load Dataset name (name of data file) in Input folder.&lt;br/&gt;This will be used as data labels for Visual Plot of the data.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="statusTip">
         <string extracomment="Load dataset name in Input folder"/>

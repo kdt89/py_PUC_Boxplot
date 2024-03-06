@@ -12,7 +12,6 @@ from matplotlib.axes import Axes
 from matplotlib.axis import Axis
 from matplotlib import transforms as mtrans
 
-
 from view.ui.PlotFigure_ui import Ui_PlotFigure
 from controller.setting import Setting
 from model.csv_database import CSV_Database
@@ -133,10 +132,27 @@ class WidgetPlotFigure(QWidget):
         self.ui.tab_plotFigureHolder.addTab(new_page, title)
 
 
+    def build_figure_pages(
+            self,
+            figureconfig_list: List[FigureConfig],
+            plot_dataset: CSV_Database,
+            userset_label_list: List[str]
+            ) -> None:
+
+        for figureconfig in figureconfig_list:
+            new_fig = self.build_figure(
+                dataset=plot_dataset,
+                figure_config=figureconfig,
+                userset_label_list=userset_label_list)
+            self.add_page(add_figure=new_fig, title=figureconfig.title)
+            self.list_figures.append((figureconfig.name, new_fig))
+
+
     def build_figure(
             self, 
             figure_config: FigureConfig,
-            dataset: CSV_Database
+            dataset: CSV_Database,
+            userset_label_list: List[str]
             ) -> Figure:
         # Validate the subplot size
         row_size, col_size = figure_config.size
@@ -146,24 +162,41 @@ class WidgetPlotFigure(QWidget):
         fig, axs = mpl.subplots(nrows=row_size, ncols=col_size)
         plot_idx: int = 0
 
+        # Decide how we should make plot with user set data label list or not
+        if userset_label_list is None or len(userset_label_list) == 0:
+            use_userset_label_list = False
+        else:
+            use_userset_label_list = True
+
         for plot in figure_config.plotconfig_list:
             if plot.to_plot is False:
                 continue
 
             ax = axs.flat[plot_idx]
-            list_dataset, list_data_label = dataset.get_groupdata_at_column(
+            dataset_list, datalabel_list = dataset.get_groupdata_at_column(
                 groupby_columnname=CSV_Database.DATASET_ID_COLUMN_NAME,
                 need_data_columnname=plot.item_name)
 
-            if list_data_label is None or list_dataset is None:
+            if datalabel_list is None or dataset_list is None:
                 continue
 
-            bp = ax.boxplot(x=list_dataset, labels=list_data_label)
+            # Compare user set data label list and dataset label list
+            # if 'user set' data label list have same list elements with 'dataset' label list
+            # then use 'user set' data label list when making plot (as user expect data label order in result Plot)
+            if use_userset_label_list:
+                if set(userset_label_list) == set(datalabel_list):
+                    datalabel_list = userset_label_list
+                else:
+                    pass
+
+            # Remove NaN values from each dataset
+            # otherwise the Matplotlib boxplot will draw blank figure
+            dataset_list = [array[~np.isnan(array)] for array in dataset_list]
+
+            # Create the boxplot
+            bp = ax.boxplot(x=dataset_list, labels=datalabel_list)
             # set y-axis label tick format (float to 2 decimal places)
             ax.set_title(label=plot.title)
-
-            #debug
-            fig.savefig('debug_saved_figure.png')
 
             # Set title and add reference line (USL/LSL)
             if (plot.lowerspec != None and isinstance(plot.lowerspec, (int, float))):
@@ -190,28 +223,6 @@ class WidgetPlotFigure(QWidget):
         WidgetPlotFigure.drawFigureBbox(figure=fig, axes=axs)
 
         return fig
-
-
-        """
-        Build plot pages based on the given pages configuration and plot dataset.
-
-        Parameters:
-            pages_config (List[FigureConfig]): A list of FigureConfig objects representing the configuration for each page.
-            plot_dataset (CSV_Database): The CSV database used for plotting.
-
-        Returns:
-            None: This function does not return anything.
-        """
-    def build_figure_pages(
-            self,
-            figureconfig_list: List[FigureConfig],
-            plot_dataset: CSV_Database
-            ) -> None:
-
-        for figureconfig in figureconfig_list:
-            new_fig = self.build_figure(dataset=plot_dataset, figure_config=figureconfig)
-            self.add_page(add_figure=new_fig, title=figureconfig.title)
-            self.list_figures.append((figureconfig.name, new_fig))
 
 
     def closeEvent(self, a0: QtGui.QCloseEvent | None) -> None:
@@ -327,7 +338,21 @@ class WidgetPlotFigure(QWidget):
         return None
 
 
+    @staticmethod
+    def __removeArrayNAN(in_array: np.ndarray) -> np.ndarray:
+        """
+        Remove NaN values from the input numpy array and return the cleaned array.
+
+        Parameters:
+            in_array (np.ndarray): The input numpy array with NaN values.
+
+        Returns:
+            np.ndarray: The cleaned numpy array with NaN values removed.
+        """
+        return in_array[~np.isnan(in_array)]
+
+
+    # binding Action to function
     def bindingSignal2Slot(self) -> None:
         self.ui.btn_exportPPTX.clicked.connect(self.ui.actionExportGraph2PPTX.trigger)
-        # binding Action to function
         self.ui.actionExportGraph2PPTX.triggered.connect(self.exportFigure2PPTX)
