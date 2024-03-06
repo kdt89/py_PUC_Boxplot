@@ -11,7 +11,7 @@ fig = plt.figure(figsize=(10, 7))
 ax = fig.add_subplot(111)
 
 # Create the boxplot
-bp = ax.boxplot([df['501'], df['502'], df['503']], patch_artist=True, notch=True, vert=0)
+bp = ax.boxplot([df['501'], df['502'], df['503']], patch_artist=True, notch=True, vert=0, labels=['501', '502', '503'])
 
 colors = ['#0000FF', '#00FF00', '#FFFF00']
 
