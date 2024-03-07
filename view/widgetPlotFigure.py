@@ -10,7 +10,6 @@ from matplotlib import patches, ticker
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 from matplotlib.axis import Axis
-from matplotlib import transforms as mtrans
 
 from view.ui.PlotFigure_ui import Ui_PlotFigure
 from controller.setting import Setting
@@ -67,7 +66,7 @@ mpl.rcParams['ytick.major.size'] = 1.5          # major tick width in points
 # CONFIGURE BOXPLOT TITLE AND LABEL
 mpl.rcParams['figure.titlesize'] = '8'
 mpl.rcParams['figure.autolayout'] = True
-mpl.rcParams['figure.constrained_layout.h_pad'] =  0.5
+mpl.rcParams['figure.constrained_layout.h_pad'] =  0.8
 mpl.rcParams['figure.constrained_layout.w_pad'] =  0.5
 mpl.rcParams['figure.dpi'] = 200                # fit full-screen viewing
 mpl.rcParams['font.family'] = 'tahoma'
@@ -123,7 +122,6 @@ class WidgetPlotFigure(QWidget):
             title: str
             ) -> None:
         canvas = FigureCanvas(add_figure)
-
         layout = QFormLayout()
         layout.addWidget(canvas)
 
@@ -195,10 +193,13 @@ class WidgetPlotFigure(QWidget):
 
             # Create the boxplot
             bp = ax.boxplot(x=dataset_list, labels=datalabel_list)
-            # set y-axis label tick format (float to 2 decimal places)
             ax.set_title(label=plot.title)
+            
+            # rotate x-axis label if user specify
+            ax.tick_params(axis='x', labelrotation=45)
 
-            # Set title and add reference line (USL/LSL)
+            # set title and add reference line (USL/LSL)
+            # set y-axis label tick format (float to 2 decimal places)
             if (plot.lowerspec != None and isinstance(plot.lowerspec, (int, float))):
                 ax.axhline(y=plot.lowerspec, linewidth=0.4)
 
@@ -220,7 +221,7 @@ class WidgetPlotFigure(QWidget):
             max_height=Setting.MAX_HEIGHT)
 
         # Add bounding box to figure
-        WidgetPlotFigure.drawFigureBbox(figure=fig, axes=axs)
+        # WidgetPlotFigure.drawFigureBbox(figure=fig, axes=axs)
 
         return fig
 
@@ -300,11 +301,11 @@ class WidgetPlotFigure(QWidget):
         axes_shape = np.atleast_2d(axes).shape
         renderer = figure.canvas.get_renderer()
         get_bbox = lambda ax: ax.get_tightbbox(renderer).transformed(figure.transFigure.inverted())
-        bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox)
+        bboxes = list(map(get_bbox, axes.flat))
 
         #Get the minimum and maximum extent, get the coordinate half-way between those
-        ymax = np.array(list(map(lambda b: b.y1, bboxes.flat))).reshape(axes_shape).max(axis=1)
-        ymin = np.array(list(map(lambda b: b.y0, bboxes.flat))).reshape(axes_shape).min(axis=1)
+        ymax = np.array(list(map(lambda b: b.y1, bboxes))).reshape(axes_shape).max(axis=1)
+        ymin = np.array(list(map(lambda b: b.y0, bboxes))).reshape(axes_shape).min(axis=1)
         ys = np.c_[ymax[1:], ymin[:-1]].mean(axis=1)
 
         # Draw a horizontal lines at those coordinates

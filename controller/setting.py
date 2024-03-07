@@ -7,7 +7,7 @@ class Setting:
 
     ROOTDIR = os.path.abspath('')
     FILE_EXT: str = 'csv'
-    LOCAL_FIGURECONFIG_FILENAME: str = 'setting_plot.csv'
+    LOCAL_FIGURECONFIG_FILENAME: str = 'Plot Config.csv'
     
     INPUT_DIR = os.path.abspath("Input")
     OUTPUT_DIR = os.path.abspath("Output")
