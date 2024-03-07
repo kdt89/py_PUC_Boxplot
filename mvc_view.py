@@ -6,6 +6,7 @@
 from view.widgetMain import WidgetMain
 from view.widgetAbout import WidgetAbout
 from view.widgetPlotFigure import WidgetPlotFigure
+from view.widgetPreference import WidgetPreference
 
 
 # Application UI object contains all other frame objects
@@ -15,9 +16,11 @@ class View():
         self.Main = WidgetMain()
         self.About = WidgetAbout()
         self.PlotFigure: WidgetPlotFigure = None
+        self.Preferences = WidgetPreference()
         
         # Binding Menu action to slots
         self.Main.ui.actionShowAbout.triggered.connect(self.About.show)
+        self.Main.ui.actionShowPreferences.triggered.connect(self.Preferences.show)
 
         # Display main window
         self.Main.show()
