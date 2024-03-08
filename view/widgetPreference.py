@@ -1,4 +1,3 @@
-
 from PyQt6.QtWidgets import QWidget
 from view.ui.Preference_ui import Ui_Preference
 
