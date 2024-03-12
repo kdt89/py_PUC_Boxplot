@@ -46,7 +46,7 @@ class Controller(Observer): # Controller in MVC pattern
         self.view.PlotFigure.build_figure_pages(
                 self.model.figureconfig_list.list, 
                 self.model.database,
-                Setting.DATASET_NAME_LIST_IN_PLOT)
+                Setting.PLOTCONFIG_DATASET_NAME_LIST)
 
         self.view.PlotFigure.exportFigure2Image()
         self.view.PlotFigure.showMaximized()
@@ -77,7 +77,7 @@ class Controller(Observer): # Controller in MVC pattern
         self.view.Main.updateUI_messagebox(f"- Input data imported successfully: {rows} rows - {columns} columns")
 
             # Define methods execute when occuring Event from View
-    def btnMakePlot_action(self):
+    def actionMakePlot_procedure(self):
         """
         Action for making a plot from data files in the Input directory. 
         This function updates the message on the UI, updates the figure configuration list, and updates the status. 
@@ -88,7 +88,7 @@ class Controller(Observer): # Controller in MVC pattern
         self.view.Main.updateUI_messagebox(f"\n <b>Making Plot from data files in Input directory</b>...")
         self.model.figureconfig_list.update()
         Status.update()
-        Setting.DATASET_NAME_LIST_IN_PLOT = self.view.Main.getfromUI_datasetNameList_txtEdit()
+        Setting.PLOTCONFIG_DATASET_NAME_LIST = self.view.Main.getfromUI_datasetNameList_txtEdit()
 
         self.import_input_data()
         if not Status.INPUT_READY:
@@ -99,15 +99,30 @@ class Controller(Observer): # Controller in MVC pattern
         self.build_boxplot()
 
 
-    def btnLoadDatasetName_action(self):
+    def actionLoadDatasetName_procedure(self) -> None:
         # Load detected dataset name (from Input folder) to UI (main window)
         Status.update()
         self.view.Main.updateUI_datasetNameList_txtEdit(Status.DETECTED_DATASET_NAME_LIST)
+
+
+    def actionShowPreference_procedure(self) -> None:
+        self.view.Preference.setUI_preference(
+            Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION,
+            Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN,
+            Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW)
+        self.view.Preference.show()
+
+    # Save user preference
+    def actionSavePreference_procedure(self) -> None:
+        [rotation, showMedian, rowskip] = self.view.Preference.getUI_preference()
+        self.setting.saveSetting(rotation, showMedian, rowskip)
 
 
     """
     Binding PyQt signal & slot
     """
     def bindSignalAndSlot(self):
-        self.view.Main.ui.actionMakePlot.triggered.connect(self.btnMakePlot_action)
-        self.view.Main.ui.actionLoadDatasetName.triggered.connect(self.btnLoadDatasetName_action)
+        self.view.Main.ui.actionMakePlot.triggered.connect(self.actionMakePlot_procedure)
+        self.view.Main.ui.actionLoadDatasetName.triggered.connect(self.actionLoadDatasetName_procedure)
+        self.view.Main.ui.actionShowPreference.triggered.connect(self.actionShowPreference_procedure)
+        self.view.Preference.ui.actionSavePreference.triggered.connect(self.actionSavePreference_procedure)

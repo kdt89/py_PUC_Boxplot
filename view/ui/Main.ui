@@ -204,7 +204,7 @@ QPushButton:hover {
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_preferences">
+        <widget class="QPushButton" name="btn_showPreference">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -251,7 +251,7 @@ QPushButton:hover {
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_about">
+        <widget class="QPushButton" name="btn_showAbout">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -406,7 +406,7 @@ QPushButton:hover {
     <bool>false</bool>
    </property>
   </action>
-  <action name="actionShowPreferences">
+  <action name="actionShowPreference">
    <property name="text">
     <string notr="true">Preferences</string>
    </property>
@@ -420,9 +420,6 @@ QPushButton:hover {
     <string notr="true"/>
    </property>
    <property name="whatsThis">
-    <string notr="true"/>
-   </property>
-   <property name="shortcut">
     <string notr="true"/>
    </property>
   </action>

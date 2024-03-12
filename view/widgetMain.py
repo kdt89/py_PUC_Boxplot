@@ -10,9 +10,9 @@ class WidgetMain(QMainWindow):
         # GUI Main form
         self.ui = Ui_Main()
         self.ui.setupUi(self)
-        self.ui.btn_about.clicked.connect(self.ui.actionShowAbout.trigger)
+        self.ui.btn_showAbout.clicked.connect(self.ui.actionShowAbout.trigger)
         self.ui.btn_makePlot.clicked.connect(self.ui.actionMakePlot.trigger)
-        self.ui.btn_preferences.clicked.connect(self.ui.actionShowPreferences.trigger)
+        self.ui.btn_showPreference.clicked.connect(self.ui.actionShowPreference.trigger)
         self.ui.btn_loadDatasetName.clicked.connect(self.ui.actionLoadDatasetName.trigger)
     # message = ""
     # update status bar message

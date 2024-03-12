@@ -2,20 +2,19 @@ from __future__ import annotations
 from typing import List
 from PyQt6 import QtGui
 from PyQt6.QtWidgets import QWidget, QFormLayout
-import numpy as np
+from view.ui.PlotFigure_ui import Ui_PlotFigure
+from controller.setting import Setting
+from model.csv_database import CSV_Database
+from model.figureconfig import FigureConfig
+from util.image_embed_pptx import ImageEmbedPPTX
 
+import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # for embedded plot to PyQt
 import matplotlib.pyplot as mpl
 from matplotlib import patches, ticker
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 from matplotlib.axis import Axis
-
-from view.ui.PlotFigure_ui import Ui_PlotFigure
-from controller.setting import Setting
-from model.csv_database import CSV_Database
-from model.figureconfig import FigureConfig
-from util.image_embed_pptx import ImageEmbedPPTX
 
 
 """
@@ -216,9 +215,9 @@ class WidgetPlotFigure(QWidget):
             figure=fig,
             nrows=row_size,
             ncols=col_size,
-            width_height_ratio= Setting.WIDTH_HEIGHT_RATIO,
-            max_width= Setting.MAX_WIDTH,
-            max_height=Setting.MAX_HEIGHT)
+            width_height_ratio= Setting.PICTURE_WIDTH_HEIGHT_RATIO,
+            max_width= Setting.PICTURE_MAX_WIDTH,
+            max_height=Setting.PICTURE_MAX_HEIGHT)
 
         # Add bounding box to figure
         # WidgetPlotFigure.drawFigureBbox(figure=fig, axes=axs)

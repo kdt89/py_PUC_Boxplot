@@ -16,11 +16,11 @@ class View():
         self.Main = WidgetMain()
         self.About = WidgetAbout()
         self.PlotFigure: WidgetPlotFigure = None
-        self.Preferences = WidgetPreference()
-        
+        self.Preference = WidgetPreference()
+
         # Binding Menu action to slots
         self.Main.ui.actionShowAbout.triggered.connect(self.About.show)
-        self.Main.ui.actionShowPreferences.triggered.connect(self.Preferences.show)
+        self.Preference.ui.actionSavePreference.triggered.connect(self.Preference.close)
 
         # Display main window
         self.Main.show()
