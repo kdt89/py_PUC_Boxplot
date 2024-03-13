@@ -33,48 +33,55 @@ class Setting:
 
     def loadSetting(self) -> None:
         self.cfgparser.read("preference.ini")
+        
         try:
-            dataset_labelrotation = int(self.cfgparser["OPTION"]["DATASET_LABEL_ROTATION"])
-            if 0 > dataset_labelrotation:
-                dataset_labelrotation = 0
+            dataset_labelrotation = self.cfgparser["OPTION"]["DATASET_LABEL_ROTATION"]
         except:
-            dataset_labelrotation = 0
-
-        try:
-            show_median = self.cfgparser["OPTION"]["PLOT_SHOW_MEDIAN"]
-            if show_median == 'True': # string type
-                show_median = True # bool type
-            elif show_median == 'False':
-                show_median = False
-            else:
-                show_median = False
-        except:
-            show_median = False
-
+            dataset_labelrotation = 0 # default value
         try:
             rowskip = self.cfgparser["OPTION"]["DATA_IMPORT_SKIP_ROW_NUMBER"]
-            if rowskip == 'None':
-                rowskip = None
-            else:
-                rowskip = rowskip.split(' ')
-                rowskip = [num for num in rowskip if type(num) == int]
-                rowskip = list(map(int, rowskip))
-                rowskip = [row for row in rowskip if row >= 0]
-                if len(rowskip) == 0:
-                    rowskip = None
         except:
-            rowskip = None
+            rowskip = 'None' # default value
+        try:
+            show_median = self.cfgparser["OPTION"]["PLOT_SHOW_MEDIAN"]
+        except:
+            show_median = 'False' # default value
 
-        Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION = dataset_labelrotation
-        Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN = show_median
-        Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW = rowskip
+        if not dataset_labelrotation.isnumeric():
+            dataset_labelrotation = 0 # default value
+        else:
+            dataset_labelrotation = int(dataset_labelrotation)
+            if not dataset_labelrotation in [0, 45, 90]:
+                dataset_labelrotation = 0 # default value
+
+        match show_median:
+            case 'True':
+                show_median = True
+            case 'False':
+                show_median = False
+            case _:
+                show_median = False
+
+        if rowskip == 'None':
+            rowskip = None
+        else:
+            rowskip = rowskip.split(' ')
+            rowskip = [num for num in rowskip if num.isnumeric()] # Filter out non-numeric string
+            rowskip = list(map(int, rowskip))
+            rowskip = [row for row in rowskip if row >= 0]
+            if len(rowskip) == 0:
+                rowskip = None
+
+        Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION = dataset_labelrotation # must be integer [0, 45, 90]
+        Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN = show_median # must be boolean
+        Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW = rowskip # must be None or list integer
 
 
     def saveSetting(
             self,
             plotconfig_datasetLabelRotation: int,
             plotconfig_showMedian: bool,
-            dataconfig_importSkipRow: List[int]
+            dataconfig_importSkipRows: List[int]
             ) -> None:
         # argument validation
         if type(plotconfig_datasetLabelRotation) != int:
@@ -85,22 +92,22 @@ class Setting:
         if type(plotconfig_showMedian) != bool:
             plotconfig_showMedian = False
 
-        if type(dataconfig_importSkipRow) != int:
-            dataconfig_importSkipRow = 0
-        if dataconfig_importSkipRow < 0:
-            dataconfig_importSkipRow = 0
+        if type(dataconfig_importSkipRows) != int:
+            dataconfig_importSkipRows = 0
+        if dataconfig_importSkipRows < 0:
+            dataconfig_importSkipRows = 0
 
         Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION = plotconfig_datasetLabelRotation
         Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN = plotconfig_showMedian
-        Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW = dataconfig_importSkipRow
+        Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW = dataconfig_importSkipRows
 
         self.cfgparser["OPTION"]["DATASET_LABEL_ROTATION"] = str(plotconfig_datasetLabelRotation)
         self.cfgparser["OPTION"]["PLOT_SHOW_MEDIAN"] = str(plotconfig_showMedian)
 
-        if dataconfig_importSkipRow == None:
+        if dataconfig_importSkipRows == None:
             self.cfgparser["OPTION"]["DATA_IMPORT_SKIP_ROW_NUMBER"] = str('None')
         else:
-            self.cfgparser["OPTION"]["DATA_IMPORT_SKIP_ROW_NUMBER"] = ' '.join(map(str, dataconfig_importSkipRow))
+            self.cfgparser["OPTION"]["DATA_IMPORT_SKIP_ROW_NUMBER"] = ' '.join(map(str, dataconfig_importSkipRows))
             
         with open("preference.ini", "w") as configfile:
             self.cfgparser.write(configfile)
