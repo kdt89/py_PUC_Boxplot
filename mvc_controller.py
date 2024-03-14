@@ -70,7 +70,7 @@ class Controller(Observer): # Controller in MVC pattern
         self.model.database.import_csv_files(
             Status.DATA_INPUT_FILE_LIST,
             self.model.figureconfig_list.DATA_IMPORT_COLUMN_LIST,
-            Setting.DATA_ROW_TO_SKIPREAD,
+            Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW,
             self.view.Main.updateUI_statusbar)
 
         rows, columns = self.model.database.size

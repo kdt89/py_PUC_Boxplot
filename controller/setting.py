@@ -18,7 +18,7 @@ class Setting:
     OPTS_LOCAL_FILENAME = 'preference.ini'
     OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION: int = 0 # Rotation of Dataset label on Plot Figure. # 0: no rotation
     OPTS_PLOTCONFIG_SHOW_MEDIAN: bool = False
-    OPTS_DATACONFIG_IMPORT_SKIP_ROW = None # List of integer
+    OPTS_DATACONFIG_IMPORT_SKIP_ROW = [1, 2] # List of integer
 
     PICTURE_WIDTH_HEIGHT_RATIO: float = 1.48 # following Minitab software Boxplot style
     PICTURE_MAX_WIDTH: float = 10.5

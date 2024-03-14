@@ -1,4 +1,6 @@
 from PyQt6.QtWidgets import QWidget
+from PyQt6.QtCore import QRegularExpression
+from PyQt6.QtGui import QRegularExpressionValidator
 from view.ui.Preference_ui import Ui_Preference
 from typing import List
 
@@ -9,6 +11,11 @@ class WidgetPreference(QWidget):
         super(WidgetPreference, self).__init__()
         self.ui = Ui_Preference()
         self.ui.setupUi(self)
+        
+        # Set the custom validator for the line edit
+        digit_space_validator = DigitSpaceValidator()
+        self.ui.lineEdit_dataConfigImportSkipRows.setValidator(digit_space_validator)
+        
         self.setLayout(self.ui.vLayout_main)
         self.ui.btnSave.clicked.connect(self.ui.actionSavePreference.trigger)
 
@@ -74,3 +81,15 @@ class WidgetPreference(QWidget):
             self.ui.lineEdit_dataConfigImportSkipRows.setText(' '.join(map(str, rowskip)))
 
         return None
+
+
+class DigitSpaceValidator(QRegularExpressionValidator):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # Regular expression to match digits and space characters only
+        regex = QRegularExpression("[0-9 ]*")
+        self.setRegularExpression(regex)
+
+    def validate(self, input, pos):
+        # Use the regular expression validation
+        return super().validate(input, pos)
