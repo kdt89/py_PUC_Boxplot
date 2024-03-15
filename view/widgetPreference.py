@@ -84,6 +84,9 @@ class WidgetPreference(QWidget):
 
 
 class DigitSpaceValidator(QRegularExpressionValidator):
+    """
+    Custom validator class to set Validator for Line Edit to only accept digits and space characters
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
         # Regular expression to match digits and space characters only

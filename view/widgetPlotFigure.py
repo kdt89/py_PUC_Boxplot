@@ -133,14 +133,16 @@ class WidgetPlotFigure(QWidget):
             self,
             figureconfig_list: List[FigureConfig],
             plot_dataset: CSV_Database,
-            userset_label_list: List[str]
+            userset_label_list: List[str],
+            userset_label_rotation: int,
             ) -> None:
 
         for figureconfig in figureconfig_list:
             new_fig = self.build_figure(
                 dataset=plot_dataset,
                 figure_config=figureconfig,
-                userset_label_list=userset_label_list)
+                label_list=userset_label_list,
+                label_rotation=userset_label_rotation)
             self.add_page(add_figure=new_fig, title=figureconfig.title)
             self.list_figures.append((figureconfig.name, new_fig))
 
@@ -149,18 +151,25 @@ class WidgetPlotFigure(QWidget):
             self, 
             figure_config: FigureConfig,
             dataset: CSV_Database,
-            userset_label_list: List[str]
+            label_list: List[str],
+            label_rotation: int,
             ) -> Figure:
         # Validate the subplot size
         row_size, col_size = figure_config.size
         if col_size <= 0:
             return None
+        
+        if type(label_rotation) == int:
+            if label_rotation < 0 or label_rotation > 90:
+                label_rotation = 0
+        else:
+            label_rotation = 0
 
         fig, axs = mpl.subplots(nrows=row_size, ncols=col_size)
         plot_idx: int = 0
 
         # Decide how we should make plot with user set data label list or not
-        if userset_label_list is None or len(userset_label_list) == 0:
+        if label_list is None or len(label_list) == 0:
             use_userset_label_list = False
         else:
             use_userset_label_list = True
@@ -181,8 +190,8 @@ class WidgetPlotFigure(QWidget):
             # if 'user set' data label list have same list elements with 'dataset' label list
             # then use 'user set' data label list when making plot (as user expect data label order in result Plot)
             if use_userset_label_list:
-                if set(userset_label_list) == set(datalabel_list):
-                    datalabel_list = userset_label_list
+                if set(label_list) == set(datalabel_list):
+                    datalabel_list = label_list
                 else:
                     pass
 
@@ -195,7 +204,7 @@ class WidgetPlotFigure(QWidget):
             ax.set_title(label=plot.title)
             
             # rotate x-axis label if user specify
-            ax.tick_params(axis='x', labelrotation=45)
+            ax.tick_params(axis='x', labelrotation=label_rotation)
 
             # set title and add reference line (USL/LSL)
             # set y-axis label tick format (float to 2 decimal places)

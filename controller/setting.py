@@ -92,10 +92,14 @@ class Setting:
         if type(plotconfig_showMedian) != bool:
             plotconfig_showMedian = False
 
-        if type(dataconfig_importSkipRows) != int:
-            dataconfig_importSkipRows = 0
-        if dataconfig_importSkipRows < 0:
-            dataconfig_importSkipRows = 0
+        # if type(dataconfig_importSkipRows) != int:
+        #     dataconfig_importSkipRows = 0
+        # if dataconfig_importSkipRows < 0:
+        #     dataconfig_importSkipRows = 0
+        if type(dataconfig_importSkipRows) != list:
+            dataconfig_importSkipRows = None
+        else:
+            dataconfig_importSkipRows = [num for num in dataconfig_importSkipRows if type(num) == int]
 
         Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION = plotconfig_datasetLabelRotation
         Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN = plotconfig_showMedian

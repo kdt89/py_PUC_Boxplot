@@ -44,9 +44,10 @@ class Controller(Observer): # Controller in MVC pattern
             return
 
         self.view.PlotFigure.build_figure_pages(
-                self.model.figureconfig_list.list, 
-                self.model.database,
-                Setting.PLOTCONFIG_DATASET_NAME_LIST)
+                figureconfig_list=self.model.figureconfig_list.list, 
+                plot_dataset=self.model.database,
+                userset_label_list=Setting.PLOTCONFIG_DATASET_NAME_LIST,
+                userset_label_rotation=Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION)
 
         self.view.PlotFigure.exportFigure2Image()
         self.view.PlotFigure.showMaximized()
