@@ -8,7 +8,8 @@ class PlotConfig:
         title: str = "",
         lowerspec: float = -1.0,
         upperspec: float = -1.0,
-        to_plot: bool = False) -> None:
+        to_plot: bool = False
+        ) -> None:
 
         self.item_name = name
         self.title = title

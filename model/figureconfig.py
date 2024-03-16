@@ -3,7 +3,7 @@ from model.plotconfig import PlotConfig
 from util.string import String
 import pandas as pd
 from controller.setting import Setting
-from controller.workstatus import Status
+
 
 class FigureConfig:
     def __init__(self):
@@ -66,8 +66,6 @@ class FigureConfigList:
             return
 
         if list(local_plot_list.columns) != self.PLOTCONFIG_BASE_COLUMNS:
-            # Status.error_message("Plot item in database have incorrect header.")
-            # Status.setting_update_ok = False
             return
 
         # Clear the list of column name of data to be import before updating again
@@ -81,17 +79,28 @@ class FigureConfigList:
         for groupname, group_data in plot_list_datagroups:
             figureconfig = FigureConfig()
             figureconfig.title = str(groupname)
-            
+    
             for row in group_data.itertuples():
-                plotconfig = PlotConfig(
-                    name=str(row[1]), # ['Plot Item']
-                    title=str(row[2]), # 'Plot Title'
-                    lowerspec=float(row[3]), # 'LSL'
-                    upperspec=float(row[4]), # 'USL'
-                    to_plot=bool(row[5])) # 'To Plot'
-                
-                # Adding ['Plot Item'] value to import_data_column_list, then Model object use this for import CSV data file
-                self.DATA_IMPORT_COLUMN_LIST.append(str(row[1]))
-                figureconfig.plotconfig_list.append(plotconfig)
+                plotname = row[1]               # ['Plot Item']
+                plottitle = row[2]              # 'Plot Title'
+                try:
+                    lowerspec = float(row[3])   # 'LSL'
+                except:
+                    lowerspec = None
+                try:
+                    upperspec = float(row[4])   # 'USL'
+                except:
+                    upperspec = None
+                to_plot = row[5]                # 'To Plot'
+                to_plot = True if to_plot == 'Yes' else False
 
-            self.list.append(figureconfig)
+                # Adding ['Plot Item'] value to import_data_column_list, 
+                # then Model object use this for import CSV data file
+                if to_plot:
+                    plotconfig = PlotConfig(plotname, plottitle, lowerspec, upperspec, to_plot)
+                    self.DATA_IMPORT_COLUMN_LIST.append(str(row[1]))
+                    figureconfig.plotconfig_list.append(plotconfig)
+
+            # keep only figure config that the plot config is not empty
+            if len(figureconfig.plotconfig_list) > 0:
+                self.list.append(figureconfig)
