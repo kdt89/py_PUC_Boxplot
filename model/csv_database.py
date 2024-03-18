@@ -1,9 +1,9 @@
 from __future__ import annotations
-from typing import List, Callable, Any
+from typing import List, Callable
+from collections import OrderedDict
 import pandas as pd
-from numpy import ndarray
+import numpy as np
 from pandas import DataFrame
-from pandas.core.groupby.generic import DataFrameGroupBy
 from os import path
 
 
@@ -16,7 +16,6 @@ class CSV_Database():
     def __init__(self) -> None:
         self._csv_data: DataFrame = DataFrame(data=None)
 
-
     @property
     def size(self) -> tuple[int, int]:
         return len(self._csv_data.index), len(self._csv_data.columns)
@@ -25,21 +24,22 @@ class CSV_Database():
     def data(self) -> DataFrame:
         return self._csv_data
 
+    @property
+    def groupnames(self) -> List[str]:
+        return self._csv_data[self.DATASET_ID_COLUMN_NAME].unique()
+
     def export_to_local(self, output_dir) -> None:
         if self._csv_data.empty:
             return
         else:
             try:
-                self._csv_data.to_csv(output_dir + "\\" + "merged data.csv", 
-                                    header=True, 
-                                    index=False, 
-                                    sep=",", 
-                                    compression=None)
+                self._csv_data.to_csv(output_dir + "\\" + "merged data.csv",
+                                      header=True,
+                                      index=False,
+                                      sep=",",
+                                      compression=None)
             except Exception as e:
                 print(str(e))
-                # self._status = f"An error occurred: <font color='red'>{str(e)}</font>"
-                # self.notify()
-
 
     def import_csv_files(
             self,
@@ -47,7 +47,7 @@ class CSV_Database():
             reading_cols: List[str],
             skip_rows: List[int],
             callbackMessage: Callable[[str], None]
-            ) -> DataFrame:
+    ) -> DataFrame:
         """
         Imports data from CSV files, processes the data, and returns the count of imported files. 
 
@@ -68,16 +68,17 @@ class CSV_Database():
         imported_count: int = 0
 
         for filepath in filepaths:
-            filename = path.splitext(path.basename(filepath))[0] # splitext() return (filename, extension)
-            # Notice reading file:
-            callbackMessage(f"Reading file:  {path.basename(filepath)}")
+            # splitext() return (filename, extension)
+            filename = path.splitext(path.basename(filepath))[0]
+            callbackMessage(f"Reading file: {path.basename(filepath)}")
 
             df_extracted_from_file = pd.DataFrame()
             df_current_chunk = pd.DataFrame()
             found_cols: List[str] = []
 
             try:
-                df_raw_imported = pd.read_csv(filepath, index_col=None, sep=',', header=0, skiprows=skip_rows)
+                df_raw_imported = pd.read_csv(
+                    filepath, index_col=None, sep=',', header=0, skiprows=skip_rows)
                 columns_df_raw_imported = list(df_raw_imported.columns)
             except Exception as e:
                 print(str(e))
@@ -91,9 +92,11 @@ class CSV_Database():
                         # get piece of data which have header as column in 'found_colnames'
                         df_current_chunk = df_raw_imported[found_cols]
                         # build a single empty column data with header as 'col'
-                        df_empty_chunk = pd.Series(data=None, name=col, dtype='object')
+                        df_empty_chunk = pd.Series(
+                            data=None, name=col, dtype='object')
                         # push it to 'extracted_df'
-                        df_extracted_from_file = pd.concat([df_extracted_from_file, df_current_chunk, df_empty_chunk], axis=1)
+                        df_extracted_from_file = pd.concat(
+                            [df_extracted_from_file, df_current_chunk, df_empty_chunk], axis=1)
                         found_cols.clear()
                         df_current_chunk = None
 
@@ -101,12 +104,13 @@ class CSV_Database():
             # if found_colnames is not empty then extract data and push to 'extracted_df'
             if len(found_cols) > 0:
                 df_current_chunk = df_raw_imported[found_cols]
-                df_extracted_from_file = pd.concat([df_extracted_from_file, df_current_chunk], axis=1)
+                df_extracted_from_file = pd.concat(
+                    [df_extracted_from_file, df_current_chunk], axis=1)
                 df_extracted_from_file = df_extracted_from_file.drop_duplicates()
                 df_extracted_from_file = df_extracted_from_file.dropna(
-                    axis=0, # drop rows which contain missing values
-                    how='all', # if all values of checking columns are NA, drop that row or column
-                    subset=None) # check all columns
+                    axis=0,  # drop rows which contain missing values
+                    how='all',  # if all values of checking columns are NA, drop that row or column
+                    subset=None)  # check all columns
                 found_cols.clear()
                 df_current_chunk = None
 
@@ -115,10 +119,11 @@ class CSV_Database():
             df_series_asfilename = pd.Series(
                 data=filename,
                 dtype='string',
-                index=range(0, df_extracted_from_file.shape[0])) # range from 0 to number of rows of 'df_extracted_from_file'
-        
+                # range from 0 to number of rows of 'df_extracted_from_file'
+                index=range(0, df_extracted_from_file.shape[0]))
+
             df_extracted_from_file.insert(
-                loc=0, # insert new column as first (left-most) column
+                loc=0,  # insert new column as first (left-most) column
                 column=CSV_Database.DATASET_ID_COLUMN_NAME,
                 value=df_series_asfilename.values)
 
@@ -126,7 +131,6 @@ class CSV_Database():
             if not df_extracted_from_file.empty:
                 total_df.append(df_extracted_from_file)
                 imported_count += 1
-
         callbackMessage(f"")
 
         # Merging data frames into one frame
@@ -136,38 +140,43 @@ class CSV_Database():
 
         return imported_count
 
-
-    def get_groupdata_at_column(
-            self,
-            groupby_columnname: str,
-            need_data_columnname: str
-    ) -> tuple[List[ndarray[Any]], List[str]]:
-        """
-        Function to extract dataframe from Pandas Groupby object with a specific column
-        @param groupby_columnname: str
-        @param need_data_columnname: str
-        @return: tuple[List[str], List[ndarray[Any]]]
-                 List[ndarray[Any]]: List of numpy array, each array contains float numbers
-                 List[str]: List of labels, each label is name of corrensponding dataset in List[ndarray[Any]]
-        """
+    def from_column(self,
+                    column: str,
+                    removeNaN: bool = False,
+                    sort_data_order_by: List[str] = None
+                    ) -> OrderedDict[str, np.ndarray]:
         # Validation the column name to extract data exist in target database or not
-        data_column_names = self._csv_data.columns
-        if not need_data_columnname in data_column_names:
-            return (None, None)
-        
-        if not groupby_columnname in data_column_names:
-            return (None, None)
-        
+        groupby_column = self.DATASET_ID_COLUMN_NAME
+        data_columns = self._csv_data.columns
+        dataname_list: List[str] = []
+        if not column in data_columns:
+            return None
+        if not groupby_column in data_columns:
+            return None
+
         # Extract data from CSV database
-        df_needed_data = self._csv_data[[groupby_columnname, need_data_columnname]]
-        df_grouped_plot_data = df_needed_data.groupby(by=groupby_columnname, sort=None)
+        df_subset_data = self._csv_data[[groupby_column, column]]
+        groups_data = df_subset_data.groupby(by=groupby_column, sort=None)
 
-        # Prepare data
-        list_data_labels: List[str] = []
-        list_dataset: List[ndarray] = []
+        # filter out the group_name of data by the order of sort_data_order_by
+        if sort_data_order_by != None:
+            dataname_list = [
+                name for name in sort_data_order_by if name in groups_data.groups.keys()]
+            if len(dataname_list) == 0:
+                dataname_list = groups_data.groups.keys()
+        else:
+            dataname_list = groups_data.groups.keys()
 
-        for group_name, group_data in df_grouped_plot_data:
-            list_data_labels.append(group_name)
-            list_dataset.append((group_data[need_data_columnname]).to_numpy(dtype='float')) # get data with type 'float' intentionally
-            
-        return (list_dataset, list_data_labels)
+        retVal = OrderedDict()
+        for name in dataname_list:
+            # get data with type 'float' intentionally
+            key = name
+            val = groups_data.get_group(name)[column].to_numpy(dtype='float')
+
+            # remove NaN value in numpy array
+            if removeNaN:
+                retVal[key] = val[~np.isnan(val)]
+            else:
+                retVal[key] = val
+
+        return retVal

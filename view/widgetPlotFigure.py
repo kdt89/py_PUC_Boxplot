@@ -1,20 +1,21 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Callable
 from PyQt6 import QtGui
 from PyQt6.QtWidgets import QWidget, QFormLayout
 from view.ui.PlotFigure_ui import Ui_PlotFigure
 from controller.setting import Setting
+from controller.workstatus import Status
 from model.csv_database import CSV_Database
 from model.figureconfig import FigureConfig
 from util.image_embed_pptx import ImageEmbedPPTX
 
-import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # for embedded plot to PyQt
+# for embedded plot to PyQt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as mpl
-from matplotlib import patches, ticker
+from matplotlib import ticker
 from matplotlib.figure import Figure
-from matplotlib.axes import Axes
-from matplotlib.axis import Axis
+# from matplotlib.axes import Axes
+# from matplotlib.axis import Axis
 
 
 """
@@ -48,25 +49,31 @@ mpl.rcParams['axes.linewidth'] = 0.3
 mpl.rcParams['axes.labelpad'] = 4               # space between label and axis
 mpl.rcParams['axes.titlecolor'] = 'black'       # Set color for subplot title
 # mpl.rcParams['axes.titleweight'] = 'bold'     # Set font weight for subplot title
-mpl.rcParams['axes.titlesize'] = 8              # Set font size for subplot title
-mpl.rcParams['axes.titlepad'] = 4               # pad between axes and title in points
-mpl.rcParams['axes.grid'] = True                
+# Set font size for subplot title
+mpl.rcParams['axes.titlesize'] = 8
+# pad between axes and title in points
+mpl.rcParams['axes.titlepad'] = 4
+mpl.rcParams['axes.grid'] = True
 
 mpl.rcParams['polaraxes.grid'] = True
-mpl.rcParams['xtick.labelcolor'] = 'black'      # set boxplot x-axis label color
-mpl.rcParams['xtick.labelsize'] = 7             # set boxplot x-axis label font size
+# set boxplot x-axis label color
+mpl.rcParams['xtick.labelcolor'] = 'black'
+# set boxplot x-axis label font size
+mpl.rcParams['xtick.labelsize'] = 7
 mpl.rcParams['xtick.bottom'] = False
-mpl.rcParams['xtick.major.pad'] = 0             # distance to major tick label in points
+# distance to major tick label in points
+mpl.rcParams['xtick.major.pad'] = 0
 
-mpl.rcParams['ytick.labelsize'] = 7             # set boxplot y-axis label font size
+# set boxplot y-axis label font size
+mpl.rcParams['ytick.labelsize'] = 7
 mpl.rcParams['ytick.major.width'] = 0.2         # major tick width in points
 mpl.rcParams['ytick.major.size'] = 1.5          # major tick width in points
 
 # CONFIGURE BOXPLOT TITLE AND LABEL
 mpl.rcParams['figure.titlesize'] = '8'
 mpl.rcParams['figure.autolayout'] = True
-mpl.rcParams['figure.constrained_layout.h_pad'] =  0.8
-mpl.rcParams['figure.constrained_layout.w_pad'] =  0.5
+mpl.rcParams['figure.constrained_layout.h_pad'] = 0.8
+mpl.rcParams['figure.constrained_layout.w_pad'] = 0.5
 mpl.rcParams['figure.dpi'] = 200                # fit full-screen viewing
 mpl.rcParams['font.family'] = 'tahoma'
 
@@ -74,19 +81,24 @@ mpl.rcParams['grid.color'] = 'lightgray'        # grid color
 mpl.rcParams['grid.linestyle'] = 'solid'
 mpl.rcParams['grid.linewidth'] = 0.1            # in points
 
-## ***************************************************************************
-## * SAVING FIGURES                                                          *
-## ***************************************************************************
-## The default savefig parameters can be different from the display parameters
-## e.g., you may want a higher resolution, or to make the figure
-## background white
-mpl.rcParams['savefig.dpi'] = 300                   # figure dots per inch or 'figure'
-mpl.rcParams['savefig.facecolor'] = 'auto'          # figure face color when saving
-mpl.rcParams['savefig.edgecolor'] = 'auto'          # figure edge color when saving
+# ***************************************************************************
+# * SAVING FIGURES                                                          *
+# ***************************************************************************
+# The default savefig parameters can be different from the display parameters
+# e.g., you may want a higher resolution, or to make the figure
+# background white
+# figure dots per inch or 'figure'
+mpl.rcParams['savefig.dpi'] = 300
+# figure face color when saving
+mpl.rcParams['savefig.facecolor'] = 'auto'
+# figure edge color when saving
+mpl.rcParams['savefig.edgecolor'] = 'auto'
 mpl.rcParams['savefig.format'] = 'png'         # {png, ps, pdf, svg}
 mpl.rcParams['savefig.bbox'] = 'tight'
-mpl.rcParams['savefig.transparent'] = False         # whether figures are saved with a transparent background by default
-mpl.rcParams['savefig.orientation'] = 'portrait'    # orientation of saved figure, for PostScript output only
+# whether figures are saved with a transparent background by default
+mpl.rcParams['savefig.transparent'] = False
+# orientation of saved figure, for PostScript output only
+mpl.rcParams['savefig.orientation'] = 'portrait'
 
 """
 - UI components struture of Plot Figure widget:
@@ -104,7 +116,10 @@ mpl.rcParams['savefig.orientation'] = 'portrait'    # orientation of saved figur
 - Make main_widget UI = QWidget, returned by 'main_widget'.setLayout(layout)
 """
 
+
 class WidgetPlotFigure(QWidget):
+
+    callbackMessageThrower: Callable[[str], None] = None
 
     def __init__(self):
         super(WidgetPlotFigure, self).__init__()
@@ -114,12 +129,7 @@ class WidgetPlotFigure(QWidget):
         self.bindingSignal2Slot()
         self.list_figures: List[tuple[str, Figure]] = []
 
-
-    def add_page(
-            self,
-            add_figure: Figure,
-            title: str
-            ) -> None:
+    def add_page(self, add_figure: Figure, title: str) -> None:
         canvas = FigureCanvas(add_figure)
         layout = QFormLayout()
         layout.addWidget(canvas)
@@ -128,37 +138,35 @@ class WidgetPlotFigure(QWidget):
         new_page.setLayout(layout)
         self.ui.tab_plotFigureHolder.addTab(new_page, title)
 
-
     def build_figure_pages(
             self,
             figureconfig_list: List[FigureConfig],
             plot_dataset: CSV_Database,
             userset_label_list: List[str],
-            userset_label_rotation: int,
-            ) -> None:
+            userset_label_rotation: int
+    ) -> None:
 
         for figureconfig in figureconfig_list:
             new_fig = self.build_figure(
                 dataset=plot_dataset,
                 figure_config=figureconfig,
-                label_list=userset_label_list,
+                userset_label_list=userset_label_list,
                 label_rotation=userset_label_rotation)
             self.add_page(add_figure=new_fig, title=figureconfig.title)
             self.list_figures.append((figureconfig.name, new_fig))
 
-
     def build_figure(
-            self, 
+            self,
             figure_config: FigureConfig,
             dataset: CSV_Database,
-            label_list: List[str],
+            userset_label_list: List[str],
             label_rotation: int,
-            ) -> Figure:
+    ) -> Figure:
         # Validate the subplot size
         row_size, col_size = figure_config.size
         if col_size <= 0:
             return None
-        
+
         if type(label_rotation) == int:
             if label_rotation < 0 or label_rotation > 90:
                 label_rotation = 0
@@ -168,41 +176,23 @@ class WidgetPlotFigure(QWidget):
         fig, axs = mpl.subplots(nrows=row_size, ncols=col_size)
         plot_idx: int = 0
 
-        # Decide how we should make plot with user set data label list or not
-        if label_list is None or len(label_list) == 0:
-            use_userset_label_list = False
-        else:
-            use_userset_label_list = True
-
         for plot in figure_config.plotconfig_list:
             if plot.to_plot is False:
                 continue
 
             ax = axs.flat[plot_idx]
-            dataset_list, datalabel_list = dataset.get_groupdata_at_column(
-                groupby_columnname=CSV_Database.DATASET_ID_COLUMN_NAME,
-                need_data_columnname=plot.item_name)
-
-            if datalabel_list is None or dataset_list is None:
+            plot_dataset = dataset.from_column(
+                column=plot.item_name,
+                removeNaN=True,
+                sort_data_order_by=userset_label_list)
+            if plot_dataset == None:
                 continue
 
-            # Compare user set data label list and dataset label list
-            # if 'user set' data label list have same list elements with 'dataset' label list
-            # then use 'user set' data label list when making plot (as user expect data label order in result Plot)
-            if use_userset_label_list:
-                if set(label_list) == set(datalabel_list):
-                    datalabel_list = label_list
-                else:
-                    pass
-
-            # Remove NaN values from each dataset
-            # otherwise the Matplotlib boxplot will draw blank figure
-            dataset_list = [array[~np.isnan(array)] for array in dataset_list]
-
             # Create the boxplot
-            bp = ax.boxplot(x=dataset_list, labels=datalabel_list)
+            bp = ax.boxplot(x=plot_dataset.values(),
+                            labels=plot_dataset.keys())
+
             ax.set_title(label=plot.title)
-            
             # rotate x-axis label if user specify
             ax.tick_params(axis='x', labelrotation=label_rotation)
 
@@ -213,26 +203,30 @@ class WidgetPlotFigure(QWidget):
 
             if (plot.upperspec != None and isinstance(plot.upperspec, (int, float))):
                 ax.axhline(y=plot.upperspec, linewidth=0.4)
-                yticklabel_format = "{{x:.{0}f}}".format(len(str(plot.upperspec).split('.')[1]))
-                ax.yaxis.set_major_formatter(ticker.StrMethodFormatter(yticklabel_format))
+                yticklabel_format = "{{x:.{0}f}}".format(
+                    len(str(plot.upperspec).split('.')[1]))
+                ax.yaxis.set_major_formatter(
+                    ticker.StrMethodFormatter(yticklabel_format))
 
             # add annotation for Boxplot median values
             plot_idx += 1
+            try:
+                self.callbackMessageThrower(f"Plotted {plot.title}...")
+            except:
+                pass
 
         # Standardize the figure size to fit MS PPT report
         WidgetPlotFigure.figure_sizefit(
             figure=fig,
             nrows=row_size,
             ncols=col_size,
-            width_height_ratio= Setting.PICTURE_WIDTH_HEIGHT_RATIO,
-            max_width= Setting.PICTURE_MAX_WIDTH,
+            width_height_ratio=Setting.PICTURE_WIDTH_HEIGHT_RATIO,
+            max_width=Setting.PICTURE_MAX_WIDTH,
             max_height=Setting.PICTURE_MAX_HEIGHT)
 
         # Add bounding box to figure
         # WidgetPlotFigure.drawFigureBbox(figure=fig, axes=axs)
-
         return fig
-
 
     def closeEvent(self, a0: QtGui.QCloseEvent | None) -> None:
         # intentionally close all current existing matplotlib.pyplot figures explicitly
@@ -240,34 +234,32 @@ class WidgetPlotFigure(QWidget):
         mpl.close('all')
         return super().closeEvent(a0)
 
-
     """
     EXTRA FUNCTION
     """
+
     def exportFigure2Image(self) -> None:
         for figname, fig in self.list_figures:
             figname = Setting.OUTPUT_DIR + "\\" + figname + ".png"
             fig.savefig(fname=figname, pad_inches=0.05)
             # save figure name to list for future use
-            Setting.LIST_FIGURE_IMAGES.append(figname)
-
+            Status.LIST_FIGURE_IMAGES.append(figname)
 
     def exportFigure2PPTX(self) -> None:
-        print('Exporting figure to PPTX...')
         img2pptx = ImageEmbedPPTX()
+        ImageEmbedPPTX.callbackMessageThrower = self.callbackMessageThrower
         img2pptx.clearAllShapes()
         img2pptx.exportImages2PPTX()
-
 
     @staticmethod
     def figure_sizefit(
             figure: Figure,
             nrows: int,
             ncols: int,
-            width_height_ratio: float, # width/height ratio
+            width_height_ratio: float,  # width/height ratio
             max_width: float,
             max_height: float
-            ) -> Figure:
+    ) -> Figure:
         if max_width <= 0 or max_height <= 0:
             # raise ValueError("max_width and max_height should be greater than 0")
             return
@@ -302,66 +294,56 @@ class WidgetPlotFigure(QWidget):
 
         return
 
+    def bindingSignal2Slot(self) -> None:
+        self.ui.btn_exportPPTX.clicked.connect(
+            self.ui.actionExportGraph2PPTX.trigger)
+        self.ui.actionExportGraph2PPTX.triggered.connect(
+            self.exportFigure2PPTX)
 
-    @staticmethod
-    def drawFigureBbox(figure: Figure, axes: Axes) -> None:
-        # Get the bounding boxes of the axes including text decorations
-        axes_shape = np.atleast_2d(axes).shape
-        renderer = figure.canvas.get_renderer()
-        get_bbox = lambda ax: ax.get_tightbbox(renderer).transformed(figure.transFigure.inverted())
-        bboxes = list(map(get_bbox, axes.flat))
+    # @staticmethod
+    # def drawFigureBbox(figure: Figure, axes: Axes) -> None:
+    #     # Get the bounding boxes of the axes including text decorations
+    #     axes_shape = np.atleast_2d(axes).shape
+    #     renderer = figure.canvas.get_renderer()
+    #     def get_bbox(ax): return ax.get_tightbbox(
+    #         renderer).transformed(figure.transFigure.inverted())
+    #     bboxes = list(map(get_bbox, axes.flat))
 
-        #Get the minimum and maximum extent, get the coordinate half-way between those
-        ymax = np.array(list(map(lambda b: b.y1, bboxes))).reshape(axes_shape).max(axis=1)
-        ymin = np.array(list(map(lambda b: b.y0, bboxes))).reshape(axes_shape).min(axis=1)
-        ys = np.c_[ymax[1:], ymin[:-1]].mean(axis=1)
+    #     # Get the minimum and maximum extent, get the coordinate half-way between those
+    #     ymax = np.array(list(map(lambda b: b.y1, bboxes))
+    #                     ).reshape(axes_shape).max(axis=1)
+    #     ymin = np.array(list(map(lambda b: b.y0, bboxes))
+    #                     ).reshape(axes_shape).min(axis=1)
+    #     ys = np.c_[ymax[1:], ymin[:-1]].mean(axis=1)
 
-        # Draw a horizontal lines at those coordinates
-        for y in ys:
-            line = mpl.Line2D(
-                [0,1],[y,y],
-                linestyle = 'solid',
-                linewidth = 0.1,
-                transform = figure.transFigure, 
-                color = 'black')
-            figure.add_artist(line)
+    #     # Draw a horizontal lines at those coordinates
+    #     for y in ys:
+    #         line = mpl.Line2D(
+    #             [0, 1], [y, y],
+    #             linestyle='solid',
+    #             linewidth=0.1,
+    #             transform=figure.transFigure,
+    #             color='black')
+    #         figure.add_artist(line)
 
-        return None
+    #     return None
 
+    # @staticmethod
+    # def drawAxisBbox(figure: Figure, axis: Axis) -> None:
+    #     # Get the bounding boxes of the axes including text decorations
+    #     renderer = figure.canvas.get_renderer()
+    #     bbox = axis.get_tightbbox(renderer).transformed(
+    #         figure.transFigure.inverted())
+    #     rec = patches.Rectangle(
+    #         xy=(bbox.x0, bbox.y0),
+    #         width=bbox.width,
+    #         height=bbox.height,
+    #         lw=1,
+    #         edgecolor="red",
+    #         facecolor="none",
+    #         fill=False)
+    #     axis.add_patch(rec)
 
-    @staticmethod
-    def drawAxisBbox(figure: Figure, axis: Axis) -> None:
-        # Get the bounding boxes of the axes including text decorations
-        renderer = figure.canvas.get_renderer()
-        bbox = axis.get_tightbbox(renderer).transformed(figure.transFigure.inverted())
-        rec = patches.Rectangle(
-            xy=(bbox.x0, bbox.y0),
-            width=bbox.width,
-            height=bbox.height,
-            lw=1,
-            edgecolor="red",
-            facecolor="none",
-            fill=False)
-        axis.add_patch(rec)
-
-        return None
-
-
-    @staticmethod
-    def __removeArrayNAN(in_array: np.ndarray) -> np.ndarray:
-        """
-        Remove NaN values from the input numpy array and return the cleaned array.
-
-        Parameters:
-            in_array (np.ndarray): The input numpy array with NaN values.
-
-        Returns:
-            np.ndarray: The cleaned numpy array with NaN values removed.
-        """
-        return in_array[~np.isnan(in_array)]
-
+    #     return None
 
     # binding Action to function
-    def bindingSignal2Slot(self) -> None:
-        self.ui.btn_exportPPTX.clicked.connect(self.ui.actionExportGraph2PPTX.trigger)
-        self.ui.actionExportGraph2PPTX.triggered.connect(self.exportFigure2PPTX)

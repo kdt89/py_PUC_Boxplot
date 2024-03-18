@@ -9,7 +9,6 @@ from mvc_model import Model
 Main Program
 '''
 if __name__ == "__main__":
-    # UI intialize
     app = QApplication(sys.argv)
     view = View()
     model = Model()
