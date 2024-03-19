@@ -47,7 +47,7 @@ class CSV_Database():
             reading_cols: List[str],
             skip_rows: List[int],
             callbackMessage: Callable[[str], None]
-    ) -> DataFrame:
+            ) -> DataFrame:
         """
         Imports data from CSV files, processes the data, and returns the count of imported files. 
 
@@ -66,7 +66,6 @@ class CSV_Database():
 
         total_df: List[DataFrame] = []
         imported_count: int = 0
-
         for filepath in filepaths:
             # splitext() return (filename, extension)
             filename = path.splitext(path.basename(filepath))[0]

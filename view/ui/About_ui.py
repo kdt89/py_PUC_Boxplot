@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'c:\PJT\PY\py_PUC_Boxplot\view\ui\About.ui'
+# Form implementation generated from reading ui file 'd:\PJT\PY\py_PUC_Boxplot\view\ui\About.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
@@ -13,6 +13,9 @@ class Ui_About(object):
     def setupUi(self, About):
         About.setObjectName("About")
         About.resize(449, 222)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("d:\\PJT\\PY\\py_PUC_Boxplot\\view\\ui\\icon_about.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        About.setWindowIcon(icon)
         self.lblBuildTime = QtWidgets.QLabel(parent=About)
         self.lblBuildTime.setGeometry(QtCore.QRect(120, 0, 321, 16))
         font = QtGui.QFont()

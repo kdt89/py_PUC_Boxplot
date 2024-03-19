@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string notr="true">Preference</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icon_settings.png</normaloff>icon_settings.png</iconset>
+  </property>
   <property name="toolTip">
    <string notr="true"/>
   </property>

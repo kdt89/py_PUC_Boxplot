@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'c:\PJT\PY\py_PUC_Boxplot\view\ui\Main.ui'
+# Form implementation generated from reading ui file 'd:\PJT\PY\py_PUC_Boxplot\view\ui\Main.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
@@ -19,6 +19,9 @@ class Ui_Main(object):
         sizePolicy.setHeightForWidth(Main.sizePolicy().hasHeightForWidth())
         Main.setSizePolicy(sizePolicy)
         Main.setWindowTitle("MPO To Plot Generator")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("d:\\PJT\\PY\\py_PUC_Boxplot\\view\\ui\\icon_main.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        Main.setWindowIcon(icon)
         Main.setToolTip("")
         Main.setStatusTip("")
         Main.setWhatsThis("")
@@ -99,7 +102,7 @@ class Ui_Main(object):
 "  border: 1px solid #cccccc;}\n"
 "\n"
 "QPushButton:hover {\n"
-"  background-color: rgb(0, 110, 200);\n"
+"  background-color: rgb(0, 100, 200);\n"
 "  color: rgb(255, 255, 255);\n"
 "  border: 1px solid #cccccc;}")
         self.btn_makePlot.setText("Make Plot")
@@ -125,10 +128,14 @@ class Ui_Main(object):
 "  border: 1px solid #cccccc;}\n"
 "\n"
 "QPushButton:hover {\n"
-"  background-color: rgb(0, 110, 200);\n"
+"  background-color: rgb(0, 100, 200);\n"
 "  color: rgb(255, 255, 255);\n"
 "  border: 1px solid #cccccc;}")
-        self.btn_showPreference.setText("Preferences")
+        self.btn_showPreference.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("d:\\PJT\\PY\\py_PUC_Boxplot\\view\\ui\\icon_settings.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        self.btn_showPreference.setIcon(icon1)
+        self.btn_showPreference.setIconSize(QtCore.QSize(30, 30))
         self.btn_showPreference.setObjectName("btn_showPreference")
         self.hLayout_commandBar.addWidget(self.btn_showPreference)
         self.btn_showAbout = QtWidgets.QPushButton(parent=self.gridLayoutWidget)
@@ -151,10 +158,14 @@ class Ui_Main(object):
 "  border: 1px solid #cccccc;}\n"
 "\n"
 "QPushButton:hover {\n"
-"  background-color: rgb(0, 110, 200);\n"
+"  background-color: rgb(0, 100, 200);\n"
 "  color: rgb(255, 255, 255);\n"
 "  border: 1px solid #cccccc;}")
-        self.btn_showAbout.setText("About")
+        self.btn_showAbout.setText("")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("d:\\PJT\\PY\\py_PUC_Boxplot\\view\\ui\\icon_about.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        self.btn_showAbout.setIcon(icon2)
+        self.btn_showAbout.setIconSize(QtCore.QSize(30, 30))
         self.btn_showAbout.setObjectName("btn_showAbout")
         self.hLayout_commandBar.addWidget(self.btn_showAbout)
         self.gridLayout_main.addLayout(self.hLayout_commandBar, 0, 0, 1, 3)

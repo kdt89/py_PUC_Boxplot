@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string notr="true">MPO To Plot Generator</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icon_main.png</normaloff>icon_main.png</iconset>
+  </property>
   <property name="toolTip">
    <string notr="true"/>
   </property>
@@ -194,7 +198,7 @@
   border: 1px solid #cccccc;}
 
 QPushButton:hover {
-  background-color: rgb(0, 110, 200);
+  background-color: rgb(0, 100, 200);
   color: rgb(255, 255, 255);
   border: 1px solid #cccccc;}</string>
          </property>
@@ -241,12 +245,22 @@ QPushButton:hover {
   border: 1px solid #cccccc;}
 
 QPushButton:hover {
-  background-color: rgb(0, 110, 200);
+  background-color: rgb(0, 100, 200);
   color: rgb(255, 255, 255);
   border: 1px solid #cccccc;}</string>
          </property>
          <property name="text">
-          <string notr="true">Preferences</string>
+          <string notr="true"/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icon_settings.png</normaloff>icon_settings.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -288,12 +302,22 @@ QPushButton:hover {
   border: 1px solid #cccccc;}
 
 QPushButton:hover {
-  background-color: rgb(0, 110, 200);
+  background-color: rgb(0, 100, 200);
   color: rgb(255, 255, 255);
   border: 1px solid #cccccc;}</string>
          </property>
          <property name="text">
-          <string notr="true">About</string>
+          <string notr="true"/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icon_about.png</normaloff>icon_about.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
         </widget>
        </item>
