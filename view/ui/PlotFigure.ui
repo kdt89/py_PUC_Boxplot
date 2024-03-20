@@ -31,6 +31,10 @@
   <property name="windowTitle">
    <string>Box Plot View</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../rc/icons.qrc">
+    <normaloff>:/icons/icon_main.png</normaloff>:/icons/icon_main.png</iconset>
+  </property>
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
@@ -156,6 +160,8 @@ QPushButton:hover {
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../rc/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

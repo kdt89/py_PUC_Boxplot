@@ -30,7 +30,8 @@ class Controller():  # Controller in MVC pattern
             figureconfig_list=self.model.figureconfig_list.list,
             plot_dataset=self.model.database,
             userset_label_list=Setting.PLOTCONFIG_DATASET_NAME_LIST,
-            userset_label_rotation=Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION)
+            userset_label_rotation=Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION,
+            userset_show_median=Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN)
 
         self.view.PlotFigure.exportFigure2Image()
         self.view.PlotFigure.showMaximized()

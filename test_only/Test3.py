@@ -1,43 +1,25 @@
-import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.transforms as mtrans
+import numpy as np
 
-fig, axes = plt.subplots(3,2, squeeze=False)
+# Generate some data
+data = [np.random.normal(0, std, size=100) for std in range(1, 4)]
 
-for i, ax in enumerate(axes.flat):
-    ax.plot([1,2])
-    ax.set_title('Title ' + str(i+1))
-    ax.set_xlabel('xaxis')
-    ax.set_ylabel('yaxis')
-    ax.get_tightbbox()
+# Create a boxplot
+fig, ax = plt.subplots()
+bp = ax.boxplot(data)
 
-# rearange the axes for no overlap
-fig.tight_layout()
+# Get the width of the first box
+box = bp['boxes'][0]
+# width = box.get_xdata()[1] - box.get_xdata()[0]
+box_width = box.get_bbox().width
 
-# Get the bounding boxes of the axes including text decorations
-r = fig.canvas.get_renderer()
-get_bbox = lambda ax: ax.get_tightbbox(r).transformed(fig.transFigure.inverted())
-bboxes = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox).reshape(axes.shape)
+for i in range(len(data)):
+    median = bp['medians'][i].get_ydata()[0]
+    ax.annotate(text=f'{median:.1f}',
+                xy=(i+1, median),
+                xytext=(-0.5, 0.3),
+                textcoords='offset fontsize',
+                fontsize=box_width*20)
 
-#debug_only
-bboxes_raw = np.array(list(map(get_bbox, axes.flat)), mtrans.Bbox)
-
-bboxes_new = bboxes_raw.reshape(axes.shape)
-# bboxes_check = list(map(get_bbox, axes.flat))
-# bboxes2_raw = np.array(list(map(get_bbox, axes.flat)))
-
-#Get the minimum and maximum extent, get the coordinate half-way between those
-ymax = np.array(list(map(lambda b: b.y1, bboxes.flat))).reshape(axes.shape).max(axis=1)
-ymin = np.array(list(map(lambda b: b.y0, bboxes.flat))).reshape(axes.shape).min(axis=1)
-ys = np.c_[ymax[1:], ymin[:-1]].mean(axis=1)
-
-# Draw a horizontal lines at those coordinates
-for y in ys:
-    line = plt.Line2D([0,1],[y,y], transform=fig.transFigure, color="black")
-    fig.add_artist(line)
-
-
+print(f'The width of the first box is {box_width}')
 plt.show()
-
-
-

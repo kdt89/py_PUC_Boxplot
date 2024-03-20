@@ -1,90 +1,26 @@
-# importing various libraries
 import sys
-from PyQt6.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-import matplotlib.pyplot as plt
-import random
 
-# main window
-# which inherits QDialog
-class Window(QDialog):
-	
-	# constructor
-	def __init__(self, parent=None):
-
-		self.plot_pos = 1
-		super(Window, self).__init__(parent)
-
-		# a figure instance to plot on
-		self.fig = plt.figure()
-
-		# this is the Canvas Widget that 
-		# displays the 'figure'it takes the
-		# 'figure' instance as a parameter to __init__
-		self.canvas = FigureCanvas(self.fig)
-
-		# this is the Navigation widget
-		# it takes the Canvas widget and a parent
-		self.toolbar = NavigationToolbar(self.canvas, self)
-
-		# Just some button connected to 'plot' method
-		self.button = QPushButton('Plot')
-		
-		# adding action to the button
-		self.button.clicked.connect(self.plot)
-
-		# creating a Vertical Box layout
-		layout = QVBoxLayout()
-		
-		# adding tool bar to the layout
-		layout.addWidget(self.toolbar)
-		
-		# adding canvas to the layout
-		layout.addWidget(self.canvas)
-		
-		# adding push button to the layout
-		layout.addWidget(self.button)
-		
-		# setting layout to the main window
-		self.setLayout(layout)
-
-	# action called by the push button
-	def plot(self):
-		
-		# random data
-		data = [random.random() for i in range(10)]
-
-		# clearing old figure
-		# self.figure.clear()
-
-		# create an axis
-		ax = self.fig.add_subplot(2, 2, self.plot_pos)
-		
-		# plot data
-		ax.boxplot(data, '*-')
-
-		# refresh canvas
-		self.canvas.draw()
-
-		print(self.fig.transFigure)
-		print("inverting: ")
-		print(self.fig.transFigure.inverted())
-
-		self.plot_pos += 1
+from PyQt6 import QtGui, QtWidgets
 
 
-# driver code
-if __name__ == '__main__':
-	
-	# creating apyqt5 application
-	app = QApplication(sys.argv)
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-	# creating a window object
-	main = Window()
-	
-	# showing the window
-	main.show()
+        self.setWindowTitle("Hello World")
+        self.button = QtWidgets.QPushButton("My button")
+        icon = QtGui.QIcon("animal-penguin.png")
+        self.button.setIcon(icon)
+        self.button.clicked.connect(self.change_icon)
+        self.setCentralWidget(self.button)
 
-	# loop
-	sys.exit(app.exec())
+        self.show()
+
+    def change_icon(self):
+        icon = QtGui.QIcon("animal-monkey.png")
+        self.button.setIcon(icon)
+
+
+app = QtWidgets.QApplication(sys.argv)
+w = MainWindow()
+app.exec()

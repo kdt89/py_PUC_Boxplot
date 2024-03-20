@@ -14,8 +14,8 @@
    <string>About</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>icon_about.png</normaloff>icon_about.png</iconset>
+   <iconset resource="../rc/icons.qrc">
+    <normaloff>:/icons/icon_about.png</normaloff>:/icons/icon_about.png</iconset>
   </property>
   <widget class="QLabel" name="lblBuildTime">
    <property name="geometry">
@@ -83,7 +83,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../rc/icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>btnOK_ToClose</sender>

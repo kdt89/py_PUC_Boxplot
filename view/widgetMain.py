@@ -1,4 +1,5 @@
 from view.ui.Main_ui import Ui_Main
+from view.rc import icons_rc
 from PyQt6.QtWidgets import QMainWindow
 from typing import List
 

@@ -17,11 +17,11 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string notr="true">MPO To Plot Generator</string>
+   <string notr="true">Boxplot Generator</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>icon_main.png</normaloff>icon_main.png</iconset>
+   <iconset resource="../rc/icons.qrc">
+    <normaloff>:/icons/icon_main.png</normaloff>:/icons/icon_main.png</iconset>
   </property>
   <property name="toolTip">
    <string notr="true"/>
@@ -253,8 +253,8 @@ QPushButton:hover {
           <string notr="true"/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>icon_settings.png</normaloff>icon_settings.png</iconset>
+          <iconset resource="../rc/icons.qrc">
+           <normaloff>:/icons/icon_setting.png</normaloff>:/icons/icon_setting.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -310,8 +310,8 @@ QPushButton:hover {
           <string notr="true"/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>icon_about.png</normaloff>icon_about.png</iconset>
+          <iconset resource="../rc/icons.qrc">
+           <normaloff>:/icons/icon_about.png</normaloff>:/icons/icon_about.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -527,6 +527,8 @@ QPushButton:hover {
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../rc/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

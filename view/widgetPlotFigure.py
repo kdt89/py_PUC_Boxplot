@@ -16,7 +16,7 @@ from matplotlib import ticker
 from matplotlib.figure import Figure
 # from matplotlib.axes import Axes
 # from matplotlib.axis import Axis
-
+# from matplotlib.text
 
 """
 Customize Matplotlib style with rcParams
@@ -143,7 +143,8 @@ class WidgetPlotFigure(QWidget):
             figureconfig_list: List[FigureConfig],
             plot_dataset: CSV_Database,
             userset_label_list: List[str],
-            userset_label_rotation: int
+            userset_label_rotation: int,
+            userset_show_median: bool = False
     ) -> None:
 
         for figureconfig in figureconfig_list:
@@ -151,7 +152,8 @@ class WidgetPlotFigure(QWidget):
                 dataset=plot_dataset,
                 figure_config=figureconfig,
                 userset_label_list=userset_label_list,
-                label_rotation=userset_label_rotation)
+                label_rotation=userset_label_rotation,
+                show_median=userset_show_median)
             self.add_page(add_figure=new_fig, title=figureconfig.title)
             self.list_figures.append((figureconfig.name, new_fig))
 
@@ -161,6 +163,7 @@ class WidgetPlotFigure(QWidget):
             dataset: CSV_Database,
             userset_label_list: List[str],
             label_rotation: int,
+            show_median: bool = False
     ) -> Figure:
         # Validate the subplot size
         row_size, col_size = figure_config.size
@@ -195,6 +198,18 @@ class WidgetPlotFigure(QWidget):
             ax.set_title(label=plot.title)
             # rotate x-axis label if user specify
             ax.tick_params(axis='x', labelrotation=label_rotation)
+
+            # add annonation for Boxplot median values
+            if show_median is True:
+                medians_len = len(plot_dataset)
+                median_anno_size = self.getMedianFontSize(medians_len)
+                for i in range(medians_len):
+                    median = bp['medians'][i].get_ydata()[0]
+                    ax.annotate(text=f'{median:.1f}',
+                                xy=(i+1, median),
+                                xytext=(-0.5, 0.2),
+                                textcoords='offset fontsize',
+                                fontsize=median_anno_size)
 
             # set title and add reference line (USL/LSL)
             # set y-axis label tick format (float to 2 decimal places)
@@ -293,6 +308,25 @@ class WidgetPlotFigure(QWidget):
         figure.set_figheight(new_figheight)
 
         return
+
+    def getMedianFontSize(self, dataset_length: int) -> int:
+        max_size = 7
+        min_size = 3
+        retVal = min_size
+        if type(dataset_length) != int:
+            return retVal
+        if dataset_length <= 6:
+            retVal = max_size
+        if 7 <= dataset_length and dataset_length <= 10:
+            retVal = 6
+        if 11 <= dataset_length and dataset_length <= 15:
+            retVal = 5
+        if 16 <= dataset_length and dataset_length <= 20:
+            retVal = 4
+        if 21 <= dataset_length:
+            retVal = min_size
+
+        return retVal
 
     def bindingSignal2Slot(self) -> None:
         self.ui.btn_exportPPTX.clicked.connect(

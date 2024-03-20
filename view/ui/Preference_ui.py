@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'd:\PJT\PY\py_PUC_Boxplot\view\ui\Preference.ui'
+# Form implementation generated from reading ui file 'c:\PJT\PY\py_PUC_Boxplot\view\ui\Preference.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
@@ -20,7 +20,7 @@ class Ui_Preference(object):
         Preference.setSizePolicy(sizePolicy)
         Preference.setWindowTitle("Preference")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("d:\\PJT\\PY\\py_PUC_Boxplot\\view\\ui\\icon_settings.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icons/icon_setting.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         Preference.setWindowIcon(icon)
         Preference.setToolTip("")
         Preference.setStatusTip("")

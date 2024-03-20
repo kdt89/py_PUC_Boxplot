@@ -20,8 +20,8 @@
    <string notr="true">Preference</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>icon_settings.png</normaloff>icon_settings.png</iconset>
+   <iconset resource="../rc/icons.qrc">
+    <normaloff>:/icons/icon_setting.png</normaloff>:/icons/icon_setting.png</iconset>
   </property>
   <property name="toolTip">
    <string notr="true"/>
@@ -409,6 +409,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../rc/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

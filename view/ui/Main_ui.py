@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'd:\PJT\PY\py_PUC_Boxplot\view\ui\Main.ui'
+# Form implementation generated from reading ui file 'c:\PJT\PY\py_PUC_Boxplot\view\ui\Main.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
@@ -18,9 +18,9 @@ class Ui_Main(object):
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(Main.sizePolicy().hasHeightForWidth())
         Main.setSizePolicy(sizePolicy)
-        Main.setWindowTitle("MPO To Plot Generator")
+        Main.setWindowTitle("Boxplot Generator")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("d:\\PJT\\PY\\py_PUC_Boxplot\\view\\ui\\icon_main.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icons/icon_main.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         Main.setWindowIcon(icon)
         Main.setToolTip("")
         Main.setStatusTip("")
@@ -133,7 +133,7 @@ class Ui_Main(object):
 "  border: 1px solid #cccccc;}")
         self.btn_showPreference.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("d:\\PJT\\PY\\py_PUC_Boxplot\\view\\ui\\icon_settings.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/icons/icon_setting.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.btn_showPreference.setIcon(icon1)
         self.btn_showPreference.setIconSize(QtCore.QSize(30, 30))
         self.btn_showPreference.setObjectName("btn_showPreference")
@@ -163,7 +163,7 @@ class Ui_Main(object):
 "  border: 1px solid #cccccc;}")
         self.btn_showAbout.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("d:\\PJT\\PY\\py_PUC_Boxplot\\view\\ui\\icon_about.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon2.addPixmap(QtGui.QPixmap(":/icons/icon_about.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.btn_showAbout.setIcon(icon2)
         self.btn_showAbout.setIconSize(QtCore.QSize(30, 30))
         self.btn_showAbout.setObjectName("btn_showAbout")
