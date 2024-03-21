@@ -37,7 +37,7 @@ class Setting:
 
         # Initialization
         dataset_labelrotation = 0
-        rowskip = None
+        rowskip = ""
         show_median = False
         median_fontsize = 6
         # PARSING VALUE FROM LOCAL FILE
@@ -58,14 +58,10 @@ class Setting:
         except:
             pass
 
-        # HANDLING UNEXPECTED STRING AFTER PARSE FROM LOCAL INI
-        if dataset_labelrotation == 'None':
-            dataset_labelrotation = 0
-        elif dataset_labelrotation.isnumeric():
+        # Handle data type
+        try:
             dataset_labelrotation = int(dataset_labelrotation)
-            if not dataset_labelrotation in [0, 45, 90]:
-                dataset_labelrotation = 0  # default value
-        else:
+        except:
             dataset_labelrotation = 0
 
         if show_median == 'None':
@@ -84,9 +80,7 @@ class Setting:
         else:
             median_fontsize = 6
 
-        if rowskip == 'None':
-            rowskip = None
-        else:
+        if type(rowskip) == str:
             rowskip = rowskip.split(' ')
             # Filter out non-numeric string
             rowskip = [num for num in rowskip if num.isnumeric()]
@@ -94,7 +88,10 @@ class Setting:
             rowskip = [row for row in rowskip if row >= 0]
             if len(rowskip) == 0:
                 rowskip = None
+        else:
+            rowskip = None
 
+        # save to Setting object
         Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION = dataset_labelrotation
         Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN = show_median  # must be boolean
         Setting.OPTS_MEDIAN_FONT_SIZE = median_fontsize
