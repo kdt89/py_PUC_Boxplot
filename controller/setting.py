@@ -18,6 +18,7 @@ class Setting:
     # Rotation of Dataset label on Plot Figure. # 0: no rotation
     OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION: int = 0
     OPTS_PLOTCONFIG_SHOW_MEDIAN: bool = False
+    OPTS_MEDIAN_FONT_SIZE: int = 6
     OPTS_DATACONFIG_IMPORT_SKIP_ROW = [1, 2]  # List of integer
 
     # following Minitab software Boxplot style
@@ -34,33 +35,54 @@ class Setting:
     def loadSetting(self) -> None:
         self.cfgparser.read("preference.ini")
 
+        # Initialization
+        dataset_labelrotation = 0
+        rowskip = None
+        show_median = False
+        median_fontsize = 6
+        # PARSING VALUE FROM LOCAL FILE
         try:
             dataset_labelrotation = self.cfgparser["OPTION"]["DATASET_LABEL_ROTATION"]
         except:
-            dataset_labelrotation = 0  # default value
+            pass
         try:
             rowskip = self.cfgparser["OPTION"]["DATA_IMPORT_SKIP_ROW_NUMBER"]
         except:
-            rowskip = 'None'  # default value
+            pass
         try:
             show_median = self.cfgparser["OPTION"]["PLOT_SHOW_MEDIAN"]
         except:
-            show_median = 'False'  # default value
+            pass
+        try:
+            median_fontsize = self.cfgparser["OPTION"]["MEDIAN_FONT_SIZE"]
+        except:
+            pass
 
-        if not dataset_labelrotation.isnumeric():
-            dataset_labelrotation = 0  # default value
-        else:
+        # HANDLING UNEXPECTED STRING AFTER PARSE FROM LOCAL INI
+        if dataset_labelrotation == 'None':
+            dataset_labelrotation = 0
+        elif dataset_labelrotation.isnumeric():
             dataset_labelrotation = int(dataset_labelrotation)
             if not dataset_labelrotation in [0, 45, 90]:
                 dataset_labelrotation = 0  # default value
+        else:
+            dataset_labelrotation = 0
 
-        match show_median:
-            case 'True':
-                show_median = True
-            case 'False':
-                show_median = False
-            case _:
-                show_median = False
+        if show_median == 'None':
+            show_median = False
+        elif show_median == 'True':
+            show_median = True
+        else:
+            show_median = False
+
+        if not median_fontsize == None:
+            median_fontsize = 6  # default value
+        elif median_fontsize.isnumeric():
+            median_fontsize = int(median_fontsize)
+            if not median_fontsize in (3, 10):
+                median_fontsize = 6  # default value
+        else:
+            median_fontsize = 6
 
         if rowskip == 'None':
             rowskip = None
@@ -73,15 +95,16 @@ class Setting:
             if len(rowskip) == 0:
                 rowskip = None
 
-        # must be integer [0, 45, 90]
         Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION = dataset_labelrotation
         Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN = show_median  # must be boolean
+        Setting.OPTS_MEDIAN_FONT_SIZE = median_fontsize
         Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW = rowskip  # must be None or list integer
 
     def saveSetting(
             self,
             plotconfig_datasetLabelRotation: int,
             plotconfig_showMedian: bool,
+            plotconfig_medianFontSize: int,
             dataconfig_importSkipRows: List[int]
     ) -> None:
         # argument validation
@@ -93,10 +116,9 @@ class Setting:
         if type(plotconfig_showMedian) != bool:
             plotconfig_showMedian = False
 
-        # if type(dataconfig_importSkipRows) != int:
-        #     dataconfig_importSkipRows = 0
-        # if dataconfig_importSkipRows < 0:
-        #     dataconfig_importSkipRows = 0
+        if type(plotconfig_medianFontSize) != int:
+            plotconfig_medianFontSize = 6
+
         if type(dataconfig_importSkipRows) != list:
             dataconfig_importSkipRows = None
         else:
@@ -105,12 +127,15 @@ class Setting:
 
         Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION = plotconfig_datasetLabelRotation
         Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN = plotconfig_showMedian
+        Setting.OPTS_MEDIAN_FONT_SIZE = plotconfig_medianFontSize
         Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW = dataconfig_importSkipRows
 
         self.cfgparser["OPTION"]["DATASET_LABEL_ROTATION"] = str(
             plotconfig_datasetLabelRotation)
         self.cfgparser["OPTION"]["PLOT_SHOW_MEDIAN"] = str(
             plotconfig_showMedian)
+        self.cfgparser["OPTION"]["MEDIAN_FONT_SIZE"] = str(
+            plotconfig_medianFontSize)
 
         if dataconfig_importSkipRows == None:
             self.cfgparser["OPTION"]["DATA_IMPORT_SKIP_ROW_NUMBER"] = str(

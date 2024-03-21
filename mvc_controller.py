@@ -5,7 +5,8 @@ from controller.setting import Setting
 from controller.workstatus import Status
 
 
-class Controller():  # Controller in MVC pattern
+# Controller in MVC pattern
+class Controller():
 
     def __init__(self, model: mvc_model.Model, view: mvc_view.View):
         self.model = model
@@ -31,7 +32,8 @@ class Controller():  # Controller in MVC pattern
             plot_dataset=self.model.database,
             userset_label_list=Setting.PLOTCONFIG_DATASET_NAME_LIST,
             userset_label_rotation=Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION,
-            userset_show_median=Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN)
+            userset_show_median=Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN,
+            userset_median_size=Setting.OPTS_MEDIAN_FONT_SIZE)
 
         self.view.PlotFigure.exportFigure2Image()
         self.view.PlotFigure.showMaximized()
@@ -99,13 +101,15 @@ class Controller():  # Controller in MVC pattern
         self.view.Preference.setUI_preference(
             Setting.OPTS_PLOTCONFIG_DATASET_LABEL_ROTATION,
             Setting.OPTS_PLOTCONFIG_SHOW_MEDIAN,
+            Setting.OPTS_MEDIAN_FONT_SIZE,
             Setting.OPTS_DATACONFIG_IMPORT_SKIP_ROW)
         self.view.Preference.show()
 
     # Save user preference
     def actionSavePreference_procedure(self) -> None:
-        [rotation, showMedian, rowskip] = self.view.Preference.getUI_preference()
-        self.setting.saveSetting(rotation, showMedian, rowskip)
+        [rotation, showMedian, medianSize,
+            rowskip] = self.view.Preference.getUI_preference()
+        self.setting.saveSetting(rotation, showMedian, medianSize, rowskip)
 
     """
     Binding PyQt signal & slot

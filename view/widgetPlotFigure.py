@@ -14,9 +14,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as mpl
 from matplotlib import ticker
 from matplotlib.figure import Figure
-# from matplotlib.axes import Axes
-# from matplotlib.axis import Axis
-# from matplotlib.text
+
 
 """
 Customize Matplotlib style with rcParams
@@ -54,7 +52,6 @@ mpl.rcParams['axes.titlesize'] = 8
 # pad between axes and title in points
 mpl.rcParams['axes.titlepad'] = 4
 mpl.rcParams['axes.grid'] = True
-
 mpl.rcParams['polaraxes.grid'] = True
 # set boxplot x-axis label color
 mpl.rcParams['xtick.labelcolor'] = 'black'
@@ -80,7 +77,6 @@ mpl.rcParams['font.family'] = 'tahoma'
 mpl.rcParams['grid.color'] = 'lightgray'        # grid color
 mpl.rcParams['grid.linestyle'] = 'solid'
 mpl.rcParams['grid.linewidth'] = 0.1            # in points
-
 # ***************************************************************************
 # * SAVING FIGURES                                                          *
 # ***************************************************************************
@@ -144,7 +140,8 @@ class WidgetPlotFigure(QWidget):
             plot_dataset: CSV_Database,
             userset_label_list: List[str],
             userset_label_rotation: int,
-            userset_show_median: bool = False
+            userset_show_median: bool = False,
+            userset_median_size: int = 6
     ) -> None:
 
         for figureconfig in figureconfig_list:
@@ -153,7 +150,8 @@ class WidgetPlotFigure(QWidget):
                 figure_config=figureconfig,
                 userset_label_list=userset_label_list,
                 label_rotation=userset_label_rotation,
-                show_median=userset_show_median)
+                show_median=userset_show_median,
+                median_size=userset_median_size)
             self.add_page(add_figure=new_fig, title=figureconfig.title)
             self.list_figures.append((figureconfig.name, new_fig))
 
@@ -163,7 +161,8 @@ class WidgetPlotFigure(QWidget):
             dataset: CSV_Database,
             userset_label_list: List[str],
             label_rotation: int,
-            show_median: bool = False
+            show_median: bool = False,
+            median_size: int = 6,
     ) -> Figure:
         # Validate the subplot size
         row_size, col_size = figure_config.size
@@ -201,15 +200,13 @@ class WidgetPlotFigure(QWidget):
 
             # add annonation for Boxplot median values
             if show_median is True:
-                medians_len = len(plot_dataset)
-                median_anno_size = self.getMedianFontSize(medians_len)
-                for i in range(medians_len):
+                for i in range(len(bp['medians'])):
                     median = bp['medians'][i].get_ydata()[0]
                     ax.annotate(text=f'{median:.1f}',
                                 xy=(i+1, median),
                                 xytext=(-0.5, 0.2),
                                 textcoords='offset fontsize',
-                                fontsize=median_anno_size)
+                                fontsize=median_size)
 
             # set title and add reference line (USL/LSL)
             # set y-axis label tick format (float to 2 decimal places)
@@ -240,7 +237,6 @@ class WidgetPlotFigure(QWidget):
             max_height=Setting.PICTURE_MAX_HEIGHT)
 
         # Add bounding box to figure
-        # WidgetPlotFigure.drawFigureBbox(figure=fig, axes=axs)
         return fig
 
     def closeEvent(self, a0: QtGui.QCloseEvent | None) -> None:
@@ -274,7 +270,7 @@ class WidgetPlotFigure(QWidget):
             width_height_ratio: float,  # width/height ratio
             max_width: float,
             max_height: float
-    ) -> Figure:
+    ) -> None:
         if max_width <= 0 or max_height <= 0:
             # raise ValueError("max_width and max_height should be greater than 0")
             return
@@ -307,26 +303,7 @@ class WidgetPlotFigure(QWidget):
         figure.set_figwidth(new_figwidth)
         figure.set_figheight(new_figheight)
 
-        return
-
-    def getMedianFontSize(self, dataset_length: int) -> int:
-        max_size = 7
-        min_size = 3
-        retVal = min_size
-        if type(dataset_length) != int:
-            return retVal
-        if dataset_length <= 6:
-            retVal = max_size
-        if 7 <= dataset_length and dataset_length <= 10:
-            retVal = 6
-        if 11 <= dataset_length and dataset_length <= 15:
-            retVal = 5
-        if 16 <= dataset_length and dataset_length <= 20:
-            retVal = 4
-        if 21 <= dataset_length:
-            retVal = min_size
-
-        return retVal
+        return None
 
     def bindingSignal2Slot(self) -> None:
         self.ui.btn_exportPPTX.clicked.connect(

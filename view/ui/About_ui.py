@@ -39,7 +39,7 @@ class Ui_About(object):
     def retranslateUi(self, About):
         _translate = QtCore.QCoreApplication.translate
         About.setWindowTitle(_translate("About", "About"))
-        self.lblBuildTime.setText(_translate("About", "<html><head/><body><p align=\"right\"><span style=\" color:#a6a6a6;\">Build time: Aug 2023</span></p></body></html>"))
+        self.lblBuildTime.setText(_translate("About", "<html><head/><body><p align=\"right\"><span style=\" color:#a6a6a6;\">Build time: Feb 2024</span></p></body></html>"))
         self.lblApplicationName.setText(_translate("About", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:700; color:#0000ff;\">CSV DATA TO BOX PLOT</span></p></body></html>"))
         self.lblMainMessage.setText(_translate("About", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"

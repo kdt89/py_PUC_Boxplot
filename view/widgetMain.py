@@ -33,7 +33,6 @@ class WidgetMain(QMainWindow):
         text = str('\n'.join(string_list))
         self.ui.textEdit_datasetNameList.clear()
         self.ui.textEdit_datasetNameList.setText(text)
-        # self.ui.textEdit_datasetNameList.repaint()
 
     def getfromUI_datasetNameList_txtEdit(self) -> List[str]:
         str_list = self.ui.textEdit_datasetNameList.toPlainText()

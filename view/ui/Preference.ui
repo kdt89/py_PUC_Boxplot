@@ -41,7 +41,7 @@
      <x>20</x>
      <y>0</y>
      <width>530</width>
-     <height>405</height>
+     <height>410</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="vLayout_main">
@@ -124,7 +124,14 @@
       <item row="1" column="0" alignment="Qt::AlignLeft">
        <widget class="QLabel" name="label_plotConfigShowMedianVal">
         <property name="text">
-         <string>Median Value</string>
+         <string>Show Median Value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_dataConfigImportSkipRows">
+        <property name="text">
+         <string>Number of rows to skip when import data from CSV</string>
         </property>
        </widget>
       </item>
@@ -147,12 +154,60 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_dataConfigImportSkipRows">
-        <property name="text">
-         <string>Number of rows to skip when import data from CSV</string>
+      <item row="3" column="2" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_dataConfigImportSkipRows">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="statusTip">
+         <string notr="true"/>
+        </property>
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleName">
+         <string notr="true"/>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
         </property>
        </widget>
+      </item>
+      <item row="0" column="3">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>90</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item row="0" column="1">
        <spacer name="horizontalSpacer">
@@ -164,11 +219,66 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>50</width>
+          <width>55</width>
           <height>20</height>
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="comboBox_plotConfigShowMedianVal">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>45</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Tahoma</family>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string notr="true"/>
+        </property>
+        <property name="statusTip">
+         <string notr="true"/>
+        </property>
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
+        <property name="accessibleName">
+         <string notr="true"/>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="currentText">
+         <string notr="true">Yes</string>
+        </property>
+        <property name="placeholderText">
+         <string notr="true"/>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string notr="true" extracomment="True">Yes</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string notr="true" extracomment="False">No</string>
+         </property>
+        </item>
+       </widget>
       </item>
       <item row="0" column="2" alignment="Qt::AlignLeft">
        <widget class="QComboBox" name="comboBox_datasetLabelRotation">
@@ -230,8 +340,15 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QComboBox" name="comboBox_plotConfigShowMedianVal">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_plotConfigMedianFontSize">
+        <property name="text">
+         <string>Median Value Font Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QComboBox" name="comboBox_plotConfigMedianFontSize">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -265,7 +382,7 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="currentText">
-         <string notr="true">Yes</string>
+         <string notr="true">9</string>
         </property>
         <property name="placeholderText">
          <string notr="true"/>
@@ -275,69 +392,44 @@
         </property>
         <item>
          <property name="text">
-          <string notr="true" extracomment="True">Yes</string>
+          <string notr="true">9</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string notr="true" extracomment="False">No</string>
+          <string>8</string>
          </property>
         </item>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>102</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="2" colspan="2">
-       <widget class="QLineEdit" name="lineEdit_dataConfigImportSkipRows">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>150</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="acceptDrops">
-         <bool>false</bool>
-        </property>
-        <property name="toolTip">
-         <string notr="true"/>
-        </property>
-        <property name="statusTip">
-         <string notr="true"/>
-        </property>
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
-        <property name="accessibleName">
-         <string notr="true"/>
-        </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhNone</set>
-        </property>
+        <item>
+         <property name="text">
+          <string>7</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>4</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>3</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>

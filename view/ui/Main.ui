@@ -192,15 +192,7 @@
           <string notr="true"/>
          </property>
          <property name="styleSheet">
-          <string notr="true">QPushButton {
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #cccccc;}
-
-QPushButton:hover {
-  background-color: rgb(0, 100, 200);
-  color: rgb(255, 255, 255);
-  border: 1px solid #cccccc;}</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string notr="true">Make Plot</string>
@@ -239,15 +231,7 @@ QPushButton:hover {
           <string notr="true"/>
          </property>
          <property name="styleSheet">
-          <string notr="true">QPushButton {
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #cccccc;}
-
-QPushButton:hover {
-  background-color: rgb(0, 100, 200);
-  color: rgb(255, 255, 255);
-  border: 1px solid #cccccc;}</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string notr="true"/>
@@ -294,17 +278,6 @@ QPushButton:hover {
          </property>
          <property name="accessibleName">
           <string notr="true"/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #cccccc;}
-
-QPushButton:hover {
-  background-color: rgb(0, 100, 200);
-  color: rgb(255, 255, 255);
-  border: 1px solid #cccccc;}</string>
          </property>
          <property name="text">
           <string notr="true"/>

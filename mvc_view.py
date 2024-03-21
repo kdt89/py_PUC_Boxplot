@@ -9,7 +9,6 @@ from view.widgetPlotFigure import WidgetPlotFigure
 from view.widgetPreference import WidgetPreference
 
 
-# Application UI object contains all other frame objects
 class View():
 
     def __init__(self) -> None:
@@ -20,11 +19,11 @@ class View():
 
         # Binding Menu action to slots
         self.Main.ui.actionShowAbout.triggered.connect(self.About.show)
-        self.Preference.ui.actionSavePreference.triggered.connect(self.Preference.close)
+        self.Preference.ui.actionSavePreference.triggered.connect(
+            self.Preference.close)
 
         # Display main window
         self.Main.show()
-
 
     def wxPlotFigure_newWidget(self):
         # close previous Plot Figure widget if existing
@@ -34,4 +33,3 @@ class View():
 
         # intentionally abandon self.PlotFigure. Gabage collection will take care of it
         self.PlotFigure = WidgetPlotFigure()
-  

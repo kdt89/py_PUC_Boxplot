@@ -96,15 +96,7 @@ class Ui_Main(object):
         self.btn_makePlot.setStatusTip("")
         self.btn_makePlot.setWhatsThis("<html><head/><body><p><br/></p></body></html>")
         self.btn_makePlot.setAccessibleName("")
-        self.btn_makePlot.setStyleSheet("QPushButton {\n"
-"  background-color: #ffffff;\n"
-"  color: #000000;\n"
-"  border: 1px solid #cccccc;}\n"
-"\n"
-"QPushButton:hover {\n"
-"  background-color: rgb(0, 100, 200);\n"
-"  color: rgb(255, 255, 255);\n"
-"  border: 1px solid #cccccc;}")
+        self.btn_makePlot.setStyleSheet("")
         self.btn_makePlot.setText("Make Plot")
         self.btn_makePlot.setObjectName("btn_makePlot")
         self.hLayout_commandBar.addWidget(self.btn_makePlot)
@@ -122,15 +114,7 @@ class Ui_Main(object):
         self.btn_showPreference.setStatusTip("")
         self.btn_showPreference.setWhatsThis("")
         self.btn_showPreference.setAccessibleName("")
-        self.btn_showPreference.setStyleSheet("QPushButton {\n"
-"  background-color: #ffffff;\n"
-"  color: #000000;\n"
-"  border: 1px solid #cccccc;}\n"
-"\n"
-"QPushButton:hover {\n"
-"  background-color: rgb(0, 100, 200);\n"
-"  color: rgb(255, 255, 255);\n"
-"  border: 1px solid #cccccc;}")
+        self.btn_showPreference.setStyleSheet("")
         self.btn_showPreference.setText("")
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/icons/icon_setting.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
@@ -152,15 +136,6 @@ class Ui_Main(object):
         self.btn_showAbout.setStatusTip("")
         self.btn_showAbout.setWhatsThis("")
         self.btn_showAbout.setAccessibleName("")
-        self.btn_showAbout.setStyleSheet("QPushButton {\n"
-"  background-color: #ffffff;\n"
-"  color: #000000;\n"
-"  border: 1px solid #cccccc;}\n"
-"\n"
-"QPushButton:hover {\n"
-"  background-color: rgb(0, 100, 200);\n"
-"  color: rgb(255, 255, 255);\n"
-"  border: 1px solid #cccccc;}")
         self.btn_showAbout.setText("")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(":/icons/icon_about.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
